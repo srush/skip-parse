@@ -3,7 +3,7 @@ import itertools
 from collections import namedtuple, defaultdict
 import pydecode.hyper as ph
 
-
+range = xrange
 class Parse:
     """
     Class representing a dependency parse with 
@@ -244,7 +244,7 @@ class Chart:
         
         """
 
-        seq = (((sum([self.chart[v].score for v in vs]) + score), vs)
+        seq = (((sum((self.chart[v].score for v in vs)) + score), vs)
                for vs, score in vals )
         
         v = ChartItem(*max(itertools.chain([(-1e9, None)], seq),
@@ -662,8 +662,6 @@ class Parser(object):
                                    for m2 in [mod_count - m1 - 1]
                                    for key2 in [(Tri, Left, (r+1, t), m2, (r+1, s3))]
                                    if key2 in c.chart))
-
-
 
                         c.set(NodeType(TrapSkipped, Right, span, mod_count, (s, s3)),
                                   (Edge([key1, key2], 0.0)
