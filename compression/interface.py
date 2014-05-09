@@ -226,6 +226,9 @@ class Chart:
         """
         self.chart[item] = ChartItem(score, None)
 
+    # def has(self, item):
+    #     return item in self.chart
+
     def set(self, item, vals):        
         """
         Add an item to the chart.
@@ -241,11 +244,13 @@ class Chart:
         
         """
 
-        seq = [ChartItem((sum([self.chart[v].score for v in vs]) + score), vs)
-               for vs, score in vals 
-               if all((v in self.chart for v in vs))]
-        if seq:
-            self.chart[item] = max(seq, key = lambda a: a.score)
+        seq = (((sum([self.chart[v].score for v in vs]) + score), vs)
+               for vs, score in vals )
+        
+        v = ChartItem(*max(itertools.chain([(-1e9, None)], seq),
+                           key = lambda a: a[0]))
+        if v[1] is not None:
+            self.chart[item] = v
         # e;se
         # self.chart[item] = None
 
@@ -281,43 +286,53 @@ Trap = 3
 Right = 0
 Left = 1
 
-class Edge(namedtuple("Edge", ["tail", "score"])):
-    def __new__(cls, tail, score=0.0):
-        return super(Edge, cls).__new__(cls, tail, score)
+def Edge(a, b=0.0):
+    return (a, b)
+# class Edge(namedtuple("Edge", ["tail", "score"])):
+#     def __new__(cls, tail, score=0.0):
+#         return super(Edge, cls).__new__(cls, tail, score)
+
+def NodeType(type, dir, span, count, states=None) :
+    if states is None:
+        return (type, dir, span, count)
+    return (type, dir, span, count, states)
+def node_type(nodetype): return nodetype[0]
+def node_span(nodetype): return nodetype[2]
+def node_dir(nodetype): return nodetype[1]
 
 
-class NodeType(namedtuple("NodeType", ["type", "dir", "span", "count", "states"])):
-    """
-    Representation of an iterm in the parse chart. 
+# class NodeType(namedtuple("NodeType", ["type", "dir", "span", "count", "states"])):
+#     """
+#     Representation of an iterm in the parse chart. 
     
-    Attributes
-    ----------
-    type : {trap, tri, trapskipped}
+#     Attributes
+#     ----------
+#     type : {trap, tri, trapskipped}
 
-    dir : {left, right}
+#     dir : {left, right}
 
-    span : pair of ints
+#     span : pair of ints
 
-    count : int
-       How many arcs are under this item? 
+#     count : int
+#        How many arcs are under this item? 
 
-    states : pair
-       What is the FSA state before and after this item?
+#     states : pair
+#        What is the FSA state before and after this item?
 
-    """
-    Names = {0 : "right",
-             1 : "left"}
+#     """
+#     Names = {0 : "right",
+#              1 : "left"}
 
-    Type = {0 : "tri",
-            1 : "trapskipped",
-            2 : "trap"}
+#     Type = {0 : "tri",
+#             1 : "trapskipped",
+#             2 : "trap"}
 
-    def __new__(cls, type, dir, span, count, states=None):
-        return super(NodeType, cls).__new__(cls, type, dir, span, count, states)
+#     def __new__(cls, type, dir, span, count, states=None):
+#         return super(NodeType, cls).__new__(cls, type, dir, span, count, states)
         
-    def __str__(self):
-        return "%s %s %d-%d %d %s"%(NodeType.Type[self.type], NodeType.Dir[self.dir], 
-                                    self.span[0], self.span[1], self.count, self.states)
+#     def __str__(self):
+#         return "%s %s %d-%d %d %s"%(NodeType.Type[self.type], NodeType.Dir[self.dir], 
+#                                     self.span[0], self.span[1], self.count, self.states)
 
 
 def make_parse(n, back_trace):
@@ -339,11 +354,12 @@ def make_parse(n, back_trace):
     mods = [None] * n
     mods[0] = -1
     for element in back_trace:
-        if element.type == Trap:
-            if element.dir == Right:
-                mods[element.span[1]] = element.span[0]
-            if element.dir == Left:
-                mods[element.span[0]] = element.span[1]
+        if node_type(element) == Trap:
+            span = node_span(element)
+            if node_dir(element) == Right:
+                mods[span[1]] = span[0]
+            if node_dir(element) == Left:
+                mods[span[0]] = span[1]
     return Parse(mods)
     
 class Parser(object):
@@ -387,49 +403,71 @@ class Parser(object):
                     # First create incomplete items.
                     if s != 0 and mod_count > 0:
                         c.set(NodeType(Trap, Left, span, mod_count),
-                              [Edge([NodeType(Tri, Right, (s, r), m1),
-                                     NodeType(Tri, Left, (r+1, t), m2)], 
+                              [Edge([key1, key2], 
                                     scorer.arc_score(t, s))
                                for r in range(s, t)
                                for m1 in range(mod_count)
+                               for key1 in [(Tri, Right, (s, r), m1)]
+                               if key1 in c.chart
                                for m2 in [mod_count  - m1 - 1] 
+                               for key2 in [(Tri, Left, (r+1, t), m2)]
+                               if key2 in c.chart
                                ])
                         
                     if mod_count > 0:
                         c.set(NodeType(Trap, Right, span, mod_count),
-                              [Edge([NodeType(Tri, Right, (s, r), m1),
-                                     NodeType(Tri, Left, (r+1, t), m2)],
+                              [Edge([key1,
+                                     key2],
                                     scorer.arc_score(s, t))
                                for r in range(s, t)
                                for m1 in range(mod_count)
-                               for m2 in [mod_count - m1 - 1]])
+                               for key1 in [(Tri, Right, (s, r), m1)]
+                               if key1 in c.chart
+                               for m2 in [mod_count - m1 - 1]
+                               for key2 in [(Tri, Left, (r+1, t), m2)]
+                               if key2 in c.chart
+                               ])
 
 
                     c.set(NodeType(TrapSkipped, Right, span, mod_count),
-                          [Edge([NodeType(Tri, Right, (s, t-1), m1), 
-                                 NodeType(Tri, Left, (t, t), m2)])
+                          [Edge([key1, key2])
                            for m1 in range(mod_count + 1)
-                           for m2 in [mod_count - m1]])
+                           for key1 in [(Tri, Right, (s, t-1), m1)]
+                           if key1 in c.chart
+                           for m2 in [mod_count - m1]
+                           for key2 in [(Tri, Left, (t, t), m2)]
+                           if key2 in c.chart
+                           ])
 
                     if s != 0:
                         c.set(NodeType(Tri, Left, span, mod_count),
-                              [Edge([NodeType(Tri, Left, (s, r), m1), 
-                                     NodeType(Trap, Left, (r, t), m2)])
+                              [Edge([key1, key2]
+                                     )
                                for r in range(s, t)
                                for m1 in range(mod_count + 1 )
-                               for m2 in [mod_count - m1]])
+                               for key1 in [(Tri, Left, (s, r), m1)]
+                               if key1 in c.chart
+                               for m2 in [mod_count - m1]
+                               for key2 in [(Trap, Left, (r, t), m2)]
+                               if key2 in c.chart])
 
                     c.set(NodeType(Tri, Right, span, mod_count),
-                          [Edge([NodeType(Trap, Right, (s, r), m1), 
-                                 NodeType(Tri, Right, (r, t), m2)])
+                          [Edge([key1, key2])
                            for r in range(s + 1, t + 1)
                            for m1 in range(mod_count + 1)
-                           for m2 in [mod_count  - m1]] + \
-                              \
-                          [Edge([NodeType(TrapSkipped, Right, (s, t), m1), 
-                                 NodeType(Tri, Right, (t, t), m2)])
+                           for key1 in [(Trap, Right, (s, r), m1)]
+                           if key1 in c.chart
+                           for m2 in [mod_count  - m1]
+                           for key2 in [(Tri, Right, (r, t), m2)]
+                           if key2 in c.chart] + \
+                          [Edge([key1, key2])
                            for m1 in range(mod_count + 1)
-                           for m2 in [mod_count  - m1]])
+                           for key1 in [(TrapSkipped, Right, (s, t), m1)]
+                           if key1 in c.chart
+                           for m2 in [mod_count  - m1]
+                           for key2 in [(Tri, Right, (t, t), m2)]
+                           if key2 in c.chart
+                           ])
 
         return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m)))
 
@@ -459,6 +497,7 @@ class Parser(object):
 
         c = Chart()
 
+        diff = n - m 
 
         # Initialize the chart. 
         [c.initialize(NodeType(sh, d, (s, s), 0, (s1, s2)), 
@@ -466,7 +505,7 @@ class Parser(object):
          for s in range(n) 
          for d in [Right, Left]
          for sh in [Trap, Tri]
-         for s1 in (range(s + 1) if d == Left else [s])
+         for s1 in (range(s-diff, s + 1) if d == Left else [s])
          for s2 in [s]]
 
         for k in range(1, n):
@@ -475,61 +514,80 @@ class Parser(object):
                 if t >= n: break
                 span = (s, t)
                 for mod_count in range(m + 1):
-                    for s1 in range(t+1):
-
+                    for s1 in range(s-diff, s+1):
                         # First create incomplete items.
                         if s != 0 and mod_count > 0:
                             c.set(NodeType(Trap, Left, span, mod_count, (s1, t)),
-                                  (Edge([NodeType(Tri, Right, (s, r), m1, (s1, s2)),
-                                         NodeType(Tri, Left, (r+1, t), m2, (s2, t))], 
-                                        scorer.arc_score(t, s))
+                                  (Edge([key1, key2], scorer.arc_score(t, s))
                                    for r  in range(s, t)
                                    for m1 in range(mod_count)
+                                   for s2 in range(s, r + 2)
+                                   for key1 in [(Tri, Right, (s, r), m1, (s1, s2))]
+                                   if key1 in c.chart
                                    for m2 in [mod_count - m1 - 1]
-                                   for s2 in range(s, r + 2)))
+                                   for key2 in [(Tri, Left, (r+1, t), m2, (s2, t))]
+                                   if key2 in c.chart))
+
 
                         if mod_count > 0:
                             c.set(NodeType(Trap, Right, span, mod_count, (s1, t)),
-                                  (Edge([NodeType(Tri, Right, (s, r), m1, (s1, s2)),
-                                         NodeType(Tri, Left, (r+1, t), m2, (s2, t))],
-                                        scorer.arc_score(s, t))
+                                  (Edge([key1, key2], scorer.arc_score(s, t))
                                    for r  in range(s, t)
+                                   for s2 in range(s, r + 2)
                                    for m1 in range(mod_count)
+                                   for key1 in [(Tri, Right, (s, r), m1, (s1, s2))]
+                                   if key1 in c.chart
                                    for m2 in [mod_count - m1 - 1]
-                                   for s2 in range(s, r + 2)))
+                                   for key2 in [(Tri, Left, (r+1, t), m2, (s2, t))]
+                                   if key2 in c.chart))
 
-                        for s3 in range(s1, n):
+
+                        for s3 in range(s1, t+1):
                             c.set(NodeType(TrapSkipped, Right, span, mod_count, (s1, s3)),
-                                  (Edge([NodeType(Tri, Right, (s, t-1), m1, (s1, s3)), 
-                                         NodeType(Tri, Left, (t, t), m2, (t, t))])
+                                  (Edge([key1, key2], 0.0)
                                    for m1 in range(mod_count + 1)
-                                   for m2 in [mod_count - m1]))
+                                   for key1 in [(Tri, Right, (s, t-1), m1, (s1, s3))]
+                                   if key1 in c.chart
+                                   for m2 in [mod_count - m1]
+                                   for key2 in [(Tri, Left, (t, t), m2, (t, t))]
+                                   if key2 in c.chart))
 
-                    for s1 in range(t+1):
-                        for s3 in range(s1, n):
+                    for s1 in range(s-diff, s+1):
+                        for s3 in range(s1, t+1):
                             if s != 0:
                                 c.set(NodeType(Tri, Left, span, mod_count, (s1, s3)),
-                                      (Edge((NodeType(Tri, Left, (s, r), m1, (s1, r)), 
-                                         NodeType(Trap, Left, (r, t), m2, (r, s3))))
+                                      (Edge([key1, key2])
                                        for r  in range(s, t)
-                                       for m1 in range(mod_count + 1 )
-                                       for m2 in [mod_count - m1]))
-
+                                       for m1 in range(mod_count + 1)
+                                       for key1 in [(Tri, Left, (s, r), m1, (s1, r))]
+                                       if key1 in c.chart
+                                       for m2 in [mod_count - m1]
+                                       for key2 in [(Trap, Left, (r, t), m2, (r, s3))]
+                                       if key2 in c.chart))
+                                      
                             c.set(NodeType(Tri, Right, span, mod_count, (s1, s3)),
-                                  [Edge([NodeType(Trap, Right, (s, r), m1, (s1, r)), 
-                                         NodeType(Tri, Right, (r, t), m2, (r, s3))])
-                                   for r in range(s + 1, t + 1)
-                                   for m1 in range(mod_count + 1)
-                                   for m2 in [mod_count - m1]] + \
-                                   \
-                                   [Edge([NodeType(TrapSkipped, Right, (s, t), m1, (s1, s3)), 
-                                          NodeType(Tri, Right, (t, t), m2, (t, t))])
-                                    for m1 in range(mod_count + 1)
-                                    for m2 in [mod_count  - m1]])
-                
+                                  itertools.chain((Edge([key1, key2])
+                                                   for r in range(s + 1, t + 1)
+                                                   for m1 in range(mod_count + 1)
+                                                   for key1 in [(Trap, Right, (s, r), m1, (s1, r))]
+                                                   if key1 in c.chart
+                                                   for m2 in [mod_count - m1]
+                                                   for key2 in [(Tri, Right, (r, t), m2, (r, s3))]
+                                                   if key2 in c.chart),
+                                   
+                                                  (Edge([key1,key2])
+                                                   for m1 in range(mod_count + 1)
+                                                   for key1 in [(TrapSkipped, Right, (s, t), m1, (s1, s3))]
+                                                   if key1 in c.chart
+                                                   for m2 in [mod_count  - m1]
+                                                   for key2 in [(Tri, Right, (t, t), m2, (t, t))]
+                                                   if key2 in c.chart)))
+
+        print c.chart
         c.set(NodeType(Tri, Right, (0, n-1), m, (0, n)),
-              [Edge([NodeType(Tri, Right, (0, n-1), m, (0, s3))],
-                    scorer.bigram_score(s3, n))
-               for s3 in range(n)])
+              [Edge([key1], scorer.bigram_score(s3, n))
+               for s3 in range(n)
+               for key1 in [(Tri, Right, (0, n-1), m, (0, s3))]
+               if key1 in c.chart])
         return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m, (0, n))))
 

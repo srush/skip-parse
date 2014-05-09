@@ -37,11 +37,13 @@ def check_bigram(n, m, scorer):
 
 def test_biggie():
     n = 20
-    m = 20
+    m = 10
     arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
     bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
     score1 = Scorer(n, arc_scores)
     score2 = Scorer(n, arc_scores, bigram_scores)
-    Parser().parse_skip(n, score1, m)
+    # Parser().parse_skip(n, score1, m)
     Parser().parse_bigram(n, score2, m)
 
+if __name__ == "__main__":
+    test_biggie()
