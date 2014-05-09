@@ -398,7 +398,10 @@ class Parser(object):
                 t = k + s
                 if t >= n: break
                 span = (s, t)
-                for mod_count in range(m + 1):
+                remaining = n - s
+                need = m 
+                
+                for mod_count in range(m - remaining -1, m + 1):
 
                     # First create incomplete items.
                     if s != 0 and mod_count > 0:
@@ -513,7 +516,9 @@ class Parser(object):
                 t = k + s
                 if t >= n: break
                 span = (s, t)
-                for mod_count in range(m + 1):
+                remaining = n - s
+                for mod_count in range(m - remaining -1, m + 1):
+
                     for s1 in range(s-diff, s+1):
                         # First create incomplete items.
                         if s != 0 and mod_count > 0:
