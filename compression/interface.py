@@ -604,7 +604,7 @@ class Parser(object):
         def binary_search(seq, t):
             min = -10
             max = 10
-            for i in range(10):
+            for i in range(25):
                 if max < min:
                     return -1
                 m = (min + max) / 2.0
