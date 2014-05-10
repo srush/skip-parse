@@ -48,8 +48,8 @@ def check_binary_search(n, m, scorer):
 
 
 def test_biggie():
-    n = 50
-    m = 25
+    n = 30
+    m = 20
     arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
     bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
     score1 = Scorer(n, arc_scores)
@@ -58,5 +58,17 @@ def test_biggie():
     # Parser().parse_bigram(n, score2, m)
     Parser().parse_binary_search(n, score2, m)
 
+def pydecode():
+    import interface_pydecode as ip
+    n = 30
+    m = 20
+    arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
+    bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
+    score1 = Scorer(n, arc_scores)
+    score2 = Scorer(n, arc_scores, bigram_scores)
+    # Parser().parse_skip(n, score1, m)
+    # Parser().parse_bigram(n, score2, m)
+    ip.parse_binary_search(n, score2, m)
+
 if __name__ == "__main__":
-    test_biggie()
+    pydecode()
