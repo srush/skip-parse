@@ -1,14 +1,14 @@
-from itertools import izip 
+from itertools import izip
 import itertools
 from collections import namedtuple, defaultdict
 import pydecode.hyper as ph
 
-range = xrange
+# range = xrange
 class Parse:
     """
-    Class representing a dependency parse with 
-    possible unused modifier words. 
-    
+    Class representing a dependency parse with
+    possible unused modifier words.
+
     """
 
     def __init__(self, heads):
@@ -41,18 +41,21 @@ class Parse:
         Returns
         -------
         sequence : iterator of m indices in m order
-           Each of the words used in the sentence, 
+           Each of the words used in the sentence,
            by convention starts with 0 and ends with n+1.
         """
         yield 0
         for m, h in self.arcs():
             yield m
         yield len(self.heads)
-        
+
+    def skipped_words(self):
+        return len([h for h in self.heads if h is None])
+
     def check_spanning(self):
         """
-        Is the parse tree as valid spanning tree? 
-        
+        Is the parse tree as valid spanning tree?
+
         Returns
         --------
         spanning : bool
@@ -60,7 +63,7 @@ class Parse:
         """
         d = {}
         for m, h in self.arcs():
-            if m == h: 
+            if m == h:
                 return False
 
             d.setdefault(h, [])
@@ -69,18 +72,18 @@ class Parse:
         seen = set()
         while stack:
             cur = stack[0]
-            if cur in seen: 
+            if cur in seen:
                 return False
             seen.add(cur)
             stack = d.get(cur,[]) + stack[1:]
-        if len(seen) != len(self.heads) - len([1 for p in self.heads if p is None]): 
+        if len(seen) != len(self.heads) - len([1 for p in self.heads if p is None]):
             return False
         return True
 
     def check_projective(self):
         """
-        Is the parse tree projective? 
-        
+        Is the parse tree projective?
+
         Returns
         --------
         projective : bool
@@ -112,7 +115,7 @@ class Parse:
 
         m - int
            Number of modifiers to use.
-        
+
         Returns
         --------
         parses : iterator
@@ -131,7 +134,7 @@ class Scorer(object):
     Object for scoring parse structures.
     """
 
-    def __init__(self, n, arc_scores, bigram_scores=None):
+    def __init__(self, n, arc_scores, bigram_scores=None, skip_penalty=0.0):
         """
         Parameters
         ----------
@@ -139,15 +142,16 @@ class Scorer(object):
            Length of the sentence (without root).
 
         arc_scores : 2D array (n+1 x n+1)
-           Scores for each possible arc 
+           Scores for each possible arc
            arc_scores[h][m].
 
         arc_scores : 2D array (n+2 x n+2)
-           Scores for each possible modifier bigram 
+           Scores for each possible modifier bigram
            bigram_scores[prev][cur].
         """
         self._arc_scores = arc_scores
         self._bigram_scores = bigram_scores
+        self.skip_penalty = skip_penalty
 
     def arc_score(self, head, modifier):
         """
@@ -169,7 +173,7 @@ class Scorer(object):
 
     def score(self, parse):
         """
-        Score a parse based on arc score and bigram score. 
+        Score a parse based on arc score and bigram score.
 
         Parameters
         ----------
@@ -190,12 +194,14 @@ class Scorer(object):
             seq = list(parse.sequence())
             bigram_score = sum((self.bigram_score(i, j)
                                 for i, j in izip(seq, seq[1:])))
+
+        bigram_score -= parse.skipped_words() * self.skip_penalty
         return parse_score + bigram_score
-        
+
 class ChartItem(namedtuple("ChartItem", ["score", "bp"])):
     """
-    An item in the chart. 
-    
+    An item in the chart.
+
     Attributes
     -----------
     score : float
@@ -216,11 +222,11 @@ class Chart:
     def initialize(self, item, score=0.0):
         """
         Initialize an item in the chart.
-        
+
         Parameters
         ----------
-        item : 
-        
+        item :
+
         score : float
             The initial score of the item
         """
@@ -229,24 +235,24 @@ class Chart:
     # def has(self, item):
     #     return item in self.chart
 
-    def set(self, item, vals):        
+    def set(self, item, vals):
         """
         Add an item to the chart.
-        
+
         Parameters
         ----------
-        item : 
-        
+        item :
+
         vals : list of tuples
-            The list of pairs. 
+            The list of pairs.
             First element in the pair is a list of items (bp's).
             Second element in the pair is a score (edge score).
-        
+
         """
 
         seq = (((sum((self.chart[v].score for v in vs)) + score), vs)
                for vs, score in vals )
-        
+
         v = ChartItem(*max(itertools.chain([(-1e9, None)], seq),
                            key = lambda a: a[0]))
         if v[1] is not None:
@@ -256,12 +262,12 @@ class Chart:
 
     def backtrace(self, item):
         """
-        Construct a back trace from a chart. 
+        Construct a back trace from a chart.
 
         Parameters
         ----------
-        item : 
-            The item to start from. 
+        item :
+            The item to start from.
 
         Returns
         ---------
@@ -278,7 +284,7 @@ class Chart:
         return items
 
 
-# Globals 
+# Globals
 Tri = 1
 TrapSkipped = 2
 Trap = 3
@@ -303,8 +309,8 @@ def node_dir(nodetype): return nodetype[1]
 
 # class NodeType(namedtuple("NodeType", ["type", "dir", "span", "count", "states"])):
 #     """
-#     Representation of an iterm in the parse chart. 
-    
+#     Representation of an iterm in the parse chart.
+
 #     Attributes
 #     ----------
 #     type : {trap, tri, trapskipped}
@@ -314,7 +320,7 @@ def node_dir(nodetype): return nodetype[1]
 #     span : pair of ints
 
 #     count : int
-#        How many arcs are under this item? 
+#        How many arcs are under this item?
 
 #     states : pair
 #        What is the FSA state before and after this item?
@@ -329,23 +335,23 @@ def node_dir(nodetype): return nodetype[1]
 
 #     def __new__(cls, type, dir, span, count, states=None):
 #         return super(NodeType, cls).__new__(cls, type, dir, span, count, states)
-        
+
 #     def __str__(self):
-#         return "%s %s %d-%d %d %s"%(NodeType.Type[self.type], NodeType.Dir[self.dir], 
+#         return "%s %s %d-%d %d %s"%(NodeType.Type[self.type], NodeType.Dir[self.dir],
 #                                     self.span[0], self.span[1], self.count, self.states)
 
 
 def make_parse(n, back_trace):
     """
-    Construct the best parse from a back trace. 
+    Construct the best parse from a back trace.
 
     Parameters
     -------------
-    n : Length of the parse. 
+    n : Length of the parse.
 
     back_trace : list of NodeType's
        The backtrace from the parse chart.
-    
+
     Returns
     ---------
     parse : Parse
@@ -361,62 +367,62 @@ def make_parse(n, back_trace):
             if node_dir(element) == Left:
                 mods[span[0]] = span[1]
     return Parse(mods)
-    
+
 class Parser(object):
-    
+
     def parse_skip(self, sentence_length, scorer, m):
         """
-        Parses with skips. 
-        
+        Parses with skips.
+
         Parameters
         -----------
         sentence_length : int
            The length of the sentence.
 
         scorer : Scorer
-           The arc-factored weights on each possible dependency.           
+           The arc-factored weights on each possible dependency.
 
         m : int
            The length of the compressed sentence.
 
-        Returns 
+        Returns
         -------
         parse : Parse
-           The best dependency parse with these constraints.  
+           The best dependency parse with these constraints.
         """
         c = Chart()
         n = sentence_length + 1
 
         # Add terminal nodes.
         [c.initialize(NodeType(sh, d, (s, s), 0), 0.0)
-         for s in range(n) 
+         for s in range(n)
          for d in [Right, Left]
          for sh in [Trap, Tri]]
-        
+
         for k in range(1, n):
             for s in range(n):
                 t = k + s
                 if t >= n: break
                 span = (s, t)
                 remaining = n - s
-                need = m 
-                
+                need = m
+
                 for mod_count in range(m - remaining -1, m + 1):
 
                     # First create incomplete items.
                     if s != 0 and mod_count > 0:
                         c.set(NodeType(Trap, Left, span, mod_count),
-                              [Edge([key1, key2], 
+                              [Edge([key1, key2],
                                     scorer.arc_score(t, s))
                                for r in range(s, t)
                                for m1 in range(mod_count)
                                for key1 in [(Tri, Right, (s, r), m1)]
                                if key1 in c.chart
-                               for m2 in [mod_count  - m1 - 1] 
+                               for m2 in [mod_count  - m1 - 1]
                                for key2 in [(Tri, Left, (r+1, t), m2)]
                                if key2 in c.chart
                                ])
-                        
+
                     if mod_count > 0:
                         c.set(NodeType(Trap, Right, span, mod_count),
                               [Edge([key1,
@@ -477,35 +483,35 @@ class Parser(object):
 
     # def parse_bigram(self, sent_len, scorer, m):
     #     """
-    #     Parses with bigrams. 
-        
+    #     Parses with bigrams.
+
     #     Parameters
     #     -----------
     #     n : int
     #        The length of the sentence.
-           
+
     #     scorer : Scorer
     #        The arc-factored weights and bigram scores.
 
     #     m : int
     #        The length of the compressed sentence.
-    #        None if any length allowed. 
+    #        None if any length allowed.
 
-    #     Returns 
+    #     Returns
     #     -------
     #     parse : Parse
-    #        The best dependency parse with these constraints.  
+    #        The best dependency parse with these constraints.
     #     """
     #     n = sent_len + 1
 
     #     c = Chart()
 
-    #     diff = n - m 
+    #     diff = n - m
 
-    #     # Initialize the chart. 
-    #     [c.initialize(NodeType(sh, d, (s, s), 0, (s1, s2)), 
+    #     # Initialize the chart.
+    #     [c.initialize(NodeType(sh, d, (s, s), 0, (s1, s2)),
     #                   scorer.bigram_score(s1, s2) if s1 != s2 else 0.0)
-    #      for s in range(n) 
+    #      for s in range(n)
     #      for d in [Right, Left]
     #      for sh in [Trap, Tri]
     #      for s1 in (range(s-diff, s + 1) if d == Left else [s])
@@ -568,7 +574,7 @@ class Parser(object):
     #                                    for m2 in [mod_count - m1]
     #                                    for key2 in [(Trap, Left, (r, t), m2, (r, s3))]
     #                                    if key2 in c.chart))
-                                      
+
     #                         c.set(NodeType(Tri, Right, span, mod_count, (s1, s3)),
     #                               itertools.chain((Edge([key1, key2])
     #                                                for r in range(s + 1, t + 1)
@@ -578,7 +584,7 @@ class Parser(object):
     #                                                for m2 in [mod_count - m1]
     #                                                for key2 in [(Tri, Right, (r, t), m2, (r, s3))]
     #                                                if key2 in c.chart),
-                                   
+
     #                                               (Edge([key1,key2])
     #                                                for m1 in range(mod_count + 1)
     #                                                for key1 in [(TrapSkipped, Right, (s, t), m1, (s1, s3))]
@@ -594,37 +600,68 @@ class Parser(object):
     #            if key1 in c.chart])
     #     return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m, (0, n))))
 
-    def parse_bigram(self, sent_len, scorer, m):
+    def parse_binary_search(self, sent_len, scorer, m):
+        def binary_search(seq, t):
+            min = -10
+            max = 10
+            for i in range(10):
+                if max < min:
+                    return -1
+                m = (min + max) / 2.0
+
+                size = seq(m)
+                print t, m, size
+                if size < t:
+                    min = m
+                elif size > t:
+                    max = m
+                else:
+                    return m
+            return m
+        def f(pen):
+            scorer.skip_penalty = pen
+            parse = self.parse_bigram(sent_len, scorer, None)
+            return sent_len - parse.skipped_words()
+
+        pen = binary_search(f, m)
+        scorer.skip_penalty = pen
+        return self.parse_bigram(sent_len, scorer, None)
+
+    def parse_bigram(self, sent_len, scorer, m=None):
         """
-        Parses with bigrams. 
-        
+        Parses with bigrams.
+
         Parameters
         -----------
         n : int
            The length of the sentence.
-           
+
         scorer : Scorer
            The arc-factored weights and bigram scores.
 
         m : int
            The length of the compressed sentence.
-           None if any length allowed. 
+           None if any length allowed.
 
-        Returns 
+        Returns
         -------
         parse : Parse
-           The best dependency parse with these constraints.  
+           The best dependency parse with these constraints.
         """
         n = sent_len + 1
 
         c = Chart()
+        diff = n
+        any_size = (m is None)
+        if m is not None:
+            diff = n - m
 
-        diff = n - m 
 
-        # Initialize the chart. 
-        [c.initialize(NodeType(sh, d, (s, s), 0, (s1, s2)), 
-                      scorer.bigram_score(s1, s2) if s1 != s2 else 0.0)
-         for s in range(n) 
+        # Initialize the chart.
+        [c.initialize(NodeType(sh, d, (s, s), 0, (s1, s2)),
+                      scorer.bigram_score(s1, s2) -
+                      ((s2 - s1 - 1) * scorer.skip_penalty) if s1 != s2 else 0.0)
+         for s in range(n)
          for d in [Right, Left]
          for sh in [Trap, Tri]
          for s1 in [s]
@@ -636,39 +673,45 @@ class Parser(object):
                 if t >= n: break
                 span = (s, t)
                 remaining = n - s
-                for mod_count in range(m - remaining - 1, m + 1):
+
+                if any_size:
+                    mod_counts = [0]
+                else:
+                    mod_counts = range(m - remaining - 1, m + 1)
+
+                for mod_count in mod_counts:
                     #for s1 in range(s-diff, s+1):
                     for s3 in range(t, min(n+1, t + diff + 1)):
                         # First create incomplete items.
-                        if s != 0 and mod_count > 0:
+                        if s != 0 and (mod_count > 0 or any_size):
                             c.set(NodeType(Trap, Left, span, mod_count, (s, s3)),
                                   (Edge([key1, key2], scorer.arc_score(t, s))
                                    for r  in range(s, t)
-                                   for m1 in range(mod_count)
+                                   for m1 in (range(mod_count) if not any_size else [0])
                                    for key1 in [(Tri, Right, (s, r), m1, (s, r+1))]
                                    if key1 in c.chart
-                                   for m2 in [mod_count - m1 - 1]
+                                   for m2 in ([mod_count - m1 - 1] if not any_size else [0])
                                    for key2 in [(Tri, Left, (r+1, t), m2, (r+1, s3))]
                                    if key2 in c.chart))
 
 
-                        if mod_count > 0:
+                        if mod_count > 0 or any_size:
                             c.set(NodeType(Trap, Right, span, mod_count, (s, s3)),
                                   (Edge([key1, key2], scorer.arc_score(s, t))
                                    for r  in range(s, t)
-                                   for m1 in range(mod_count)
+                                   for m1 in (range(mod_count) if not any_size else [0])
                                    for key1 in [(Tri, Right, (s, r), m1, (s, r+1))]
                                    if key1 in c.chart
-                                   for m2 in [mod_count - m1 - 1]
+                                   for m2 in ([mod_count - m1 - 1] if not any_size else [0])
                                    for key2 in [(Tri, Left, (r+1, t), m2, (r+1, s3))]
                                    if key2 in c.chart))
 
                         c.set(NodeType(TrapSkipped, Right, span, mod_count, (s, s3)),
                                   (Edge([key1, key2], 0.0)
-                                   for m1 in range(mod_count + 1)
+                                   for m1 in (range(mod_count + 1) if not any_size else [0])
                                    for key1 in [(Tri, Right, (s, t-1), m1, (s, s3))]
                                    if key1 in c.chart
-                                   for m2 in [mod_count - m1]
+                                   for m2 in ([mod_count - m1] if not any_size else [0])
                                    for key2 in [(Tri, Left, (t, t), m2, (t, t))]
                                    if key2 in c.chart))
 
@@ -678,30 +721,29 @@ class Parser(object):
                                 c.set(NodeType(Tri, Left, span, mod_count, (s, s3)),
                                       (Edge([key1, key2])
                                        for r  in range(s, t)
-                                       for m1 in range(mod_count + 1)
+                                       for m1 in (range(mod_count + 1) if not any_size else [0])
                                        for key1 in [(Tri, Left, (s, r), m1, (s, r))]
                                        if key1 in c.chart
-                                       for m2 in [mod_count - m1]
+                                       for m2 in ([mod_count - m1] if not any_size else [0])
                                        for key2 in [(Trap, Left, (r, t), m2, (r, s3))]
                                        if key2 in c.chart))
-                                      
+
                             c.set(NodeType(Tri, Right, span, mod_count, (s, s3)),
                                   itertools.chain((Edge([key1, key2])
                                                    for r in range(s + 1, t + 1)
-                                                   for m1 in range(mod_count + 1)
+                                                   for m1 in (range(mod_count + 1) if not any_size else [0])
                                                    for key1 in [(Trap, Right, (s, r), m1, (s, r))]
                                                    if key1 in c.chart
-                                                   for m2 in [mod_count - m1]
+                                                   for m2 in ([mod_count - m1] if not any_size else [0])
                                                    for key2 in [(Tri, Right, (r, t), m2, (r, s3))]
                                                    if key2 in c.chart),
-                                   
+
                                                   (Edge([key1,key2])
-                                                   for m1 in range(mod_count + 1)
+                                                   for m1 in (range(mod_count + 1) if not any_size else [0])
                                                    for key1 in [(TrapSkipped, Right, (s, t), m1, (s, s3))]
                                                    if key1 in c.chart
-                                                   for m2 in [mod_count  - m1]
+                                                   for m2 in ([mod_count  - m1] if not any_size else [0])
                                                    for key2 in [(Tri, Right, (t, t), m2, (t, t))]
                                                    if key2 in c.chart)))
 
-        return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m, (0, n))))
-
+        return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m if not any_size else 0, (0, n))))
