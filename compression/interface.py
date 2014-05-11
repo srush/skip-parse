@@ -25,7 +25,7 @@ class Parse:
     def __eq__(self, other):
         return self.heads == other.heads
 
-    def arcs(self):
+    def arcs(self, second=False):
         """
         Returns
         -------
@@ -35,6 +35,20 @@ class Parse:
         for m, h in enumerate(self.heads):
             if m == 0 or h is None: continue
             yield (m, h)
+
+    def siblings(self, m):
+        return [m2 for (m2, h) in self.arcs()
+                if h == self.heads[m]
+                if m != m2]
+
+    def sibling(self, m):
+        sibs = self.siblings(m)
+        h = self.heads[m]
+        if m > h:
+            return max([s2 for s2 in sibs if h < s2 < m] + [h])
+        if m < h:
+            return min([s2 for s2 in sibs if h > s2 > m] + [h])
+
 
     def sequence(self):
         """
@@ -122,9 +136,10 @@ class Parse:
            An iterator of possible (m,n) parse trees.
         """
         for mid in itertools.product([None] + range( n + 1), repeat=n):
-            if m is not None and (n - len([1 for m2 in mid if m2 is None])) != m:
-                continue
             parse = Parse([-1] + list(mid))
+            if m is not None and parse.skipped_words() != n- m:
+                continue
+
             if (not parse.check_projective()) or (not parse.check_spanning()): continue
             yield parse
 
@@ -134,7 +149,10 @@ class Scorer(object):
     Object for scoring parse structures.
     """
 
-    def __init__(self, n, arc_scores, bigram_scores=None, skip_penalty=0.0):
+    def __init__(self, n, arc_scores,
+                 bigram_scores=None,
+                 skip_penalty=0.0,
+                 second_order=None):
         """
         Parameters
         ----------
@@ -145,22 +163,32 @@ class Scorer(object):
            Scores for each possible arc
            arc_scores[h][m].
 
-        arc_scores : 2D array (n+2 x n+2)
+        bigram_scores : 2D array (n+2 x n+2)
            Scores for each possible modifier bigram
            bigram_scores[prev][cur].
+
+        second_order : 3d array (n+2 x n+2 x n+2)
+           Scores for each possible modifier bigram
+           second_order[h][s][m].
         """
         self._arc_scores = arc_scores
+        self._second_order_scores = second_order
         self._bigram_scores = bigram_scores
         self.skip_penalty = skip_penalty
 
-    def arc_score(self, head, modifier):
+    def arc_score(self, head, modifier, sibling=None):
         """
         Returns
         -------
         score : float
            The score of head->modifier
         """
-        return self._arc_scores[head][modifier]
+        assert((sibling is None) or (self._second_order_scores is not None))
+        if sibling is None:
+            return self._arc_scores[head][modifier]
+        else:
+            return self._arc_scores[head][modifier] + \
+                self._second_order_scores[head][sibling][modifier]
 
     def bigram_score(self, prev, current):
         """
@@ -185,9 +213,17 @@ class Scorer(object):
         score : float
            The score of the parse structure.
         """
-        parse_score = \
-            sum((self.arc_score(h, m)
-                 for m, h in parse.arcs()))
+        parse_score = 0.0
+        if self._second_order_scores is None:
+            parse_score = \
+                sum((self.arc_score(h, m)
+                     for m, h in parse.arcs()))
+        else:
+            parse_score = \
+                sum((self.arc_score(h, m, parse.sibling(m))
+                     for m, h in parse.arcs()))
+
+
 
         bigram_score = 0.0
         if self._bigram_scores is not None:
@@ -277,6 +313,7 @@ class Chart:
         """
         items = []
         def collect(item, depth):
+            assert depth < 50, item
             items.append(item)
             if self.chart[item].bp:
                 for item in self.chart[item].bp:
@@ -289,6 +326,7 @@ class Chart:
 Tri = 1
 TrapSkipped = 2
 Trap = 3
+Box = 4
 
 Right = 0
 Left = 1
@@ -307,8 +345,10 @@ def node_type(nodetype): return nodetype[0]
 def node_span(nodetype): return nodetype[2]
 def node_dir(nodetype): return nodetype[1]
 
-class Arc(namedtuple("Arc", ["head", "mod"])):
-    pass
+class Arc(namedtuple("Arc", ["head", "mod", "sibling"])):
+    def __new__(cls, head, mod, sibling=None):
+        return super(Arc, cls).__new__(cls, head, mod, sibling)
+
 
 class Bigram(namedtuple("Bigram", ["s1", "s2"])):
     pass
@@ -366,8 +406,13 @@ def make_parse(n, back_trace):
     mods = [None] * n
     mods[0] = -1
     for element in back_trace:
+        if isinstance(element, tuple) and  node_type(element) == Tri:
+            span = node_span(element)
+            if span[0] == span[1]:
+                print element
         if isinstance(element, tuple) and  node_type(element) == Trap:
             span = node_span(element)
+
             if node_dir(element) == Right:
                 mods[span[1]] = span[0]
             if node_dir(element) == Left:
@@ -470,7 +515,7 @@ class Parser(object):
                            for m1 in range(mod_count + 1)
                            for key1 in [(Trap, Right, (s, r), m1)]
                            if key1 in c.chart
-                           for m2 in [mod_count  - m1]
+                           for m2 in [mod_count - m1]
                            for key2 in [(Tri, Right, (r, t), m2)]
                            if key2 in c.chart] + \
                           [Edge([key1, key2])
@@ -768,3 +813,162 @@ class Parser(object):
                                                    if key2 in c.chart)))
 
         return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m if not any_size else 0, (0, n))))
+
+
+    def parse_second_bigram(self, sent_len, scorer, chart=None):
+        """
+        Parses with bigrams.
+
+        Parameters
+        -----------
+        n : int
+           The length of the sentence.
+
+        scorer : Scorer
+           The arc-factored weights and bigram scores.
+
+        Returns
+        -------
+        parse : Parse
+           The best dependency parse with these constraints.
+        """
+        n = sent_len + 1
+
+        def score(arc):
+            if isinstance(arc, Arc):
+                # assert(scorer.arc_score(arc.head, arc.mod, arc.sibling) !=  scorer.arc_score(arc.head, arc.mod))
+                return scorer.arc_score(arc.head, arc.mod, arc.sibling)
+            elif isinstance(arc, Bigram):
+                if arc.s1 != arc.s2:
+                    return scorer.bigram_score(arc.s1, arc.s2) - \
+                        ((arc.s2 - arc.s1 - 1) * scorer.skip_penalty)
+                else:
+                    return 0.0
+            else:
+                return 0.0
+
+        if chart != None:
+            c = chart
+        else:
+            c = Chart(score)
+        c.score = score
+
+        # Initialize the chart.
+        tmp = 0
+        for s in range(n):
+             for d in [Right, Left]:
+                 for sh in [Tri]:
+                     for s2 in (range(s,  n + 1) if d == Right else [s]):
+                         tmp += 1
+                         c.initialize("A" + str(tmp))
+                         c.set(NodeType(sh, d, (s, s), 0, (0, s2)),
+                               [Edge(["A" + str(tmp)], Bigram(s, s2))])
+
+
+        for k in range(1, n):
+            for s in range(n):
+                t = k + s
+                if t >= n: break
+                span = (s, t)
+
+                for s3 in range(t, n+1):
+                    if s != 0:
+                        c.set(NodeType(Box, Left, span, 0, (1, s3)),
+                              (Edge([key1, key2])
+                               for r  in range(s, t)
+                               for used in [0, 1]
+                               for key1 in [(Tri, Right, (s, r), 0, (used, r+1))]
+                               if key1 in c.chart
+                               for used2 in [0, 1]
+                               for key2 in [(Tri, Left, (r+1, t), 0, (used2, s3))]
+                               if key2 in c.chart))
+
+                    if s != 0:
+                        c.set(NodeType(Trap, Left, span, 0, (1, s3)),
+                              [Edge([key1, key2], Arc(t, s, t))
+                               for used in [0, 1]
+                               for key1 in [(Tri, Right, (s, t-1), 0, (used, t))]
+                               if key1 in c.chart
+                               for key2 in [(Tri, Left, (t, t), 0, (0, s3))]
+                               if key2 in c.chart] +
+                              [Edge([key1, key2], Arc(t, s, r))
+                               for r in range(s+1, t)
+                               for key1 in [(Box, Left, (s, r), 0, (1, r))]
+                               if key1 in c.chart
+                               for key2 in [(Trap, Left, (r, t), 0, (1, s3))]
+                               if key2 in c.chart])
+
+                    c.set(NodeType(Trap, Right, span, 0, (1, s3)),
+                          [Edge([key1, key2], Arc(s, t, s))
+                           for r in range(s, t)
+                           for key1 in [(Tri, Right, (s, r), 0, (0, r+1))]
+                           if key1 in c.chart
+                           for used in [0, 1]
+                           for key2 in [(Tri, Left, (r+1, t), 0, (used, s3))]
+                           if key2 in c.chart] +
+                          [Edge([key1, key2], Arc(s, t, r))
+                           for r  in range(s + 1, t)
+                           for key1 in [(Trap, Right, (s, r), 0, (1, r))]
+                           if key1 in c.chart
+                           for key2 in [(Box, Left, (r, t), 0, (1, s3))]
+                           if key2 in c.chart])
+
+                    for used in [0, 1]:
+                        c.set(NodeType(TrapSkipped, Right, span, 0, (used, s3)),
+                              (Edge([key1, key2], 0.0)
+                               for key1 in [(Tri, Right, (s, t-1), 0, (used, s3))]
+                               if key1 in c.chart
+                               for key2 in [(Tri, Left, (t, t), 0, (0, t))]
+                               if key2 in c.chart))
+
+                # for s3 in range(t, n+1):
+                #     c.set(NodeType(Trap, Right, span, 0, (s, s3)),
+                #           (Edge([key1, key2], Arc(s, t, r))
+                #            for r  in range(s, t)
+                #            for key1 in [(Trap, Right, (s, r), 0, (s, r))]
+                #            if key1 in c.chart
+                #            for key2 in [(Box, Left, (r, t), 0, (r, s3))]
+                #            if key2 in c.chart))
+
+                #     c.set(NodeType(Trap, Left, span, 0, (s, s3)),
+                #           (Edge([key1, key2], Arc(t, s, r))
+                #            for r  in range(s+1, t)
+                #            for key1 in [(Box, Left, (s, r), 0, (s, r))]
+                #            if key1 in c.chart
+                #            for key2 in [(Trap, Left, (r, t), 0, (r, s3))]
+                #            if key2 in c.chart))
+
+
+                for s3 in range(t, n+1):
+                        if s != 0:
+                            c.set(NodeType(Tri, Left, span, 0, (1, s3)),
+                                  (Edge([key1, key2])
+                                   for r  in range(s, t)
+                                   for used in [0, 1]
+                                   for key1 in [(Tri, Left, (s, r), 0, (used, r))]
+                                   if key1 in c.chart
+                                   for key2 in [(Trap, Left, (r, t), 0, (1, s3))]
+                                   if key2 in c.chart))
+
+                        for used in [0, 1]:
+                            c.set(NodeType(Tri, Right, span, 0, (used, s3)),
+                                  ([Edge([key1, key2])
+                                   for r in range(s + 1, t + 1)
+                                   for key1 in [(Trap, Right, (s, r), 0, (1, r))]
+                                   if key1 in c.chart
+                                   for used2 in [0, 1]
+                                   for key2 in [(Tri, Right, (r, t), 0, (used2, s3))]
+                                   if key2 in c.chart] if used == 1 else []) +
+
+                                  [Edge([key1,key2])
+                                   for key1 in [(TrapSkipped, Right, (s, t), 0, (used, s3))]
+                                   if key1 in c.chart
+                                   for key2 in [(Tri, Right, (t, t), 0, (0, t))]
+                                   if key2 in c.chart])
+
+        # print c.chart[NodeType(Tri, Right, (0, n-1), 0, (0, n))]
+        c.set("final",
+              [Edge([NodeType(Tri, Right, (0, n-1), 0, (used, n))])
+               for used in [0, 1]])
+        print c.chart["final"]
+        return make_parse(n, c.backtrace("final"))
