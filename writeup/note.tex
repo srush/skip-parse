@@ -1,0 +1,272 @@
+\documentclass{article}
+% \usepackage[pdftex,active,tightpage]{preview}
+%\setlength\PreviewBorder{2mm} % use to add a border around the image
+\usepackage{tikz}
+\usepackage{proof}
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.markings}
+\tikzset{
+  >=latex,text height=1.5ex,text depth=0.25ex
+}
+
+\begin{document}
+% \begin{preview}
+
+This note describes a new algorithm for sentence compression using dependency parsing.
+
+\newcommand{\abox}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (0,1.5cm);
+    \coordinate (C) at (-2cm, 1.5cm);
+    \coordinate (D) at (-2cm, 0cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+    }}}
+
+\newcommand{\rtrap}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (2.5,0.9cm);
+    \coordinate (D) at (0:2.5cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+    }}}
+
+
+\newcommand{\ltrap}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (-2.5,0.9cm);
+    \coordinate (D) at (180:2.5cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+    }}}
+
+% \newcommand{\rtrapskip}{\scalebox{0.2}{\tikz{
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:1.5cm);
+%     \coordinate (C) at (2.5,0.9cm);
+%     \coordinate (D) at (0:2.5cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+%     }}}
+
+\newcommand{\rtrapskip}{\scalebox{0.2}{\tikz{
+      \begin{scope}[decoration={
+          markings,
+          mark=at position 0.3 with {\arrow[scale=1.75]{<}},
+          mark=at position 0.55 with {\arrow[scale=1.75]{<}},
+          mark=at position 0.8 with {\arrow[scale=1.75]{<}}
+        }]
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (90:1.5cm);
+        \coordinate (C) at (2.5,0.9cm);
+        \coordinate (D) at (0:2.5cm);
+        \draw[postaction={decorate}, line width = 0.05cm] (B) -- (C);
+        \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+      \end{scope}
+    }}}
+
+\newcommand{\rtri}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (180:-1.7cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+    }}}
+
+\newcommand{\ltri}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (180:1.7cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+    }}}
+
+
+\section{Standard First-Order Dependency Parsing }
+
+The standard algorithm for first order dependency parsing consists of the following rules.
+
+\textbf{Premise:}
+\[(\rtri, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
+
+\textbf{Rules:}
+
+
+\begin{eqnarray*}
+\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
+\infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
+\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+\end{eqnarray*}
+
+\textbf{Goal:}\[ (\rtri, 0,n)\]
+
+
+
+\section{Skip Parsing}
+
+
+\textbf{Premise:}
+\[(\rtri, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
+
+\textbf{Rules:}
+
+
+\begin{eqnarray*}
+\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
+\infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
+\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+\infer[\mathrm{skip}(k)]{(\rtrapskip, i,j)}{(\rtri, i,k-1)  &  (\ltri, k, k) } &  \forall i < k \\\\
+\infer{(\rtri, i,j)}{(\rtrapskip, i,k)  &  (\rtri, k, k) } &  \forall i < k \\\\
+\end{eqnarray*}
+
+\textbf{Goal:}\[ (\rtri, 0,n)\]
+
+\section{Skip Bigram Parsing}
+
+In this styles of parsing
+
+
+\textbf{Premise:}
+\[(\rtri, i,i, i), (\ltri, i,i, i)\ \ \  \forall i \in \{0 \ldots n\}\]
+
+\textbf{Rules:}
+
+
+\begin{eqnarray*}
+\infer{(\rtri, i,i, p)}{(\rtri, i, i,i)} &  \forall i,k,  0 \leq i < p \leq n + 1\\\\
+\infer{(\rtrap, i,j, p)}{(\rtri, i,k, k+1)  &  (\ltri, k+1, j, p) } &  \forall 0 \leq i\leq k < j < p \\\\
+\infer{(\ltrap, i,j, p)}{(\rtri, i,k, k +1)  &  (\ltri, k+1, j, p) } & \forall i\leq k < j <p\\\\
+\infer{(\rtri, i,j, p)}{(\rtrap, i,k, k)  &  (\rtri, k, j, p) }    &  \forall i<  k \leq j < p \\\\
+\infer{(\ltri, i,j, p)}{(\ltri, i,k, k)  &  (\ltrap, k, j, p) }  & \forall i\leq k < j \\\\
+\infer{(\rtrapskip, i,j, p)}{(\rtri, i,k-1, p)  &  (\ltri, k, k) } &  \forall i < k < p\\\\
+\infer{(\rtri, i,j, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
+\end{eqnarray*}
+
+\textbf{Goal:}\[ (\rtri, 0,n, n + 1)\]
+
+
+\section{Second-Order Dependency Parsing}
+
+\textbf{Premise:}
+\[(\rtri, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
+
+\textbf{Rules:}
+
+\begin{eqnarray*}
+\infer{(\abox, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
+\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,i)  &  (\ltri, i+1, j) } &  \forall i < j \\\\
+\infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,j-1)  &  (\ltri, j, j) } & \forall i < j \\\\
+\infer[(i \rightarrow k\ j)]{(\rtrap, i,j)}{(\rtrap, i,k)  &  (\abox, k, j) } &  \forall i\leq k < j \\\\
+\infer[(j \rightarrow k\ i)]{(\ltrap, i,j)}{(\abox, i,k)  &  (\ltrap, k, j) } &  \forall i\leq k < j \\\\
+\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+\end{eqnarray*}
+
+\textbf{Goal:}\[ (\rtri, 0,n)\]
+
+
+
+
+% \begin{figure}
+% \begin{tikzpicture}[node distance=0.5cm]
+% \tikzstyle{every node}=[font=\large]
+% \tikzstyle{plus}=[xshift=0.2cm, font=\large]
+% \tikzstyle{equal}=[xshift=0.2cm,  font=\large]
+
+
+%   \begin{scope}
+%     \node [xshift=-1cm, yshift=0.7cm]{(a)};
+%   \begin{scope}[]
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:1.5cm);
+%     \coordinate (C) at (2.5,0.9cm);
+%     \coordinate (D) at (0:2.5cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+%     \node (h) [below of = A] {$h$};
+%     \node (m) [below of = D] {$m$};
+%     \path [draw, bend angle = 30, shorten <= 0.1cm, shorten >= 0.1cm, line width = 0.05cm] (A) edge [bend left, ->] node [above] {} (D);
+%     \node [right of = D, yshift=0.7cm, equal]{$\leftarrow$};
+%     \node [yshift=0.6cm, xshift=-0.3cm]{\textbf{I}};
+%     \node{$\forall h, m, r$ };
+%   \end{scope}
+
+
+
+%   \begin{scope}[xshift = 4cm]
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:1.5cm);
+%     \coordinate (C) at (180:-1.7cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+%     \node [below of = A] {$h$};
+%     \node [below of = C] {$r$};
+%     \node [right of = C, yshift=0.7cm, plus]{$+$};
+%     \node [yshift=0.6cm, xshift=-0.3cm]{\textbf{C}};
+%   \end{scope}
+
+
+
+
+%   \begin{scope}[xshift = 8.8cm]
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:0.9cm);
+%     \coordinate (C) at (180:1.75cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+%     \node [below of = A] {$m$};
+%     \node [below of = C] {$r+1$};
+%     \node [yshift=0.6cm, xshift=-1.8cm]{\textbf{C}};
+%   \end{scope}
+%   \end{scope}
+
+
+%   \begin{scope}[yshift=-3cm]
+%     \node [xshift=-1cm, yshift=0.7cm]{(b)};
+%   \begin{scope}
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:1.5cm);
+%     \coordinate (C) at (180:-2.5cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+%     \node [below of = A] {$h$};
+%     \node [below of = C] {$e$};
+%     \node [right of = C, yshift=0.7cm, equal]{$\leftarrow$};
+%     \node [yshift=0.6cm, xshift=-0.3cm]{\textbf{C}};
+%   \end{scope}
+
+%   \begin{scope}[xshift = 4cm]
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:1.5cm);
+%     \coordinate (C) at (1.7,0.9cm);
+%     \coordinate (D) at (0:1.7cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+%     \node [below of = A] {$h$};
+%     \node [below of = D] {$m$};
+%     \path [draw, bend angle = 50, shorten <= 0.1cm, shorten >= 0.1cm,
+%     line width = 0.05cm] (A) edge [bend left, ->] node [above] {} (D);
+%     \node [right of = D, yshift=0.7cm, plus]{$+$};
+%     \node [yshift=0.6cm, xshift=-0.3cm]{\textbf{I}};
+%   \end{scope}
+
+
+%   \begin{scope}[xshift = 7.3cm]
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:0.9cm);
+%     \coordinate (C) at (180:-1.75cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+%     \node [below of = A] {$m$};
+%     \node [below of = C] {$e$};
+%     \node [yshift=0.6cm, xshift=-0.3cm]{\textbf{C}};
+%   \end{scope}
+%   \end{scope}
+
+\section{Computing with Fixed m}
+
+
+
+
+
+% \end{tikzpicture}
+% \end{figure}
+% \end{preview}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
