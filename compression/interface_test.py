@@ -102,7 +102,7 @@ def biggie():
 
 def pydecode():
     import interface_pydecode as ip
-    n = 30
+    n = 50
     m = 20
     arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
     bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]

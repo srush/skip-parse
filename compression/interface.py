@@ -1,7 +1,6 @@
 from itertools import izip
 import itertools
 from collections import namedtuple, defaultdict
-import pydecode.hyper as ph
 
 # range = xrange
 class Parse:
@@ -327,6 +326,8 @@ Tri = 1
 TrapSkipped = 2
 Trap = 3
 Box = 4
+TriSkipped = 5
+TriSkipped1 = 6
 
 Right = 0
 Left = 1
@@ -529,126 +530,6 @@ class Parser(object):
 
         return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m)))
 
-
-    # def parse_bigram(self, sent_len, scorer, m):
-    #     """
-    #     Parses with bigrams.
-
-    #     Parameters
-    #     -----------
-    #     n : int
-    #        The length of the sentence.
-
-    #     scorer : Scorer
-    #        The arc-factored weights and bigram scores.
-
-    #     m : int
-    #        The length of the compressed sentence.
-    #        None if any length allowed.
-
-    #     Returns
-    #     -------
-    #     parse : Parse
-    #        The best dependency parse with these constraints.
-    #     """
-    #     n = sent_len + 1
-
-    #     c = Chart()
-
-    #     diff = n - m
-
-    #     # Initialize the chart.
-    #     [c.initialize(NodeType(sh, d, (s, s), 0, (s1, s2)),
-    #                   scorer.bigram_score(s1, s2) if s1 != s2 else 0.0)
-    #      for s in range(n)
-    #      for d in [Right, Left]
-    #      for sh in [Trap, Tri]
-    #      for s1 in (range(s-diff, s + 1) if d == Left else [s])
-    #      for s2 in [s]]
-
-    #     for k in range(1, n):
-    #         for s in range(n):
-    #             t = k + s
-    #             if t >= n: break
-    #             span = (s, t)
-    #             remaining = n - s
-    #             for mod_count in range(m - remaining -1, m + 1):
-    #                 for s1 in range(s-diff, s+1):
-    #                     # First create incomplete items.
-    #                     if s != 0 and mod_count > 0:
-    #                         c.set(NodeType(Trap, Left, span, mod_count, (s1, t)),
-    #                               (Edge([key1, key2], scorer.arc_score(t, s))
-    #                                for r  in range(s, t)
-    #                                for m1 in range(mod_count)
-    #                                for s2 in range(s, r + 2)
-    #                                for key1 in [(Tri, Right, (s, r), m1, (s1, s2))]
-    #                                if key1 in c.chart
-    #                                for m2 in [mod_count - m1 - 1]
-    #                                for key2 in [(Tri, Left, (r+1, t), m2, (s2, t))]
-    #                                if key2 in c.chart))
-
-
-    #                     if mod_count > 0:
-    #                         c.set(NodeType(Trap, Right, span, mod_count, (s1, t)),
-    #                               (Edge([key1, key2], scorer.arc_score(s, t))
-    #                                for r  in range(s, t)
-    #                                for s2 in range(s, r + 2)
-    #                                for m1 in range(mod_count)
-    #                                for key1 in [(Tri, Right, (s, r), m1, (s1, s2))]
-    #                                if key1 in c.chart
-    #                                for m2 in [mod_count - m1 - 1]
-    #                                for key2 in [(Tri, Left, (r+1, t), m2, (s2, t))]
-    #                                if key2 in c.chart))
-
-
-    #                     for s3 in range(s1, t+1):
-    #                         c.set(NodeType(TrapSkipped, Right, span, mod_count, (s1, s3)),
-    #                               (Edge([key1, key2], 0.0)
-    #                                for m1 in range(mod_count + 1)
-    #                                for key1 in [(Tri, Right, (s, t-1), m1, (s1, s3))]
-    #                                if key1 in c.chart
-    #                                for m2 in [mod_count - m1]
-    #                                for key2 in [(Tri, Left, (t, t), m2, (t, t))]
-    #                                if key2 in c.chart))
-
-    #                 for s1 in range(s-diff, s+1):
-    #                     for s3 in range(s1, t+1):
-    #                         if s != 0:
-    #                             c.set(NodeType(Tri, Left, span, mod_count, (s1, s3)),
-    #                                   (Edge([key1, key2])
-    #                                    for r  in range(s, t)
-    #                                    for m1 in range(mod_count + 1)
-    #                                    for key1 in [(Tri, Left, (s, r), m1, (s1, r))]
-    #                                    if key1 in c.chart
-    #                                    for m2 in [mod_count - m1]
-    #                                    for key2 in [(Trap, Left, (r, t), m2, (r, s3))]
-    #                                    if key2 in c.chart))
-
-    #                         c.set(NodeType(Tri, Right, span, mod_count, (s1, s3)),
-    #                               itertools.chain((Edge([key1, key2])
-    #                                                for r in range(s + 1, t + 1)
-    #                                                for m1 in range(mod_count + 1)
-    #                                                for key1 in [(Trap, Right, (s, r), m1, (s1, r))]
-    #                                                if key1 in c.chart
-    #                                                for m2 in [mod_count - m1]
-    #                                                for key2 in [(Tri, Right, (r, t), m2, (r, s3))]
-    #                                                if key2 in c.chart),
-
-    #                                               (Edge([key1,key2])
-    #                                                for m1 in range(mod_count + 1)
-    #                                                for key1 in [(TrapSkipped, Right, (s, t), m1, (s1, s3))]
-    #                                                if key1 in c.chart
-    #                                                for m2 in [mod_count  - m1]
-    #                                                for key2 in [(Tri, Right, (t, t), m2, (t, t))]
-    #                                                if key2 in c.chart)))
-
-    #     c.set(NodeType(Tri, Right, (0, n-1), m, (0, n)),
-    #           [Edge([key1], scorer.bigram_score(s3, n))
-    #            for s3 in range(n)
-    #            for key1 in [(Tri, Right, (0, n-1), m, (0, s3))]
-    #            if key1 in c.chart])
-    #     return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m, (0, n))))
-
     def parse_binary_search(self, sent_len, scorer, m):
         def binary_search(seq, t):
             min = -10
@@ -721,17 +602,14 @@ class Parser(object):
 
 
         # Initialize the chart.
-        tmp = 0
-        for s in range(n):
-             for d in [Right, Left]:
-                 for sh in [Trap, Tri]:
-                     for s1 in [s]:
-                         for s2 in (range(s,  n + 1) if d == Right else [s]):
-                             tmp += 1
-                             c.initialize(tmp)#NodeType(sh, d, (s, s), 0, (s1, s2)))
-                             c.set(NodeType(sh, d, (s, s), 0, (s1, s2)),
-                                   [Edge([tmp], Bigram(s1, s2))])
+        [c.initialize(NodeType(sh, d, (s, s), 0), 0.0)
+         for s in range(n)
+         for d in [Right, Left]
+         for sh in ([Tri] if d == Left else [TriSkipped])]
 
+        for s in range(n):
+            c.set(NodeType(Tri, Right, (s,s), 0),
+                  [Edge([(TriSkipped, Right, (s,s), 0)], Bigram(s, s+1))])
 
         for k in range(1, n):
             for s in range(n):
@@ -746,73 +624,59 @@ class Parser(object):
                     mod_counts = range(m - remaining - 1, m + 1)
 
                 for mod_count in mod_counts:
-                    #for s1 in range(s-diff, s+1):
-                    for s3 in range(t, min(n+1, t + diff + 1)):
-                        # First create incomplete items.
-                        if s != 0 and (mod_count > 0 or any_size):
-                            c.set(NodeType(Trap, Left, span, mod_count, (s, s3)),
-                                  (Edge([key1, key2], Arc(t, s))
-                                   for r  in range(s, t)
-                                   for m1 in (range(mod_count) if not any_size else [0])
-                                   for key1 in [(Tri, Right, (s, r), m1, (s, r+1))]
-                                   if key1 in c.chart
-                                   for m2 in ([mod_count - m1 - 1] if not any_size else [0])
-                                   for key2 in [(Tri, Left, (r+1, t), m2, (r+1, s3))]
-                                   if key2 in c.chart))
+
+                    # First create incomplete items.
+                    if s != 0 and (mod_count > 0 or any_size):
+                        c.set(NodeType(Trap, Left, span, mod_count),
+                              (Edge([key1, key2], Arc(t, s))
+                               for r  in range(s, t)
+                               for m1 in (range(mod_count) if not any_size else [0])
+                               for key1 in [(Tri, Right, (s, r), m1)]
+                               if key1 in c.chart
+                               for m2 in ([mod_count - m1 - 1] if not any_size else [0])
+                               for key2 in [(Tri, Left, (r+1, t), m2)]
+                               if key2 in c.chart))
 
 
-                        if mod_count > 0 or any_size:
-                            c.set(NodeType(Trap, Right, span, mod_count, (s, s3)),
-                                  (Edge([key1, key2], Arc(s, t))
-                                   for r  in range(s, t)
-                                   for m1 in (range(mod_count) if not any_size else [0])
-                                   for key1 in [(Tri, Right, (s, r), m1, (s, r+1))]
-                                   if key1 in c.chart
-                                   for m2 in ([mod_count - m1 - 1] if not any_size else [0])
-                                   for key2 in [(Tri, Left, (r+1, t), m2, (r+1, s3))]
-                                   if key2 in c.chart))
+                    if mod_count > 0 or any_size:
+                        c.set(NodeType(Trap, Right, span, mod_count),
+                              (Edge([key1, key2], Arc(s, t))
+                               for r  in range(s, t)
+                               for m1 in (range(mod_count) if not any_size else [0])
+                               for key1 in [(Tri, Right, (s, r), m1)]
+                               if key1 in c.chart
+                               for m2 in ([mod_count - m1 - 1] if not any_size else [0])
+                               for key2 in [(Tri, Left, (r+1, t), m2)]
+                               if key2 in c.chart))
 
-                        c.set(NodeType(TrapSkipped, Right, span, mod_count, (s, s3)),
-                                  (Edge([key1, key2], 0.0)
-                                   for m1 in (range(mod_count + 1) if not any_size else [0])
-                                   for key1 in [(Tri, Right, (s, t-1), m1, (s, s3))]
-                                   if key1 in c.chart
-                                   for m2 in ([mod_count - m1] if not any_size else [0])
-                                   for key2 in [(Tri, Left, (t, t), m2, (t, t))]
-                                   if key2 in c.chart))
 
-                    #for s1 in range(s-diff, s+1):
-                    for s3 in range(t, min(n+1, t + diff + 1)):
-                            if s != 0:
-                                c.set(NodeType(Tri, Left, span, mod_count, (s, s3)),
-                                      (Edge([key1, key2])
-                                       for r  in range(s, t)
-                                       for m1 in (range(mod_count + 1) if not any_size else [0])
-                                       for key1 in [(Tri, Left, (s, r), m1, (s, r))]
-                                       if key1 in c.chart
-                                       for m2 in ([mod_count - m1] if not any_size else [0])
-                                       for key2 in [(Trap, Left, (r, t), m2, (r, s3))]
-                                       if key2 in c.chart))
+                    if s != 0:
+                        c.set(NodeType(Tri, Left, span, mod_count),
+                              [Edge([key1, key2])
+                               for r  in range(s, t)
+                               for m1 in (range(mod_count + 1) if not any_size else [0])
+                               for key1 in [(Tri, Left, (s, r), m1)]
+                               if key1 in c.chart
+                               for m2 in ([mod_count - m1] if not any_size else [0])
+                               for key2 in [(Trap, Left, (r, t), m2)]
+                               if key2 in c.chart]
+                              )
 
-                            c.set(NodeType(Tri, Right, span, mod_count, (s, s3)),
-                                  itertools.chain((Edge([key1, key2])
-                                                   for r in range(s + 1, t + 1)
-                                                   for m1 in (range(mod_count + 1) if not any_size else [0])
-                                                   for key1 in [(Trap, Right, (s, r), m1, (s, r))]
-                                                   if key1 in c.chart
-                                                   for m2 in ([mod_count - m1] if not any_size else [0])
-                                                   for key2 in [(Tri, Right, (r, t), m2, (r, s3))]
-                                                   if key2 in c.chart),
+                    c.set(NodeType(Tri, Right, span, mod_count),
+                          [Edge([key1, key2])
+                           for r in range(s + 1, t + 1)
+                           for m1 in (range(mod_count + 1) if not any_size else [0])
+                           for key1 in [(Trap, Right, (s, r), m1)]
+                           if key1 in c.chart
+                           for m2 in ([mod_count - m1] if not any_size else [0])
+                           for key2 in [(Tri, Right, (r, t), m2)]
+                           if key2 in c.chart] +
+                          ([Edge([key], Bigram(s, t+1))
+                           for key in [(TriSkipped, Right, (s, s), 0)]]
+                           if mod_count  == 0 else []))
 
-                                                  (Edge([key1,key2])
-                                                   for m1 in (range(mod_count + 1) if not any_size else [0])
-                                                   for key1 in [(TrapSkipped, Right, (s, t), m1, (s, s3))]
-                                                   if key1 in c.chart
-                                                   for m2 in ([mod_count  - m1] if not any_size else [0])
-                                                   for key2 in [(Tri, Right, (t, t), m2, (t, t))]
-                                                   if key2 in c.chart)))
+        return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m if not any_size else 0)))
 
-        return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1), m if not any_size else 0, (0, n))))
 
 
     def parse_second_bigram(self, sent_len, scorer, chart=None):
@@ -836,7 +700,6 @@ class Parser(object):
 
         def score(arc):
             if isinstance(arc, Arc):
-                # assert(scorer.arc_score(arc.head, arc.mod, arc.sibling) !=  scorer.arc_score(arc.head, arc.mod))
                 return scorer.arc_score(arc.head, arc.mod, arc.sibling)
             elif isinstance(arc, Bigram):
                 if arc.s1 != arc.s2:
@@ -854,16 +717,17 @@ class Parser(object):
         c.score = score
 
         # Initialize the chart.
-        tmp = 0
-        for s in range(n):
-             for d in [Right, Left]:
-                 for sh in [Tri]:
-                     for s2 in (range(s,  n + 1) if d == Right else [s]):
-                         tmp += 1
-                         c.initialize("A" + str(tmp))
-                         c.set(NodeType(sh, d, (s, s), 0, (0, s2)),
-                               [Edge(["A" + str(tmp)], Bigram(s, s2))])
+        [c.initialize(NodeType(sh, d, (s, s), 0), 0.0)
+         for s in range(n)
+         for d in [Right, Left]
+         for sh in ([Tri] if d == Left else [TriSkipped1])]
 
+        for s in range(n):
+            c.set(NodeType(TriSkipped, Right, (s,s), 0),
+                  [Edge([(TriSkipped1, Right, (s,s), 0)], Bigram(s, s+1))])
+
+            c.set(NodeType(Tri, Right, (s,s), 0),
+                  [Edge([(TriSkipped, Right, (s,s), 0)])])
 
         for k in range(1, n):
             for s in range(n):
@@ -871,104 +735,69 @@ class Parser(object):
                 if t >= n: break
                 span = (s, t)
 
-                for s3 in range(t, n+1):
-                    if s != 0:
-                        c.set(NodeType(Box, Left, span, 0, (1, s3)),
-                              (Edge([key1, key2])
-                               for r  in range(s, t)
-                               for used in [0, 1]
-                               for key1 in [(Tri, Right, (s, r), 0, (used, r+1))]
-                               if key1 in c.chart
-                               for used2 in [0, 1]
-                               for key2 in [(Tri, Left, (r+1, t), 0, (used2, s3))]
-                               if key2 in c.chart))
-
-                    if s != 0:
-                        c.set(NodeType(Trap, Left, span, 0, (1, s3)),
-                              [Edge([key1, key2], Arc(t, s, t))
-                               for used in [0, 1]
-                               for key1 in [(Tri, Right, (s, t-1), 0, (used, t))]
-                               if key1 in c.chart
-                               for key2 in [(Tri, Left, (t, t), 0, (0, s3))]
-                               if key2 in c.chart] +
-                              [Edge([key1, key2], Arc(t, s, r))
-                               for r in range(s+1, t)
-                               for key1 in [(Box, Left, (s, r), 0, (1, r))]
-                               if key1 in c.chart
-                               for key2 in [(Trap, Left, (r, t), 0, (1, s3))]
-                               if key2 in c.chart])
-
-                    c.set(NodeType(Trap, Right, span, 0, (1, s3)),
-                          [Edge([key1, key2], Arc(s, t, s))
-                           for r in range(s, t)
-                           for key1 in [(Tri, Right, (s, r), 0, (0, r+1))]
+                if s != 0:
+                    c.set(NodeType(Box, Left, span, 0),
+                          (Edge([key1, key2])
+                           for r  in range(s, t)
+                           for key1 in [(Tri, Right, (s, r), 0)]
                            if key1 in c.chart
-                           for used in [0, 1]
-                           for key2 in [(Tri, Left, (r+1, t), 0, (used, s3))]
+                           for key2 in [(Tri, Left, (r+1, t), 0)]
+                           if key2 in c.chart))
+
+                if s != 0:
+                    c.set(NodeType(Trap, Left, span, 0),
+                          [Edge([key1, key2], Arc(t, s, t))
+                           for key1 in [(Tri, Right, (s, t-1), 0)]
+                           if key1 in c.chart
+                           for key2 in [(Tri, Left, (t, t), 0)]
                            if key2 in c.chart] +
-                          [Edge([key1, key2], Arc(s, t, r))
-                           for r  in range(s + 1, t)
-                           for key1 in [(Trap, Right, (s, r), 0, (1, r))]
+                          [Edge([key1, key2], Arc(t, s, r))
+                           for r in range(s+1, t)
+                           for key1 in [(Box, Left, (s, r), 0)]
                            if key1 in c.chart
-                           for key2 in [(Box, Left, (r, t), 0, (1, s3))]
+                           for key2 in [(Trap, Left, (r, t), 0)]
                            if key2 in c.chart])
 
-                    for used in [0, 1]:
-                        c.set(NodeType(TrapSkipped, Right, span, 0, (used, s3)),
-                              (Edge([key1, key2], 0.0)
-                               for key1 in [(Tri, Right, (s, t-1), 0, (used, s3))]
-                               if key1 in c.chart
-                               for key2 in [(Tri, Left, (t, t), 0, (0, t))]
-                               if key2 in c.chart))
+                c.set(NodeType(Trap, Right, span, 0),
+                      [Edge([key1, key2], Arc(s, t, s))
+                       for r in range(s, t)
+                       for key1 in [(TriSkipped, Right, (s, r), 0)]
+                       if key1 in c.chart
+                       for key2 in [(Tri, Left, (r+1, t), 0)]
+                       if key2 in c.chart] +
+                      [Edge([key1, key2], Arc(s, t, r))
+                       for r  in range(s + 1, t)
+                       for key1 in [(Trap, Right, (s, r), 0)]
+                       if key1 in c.chart
+                       for key2 in [(Box, Left, (r, t), 0)]
+                       if key2 in c.chart])
 
-                # for s3 in range(t, n+1):
-                #     c.set(NodeType(Trap, Right, span, 0, (s, s3)),
-                #           (Edge([key1, key2], Arc(s, t, r))
-                #            for r  in range(s, t)
-                #            for key1 in [(Trap, Right, (s, r), 0, (s, r))]
-                #            if key1 in c.chart
-                #            for key2 in [(Box, Left, (r, t), 0, (r, s3))]
-                #            if key2 in c.chart))
+                if s != 0:
+                    c.set(NodeType(Tri, Left, span, 0),
+                          (Edge([key1, key2])
+                           for r  in range(s, t)
+                           for key1 in [(Tri, Left, (s, r), 0)]
+                           if key1 in c.chart
+                           for key2 in [(Trap, Left, (r, t), 0)]
+                           if key2 in c.chart))
 
-                #     c.set(NodeType(Trap, Left, span, 0, (s, s3)),
-                #           (Edge([key1, key2], Arc(t, s, r))
-                #            for r  in range(s+1, t)
-                #            for key1 in [(Box, Left, (s, r), 0, (s, r))]
-                #            if key1 in c.chart
-                #            for key2 in [(Trap, Left, (r, t), 0, (r, s3))]
-                #            if key2 in c.chart))
+                c.set(NodeType(TriSkipped, Right, span, 0),
+                      [Edge([key], Bigram(s, t+1))
+                       for key in [(TriSkipped1, Right, (s,s), 0)]])
 
 
-                for s3 in range(t, n+1):
-                        if s != 0:
-                            c.set(NodeType(Tri, Left, span, 0, (1, s3)),
-                                  (Edge([key1, key2])
-                                   for r  in range(s, t)
-                                   for used in [0, 1]
-                                   for key1 in [(Tri, Left, (s, r), 0, (used, r))]
-                                   if key1 in c.chart
-                                   for key2 in [(Trap, Left, (r, t), 0, (1, s3))]
-                                   if key2 in c.chart))
+                c.set(NodeType(Tri, Right, span, 0),
+                      ([Edge([key1, key2])
+                        for r in range(s + 1, t + 1)
+                        for key1 in [(Trap, Right, (s, r), 0)]
+                        if key1 in c.chart
+                        for key2 in [(Tri, Right, (r, t), 0)]
+                        if key2 in c.chart] +
+                      [Edge([key])
+                       for key in [(TriSkipped, Right, span, 0)]]))
 
-                        for used in [0, 1]:
-                            c.set(NodeType(Tri, Right, span, 0, (used, s3)),
-                                  ([Edge([key1, key2])
-                                   for r in range(s + 1, t + 1)
-                                   for key1 in [(Trap, Right, (s, r), 0, (1, r))]
-                                   if key1 in c.chart
-                                   for used2 in [0, 1]
-                                   for key2 in [(Tri, Right, (r, t), 0, (used2, s3))]
-                                   if key2 in c.chart] if used == 1 else []) +
-
-                                  [Edge([key1,key2])
-                                   for key1 in [(TrapSkipped, Right, (s, t), 0, (used, s3))]
-                                   if key1 in c.chart
-                                   for key2 in [(Tri, Right, (t, t), 0, (0, t))]
-                                   if key2 in c.chart])
-
-        # print c.chart[NodeType(Tri, Right, (0, n-1), 0, (0, n))]
         c.set("final",
-              [Edge([NodeType(Tri, Right, (0, n-1), 0, (used, n))])
-               for used in [0, 1]])
+              [Edge([NodeType(t, Right, (0, n-1), 0)])
+               for t in [Tri, TriSkipped]])
         print c.chart["final"]
         return make_parse(n, c.backtrace("final"))

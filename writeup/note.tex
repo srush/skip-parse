@@ -95,7 +95,7 @@ This note describes a new algorithm for sentence compression using dependency pa
 
 \section{First-Order Dependency Parsing }
 
-Each item for standard dependency parsing consists of a tuple $(t, i, j)$ where $t$ is a symbol in $\{\ltri,\rtri, \ltrap, \rtrap \}$  and $0\leq i \leq j \leq n$. 
+Each item for standard dependency parsing consists of a tuple $(t, i, j)$ where $t$ is a symbol in $\{\ltri,\rtri, \ltrap, \rtrap \}$  and $0\leq i \leq j \leq n$.
 
 \noindent \textbf{Premise:}
 \[(\rtri, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
@@ -104,74 +104,93 @@ Each item for standard dependency parsing consists of a tuple $(t, i, j)$ where 
 \noindent\textbf{Rules:}
 
 \begin{eqnarray*}
-\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
+\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
 \infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
-\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
-\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i< k \leq j \\\\
+\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j
 \end{eqnarray*}
 
 \noindent \textbf{Goal:}\[ (\rtri, 0,n)\]
 
 The first group of rules create attachments and the second complete the items
 
-\pagebreak
-\section{Skip Parsing}
+% \pagebreak
+% \section{Skip Parsing}
 
-We can extend this algorithm to a method for ``skip'' parsing. In skip parsing we may drop some of the words from the parse structure. In order to ensure that there is only one way to skip a word, we only skip words to the right. 
+% We can extend this algorithm to a method for ``skip'' parsing. In skip parsing we may drop some of the words from the parse structure. In order to ensure that there is only one way to skip a word, we only skip words to the right.
 
-For skip parsing we extend the set of symbols to include a ``skip trapezoid'' that can only be used to skip the next right triangle. Thw new set is $\{\ltri,\rtri, \ltrap, \rtrap, \rtrapskip \}$.
+% For skip parsing we extend the set of symbols to include a ``skip trapezoid'' that can only be used to skip the next right triangle. Thw new set is $\{\ltri,\rtri, \ltrap, \rtrap, \rtrapskip \}$.
 
-\noindent \textbf{Premise:}
-\[(\rtri, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
+% \noindent \textbf{Premise:}
+% \[(\rtri, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
 
-\noindent \textbf{Rules:}
+% \noindent \textbf{Rules:}
 
 
-\begin{eqnarray*}
-\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
-\infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
-\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
-\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
-\infer[\mathrm{skip}(k)]{(\rtrapskip, i,j)}{(\rtri, i,k-1)  &  (\ltri, k, k) } &  \forall i < k \\\\
-\infer{(\rtri, i,j)}{(\rtrapskip, i,k)  &  (\rtri, k, k) } &  \forall i < k \\\\
-\end{eqnarray*}
+% \begin{eqnarray*}
+% % \infer[\mathrm{Bigram}(i,p)]{(\rtriskip, i,i)}{(\rtriskip, i, i,i)} &  \forall  0 \leq i < p \leq n + 1\\\\
+% \infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
+% \infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
+% \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+% \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+% \infer[\mathrm{skip}(k)]{(\rtrapskip, i,k)}{(\rtri, i,k-1)  &  (\ltri, k, k) } &  \forall i < k \\\\
+% \infer{(\rtri, i,j)}{(\rtrapskip, i,k)  &  (\rtri, k, k) } &  \forall i < k \\\\
+% \end{eqnarray*}
 
-\noindent \textbf{Goal:}\[ (\rtri, 0,n)\]
+% \noindent \textbf{Goal:}\[ (\rtri, 0,n)\]
 
-The only addition to this set is the final two rules which are used to skip work $k$. The first rule subsumes the left triangle premise of $k$ and the second subsumes the right triangle.
+% The only addition to this set is the final two rules which are used to skip work $k$. The first rule subsumes the left triangle premise of $k$ and the second subsumes the right triangle.
 
 \pagebreak
 
 \section{Skip Bigram Parsing}
 
-Next we extend skip parsing to additionally score the bigrams chosen in the final parse. To do this we extend the item definition to include the anticipated next word $(t, i, j, p)$ where $p \geq j$ is the next word that will be to the right of the current word.
+We extend the first order model to skip parsing to additionally score the bigrams chosen in the final parse. To do this we extend the item definition to include the anticipated next word $(t, i, j)$.
 
-The main new addition is that we use the ``hook trick'' to select the best next word for each premise item before using it. The other rules are all identical. 
+The only new addition is that we use the ``hook trick'' to select the best next word for each premise item before using it. The other rules are all identical.
 
-Note that for this to work, it is crucial that we only allow skipping words on the right and that the left side index $i$ is always the left-most word used in the item. 
+Note that for this to work, it is crucial that we only allow skipping words on the right and that the left side index $i$ is always the left-most word used in the item.
 
-This parsing algorithm has runtime $O(n^4)$.
-
-
+This parsing algorithm has runtime $O(n^3)$.
 
 
 \noindent \textbf{Premise:}
-\[(\rtri, i,i, i), (\ltri, i,i, i)\ \ \  \forall i \in \{0 \ldots n\}\]
+\[(\rtriskip, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
 
 \noindent \textbf{Rules:}
 
 
 \begin{eqnarray*}
-\infer[\mathrm{Bigram}(i,p) \ \ \mathrm{(hook\ trick)}]{(\rtri, i,i, p)}{(\rtri, i, i,i)} &  \forall i,k,  0 \leq i < p \leq n + 1\\\\
-\infer{(\rtrap, i,j, p)}{(\rtri, i,k, k+1)  &  (\ltri, k+1, j, p) } &  \forall 0 \leq i\leq k < j < p \\\\
-\infer{(\ltrap, i,j, p)}{(\rtri, i,k, k +1)  &  (\ltri, k+1, j, p) } & \forall i\leq k < j <p\\\\
-\infer{(\rtri, i,j, p)}{(\rtrap, i,k, k)  &  (\rtri, k, j, p) }    &  \forall i<  k \leq j < p \\\\
-\infer{(\ltri, i,j, p)}{(\ltri, i,k, k)  &  (\ltrap, k, j, p) }  & \forall i\leq k < j \\\\
-\infer{(\rtrapskip, i,j, p)}{(\rtri, i,k-1, p)  &  (\ltri, k, k) } &  \forall i < k < p\\\\
-\infer{(\rtri, i,j, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
+\infer[\mathrm{Bigram}(i,j+1) \ \ \mathrm{(hook\ trick)}]{(\rtri, i,j)}{(\rtriskip, i, i)} &  \forall 0 \leq i \leq j \leq n\\\\
+\infer{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall  i\leq k < j  \\\\
+\infer{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j\\\\
+\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+% \infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < p\\\\
+% \infer{(\rtriskip, i,k, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
 \end{eqnarray*}
 
 \noindent \textbf{Goal:}\[ (\rtri, 0,n, n + 1)\]
+
+
+
+% \noindent \textbf{Premise:}
+% \[(\rtri, i,i, i), (\ltri, i,i, i)\ \ \  \forall i \in \{0 \ldots n\}\]
+
+% \noindent \textbf{Rules:}
+
+
+% \begin{eqnarray*}
+% \infer[\mathrm{Bigram}(i,p) \ \ \mathrm{(hook\ trick)}]{(\rtri, i,p-1, p)}{(\rtriskip, i, i,i)} &  \forall i,k,  0 \leq i < p \leq n + 1\\\\
+% \infer{(\rtrap, i,j, j)}{(\rtri, i,k, k+1)  &  (\ltri, k+1, j, j) } &  \forall 0 \leq i\leq k < j  \\\\
+% \infer{(\ltrap, i,j, j)}{(\rtri, i,k, k +1)  &  (\ltri, k+1, j, j) } & \forall i\leq k < j <p\\\\
+% \infer{(\rtri, i,j, p)}{(\rtrap, i,k, k)  &  (\rtri, k, j, p) }    &  \forall i<  k \leq j < p \\\\
+% \infer{(\ltri, i,j, j)}{(\ltri, i,k, k)  &  (\ltrap, k, j, j) }  & \forall i\leq k < j \\\\
+% % \infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < p\\\\
+% % \infer{(\rtriskip, i,k, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
+% \end{eqnarray*}
+
+% \noindent \textbf{Goal:}\[ (\rtri, 0,n, n + 1)\]
 
 \pagebreak
 
@@ -181,7 +200,7 @@ In second-order dependency parsing we want to score not only single arcs like $i
 
 The full dynamic program for second-order parsing requires adding a new type informally called ``box'' - $\abox$.  A box type maintains two indices $k$ and $j$ that will eventually be modifiers to the same head $i$; however we don't yet know what that head will be.
 
-The completion rules are identical to first-order parsing. 
+The completion rules are identical to first-order parsing.
 
 
 \noindent \textbf{Premise:}
@@ -204,7 +223,7 @@ The completion rules are identical to first-order parsing.
 \pagebreak
 \section{Second-Order Skip Bigram}
 
-For second-order skip bigram parsing we introduce another one more type $\rtriskip$. The semantics of this type ``has not yet taken modifiers''. It's only use is for creating arcs without siblings $i \right j$. In standard second-order parsing we did not need to remember this piece of information because it was implicit in the fact that the arc had index $i, i$. However with skip words this needs to be marked on right items.   
+For second-order skip bigram parsing we introduce another one more type $\rtriskip$. The semantics of this type ``has not yet taken modifiers''. It's only use is for creating arcs without siblings $i \right j$. In standard second-order parsing we did not need to remember this piece of information because it was implicit in the fact that the arc had index $i, i$. However with skip words this needs to be marked on right items.
 
 \noindent \textbf{Premise:}
 \[(\rtriskip, i,i, i), (\ltri, i,i, i)\ \ \  \forall i \in \{0 \ldots n\}\]
@@ -212,20 +231,26 @@ For second-order skip bigram parsing we introduce another one more type $\rtrisk
 \noindent \textbf{Rules:}
 
 \begin{eqnarray*}
-\infer[\mathrm{Bigram}(i,p)]{(\rtriskip, i,i, p)}{(\rtriskip, i, i,i)} &  \forall  0 \leq i < p \leq n + 1\\\\
-\infer{(\rtri, i,j, p)}{(\rtriskip, i, j,p)} &  \forall0 \leq i < p \leq n + 1\\\\
-\infer{(\abox, i,j, p)}{(\rtri, i,k,k+1)  &  (\ltri, k+1, j, p) } &  \forall i\leq k < j \\\\
-\infer[(i \rightarrow j)]{(\rtrap, i,j, p)}{(\rtriskip, i,k, k+ 1)  &  (\ltri, k+1, j, p) } &  \forall i < j\\\\
-\infer[(j \rightarrow i)]{(\ltrap, i,j, p)}{(\rtri, i,j-1, j)  &  (\ltri, j, j, p) } & \forall i < j \\\\
-\infer[(i \rightarrow k\ j)]{(\rtrap, i,j, p, 1)}{(\rtrap, i,k, k, 1)  &  (\abox, k, j, p, 1) } &  \forall i\leq k < j \\\\
-\infer[(j \rightarrow k\ i)]{(\ltrap, i,j, p)}{(\abox, i,k, k)  &  (\ltrap, k, j,p) } &  \forall i\leq k < j \\\\
-\infer{(\rtri, i,j, p)}{(\rtrap, i,k, k)  &  (\rtri, k, j,p) }    &  \forall i<  k \leq j \\\\
-\infer{(\ltri, i,j,p)}{(\ltri, i,k, k)  &  (\ltrap, k, j, p) }  & \forall i\leq k < j \\\\
-\infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < k < p\\\\
-\infer{(\rtriskip, i,j, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
-\end{eqnarray*}
+\infer[\mathrm{Bigram}(i,j+1) \ \ \mathrm{(hook\ trick)}]{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall 0 \leq i \leq j \leq n\\\\
+% \infer[\mathrm{Bigram}(i,p)]{(\rtriskip, i,i, p)}{(\rtriskip, i, i,i)} &  \forall  0 \leq i < p \leq n + 1\\\\
+\infer{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall0 \leq i \leq j\leq n + 1\\\\
+\infer{(\abox, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
+\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  \forall i < j\\\\
 
-\noindent \textbf{Goal:}\[ (\rtri, 0,n, n+1, 1)\]
+
+% \infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,j-1)  &  (\ltri, j, j) } & \forall i < j \\\\
+% \infer[(i \rightarrow k\ j)]{(\rtrap, i,j)}{(\rtrap, i,k)  &  (\abox, k, j) } &  \forall i\leq k < j \\\\
+% \infer[(j \rightarrow k\ i)]{(\ltrap, i,j)}{(\abox, i,k)  &  (\ltrap, k, j) } &  \forall i\leq k < j \\\\
+% \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+% \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+
+
+% \infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < k < p\\\\
+% \infer{(\rtriskip, i,j, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
+\end{eqnarray*}
+The rest of the rules are identical to second-order parsing.
+
+% \noindent \textbf{Goal:}\[ (\rtri, 0,n, n+1, 1)\]
 
 
 
@@ -319,14 +344,14 @@ For second-order skip bigram parsing we introduce another one more type $\rtrisk
 %   \end{scope}
 %   \end{scope}
 
-\pagebreak 
+\pagebreak
 
 \section{Computing with Fixed m}
 
 
-Finally we discuss how to find a compression with a fixed value of $m$. In each of the systems presented we do not keep track of the total number of words used. 
+Finally we discuss how to find a compression with a fixed value of $m$. In each of the systems presented we do not keep track of the total number of words used.
 
-We propose doing this using the following Lagrangian relaxation. Say the constrained version of the optimization is to find 
+We propose doing this using the following Lagrangian relaxation. Say the constrained version of the optimization is to find
 
 \begin{eqnarray*}
   \max_y & f(y) \ \  s.t.  \\
@@ -334,7 +359,7 @@ We propose doing this using the following Lagrangian relaxation. Say the constra
 \end{eqnarray*}
 
 
-The Lagrangian dual of this problem is 
+The Lagrangian dual of this problem is
 
 \begin{eqnarray*}
 L(\lambda)  &=& \max_y f(y)  - \lambda (\sum_{i=1}^n y_i - m) \\
@@ -345,19 +370,19 @@ L(\lambda)  &=& \max_y f(y)  - \lambda (\sum_{i=1}^n y_i - m) \\
 In order to compute the score we need to incorporate these multipliers in the problem. However this can easily be added to the rules that incorporate the bigrams.
 
 \begin{eqnarray*}
-\infer[\mathrm{Bigram}(i,p) \ \ \mathrm{(hook\ trick)}]{(\rtri, i,i, p)}{(\rtri, i, i,i)} &  \forall i,k,  0 \leq i < p \leq n + 1\\\\
+\infer[\mathrm{Bigram}(i,p) \ \ \mathrm{(hook\ trick)}]{(\rtri, i,j)}{(\rtri, i, i)} &  \forall i,k,  0 \leq i < j \leq n + 1\\\\
 \end{eqnarray*}
- 
-Each time we apply this rule we add in a $\lambda$ term to the score of the bigram. 
 
-The dual problem is to find 
+Each time we apply this rule we add in a $\lambda$ term to the score of the bigram.
+
+The dual problem is to find
 
 \[ \min_{\lambda} L(\lambda) \]
 
 However since we only have one variable, we can minimize this by bisection (binary search).
 
 
- 
+
 
 % \end{tikzpicture}
 % \end{figure}
