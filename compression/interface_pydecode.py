@@ -1,14 +1,19 @@
 import pydecode.hyper as ph
 import pydecode.chart as chart
 import interface
+import numpy as np
 
 class Chart:
-    def __init__(self, score = None):
+    def __init__(self, n, m=None, score=None):
         self.chart = \
-            chart.ChartBuilder(lambda a:a, chart.HypergraphSemiRing,
-                               build_hypergraph=True)
+            ph.DPChartBuilder(build_hypergraph=True, strict=True)
+        hasher = ph.SizedTupleHasher([8, 2, n+1, n+1, n+1])
+        self.chart.set_hasher(hasher)
+            # chart.ChartBuilder(lambda a:a, chart.HypergraphSemiRing,
+            #                    build_hypergraph=True)
         self.score = score
-
+        self.m = m
+        self.n = n -1
     def initialize(self, item, score=0.0):
         self.chart.init(item)
         # self.chart[item] = ChartItem(score, None)
@@ -18,39 +23,70 @@ class Chart:
 
 
     def set(self, item, vals):
-        seq = (reduce(lambda x, y: x * y, [self.chart[v] for v in vs] +
-                ([self.chart.sr(score)] if score != 0.0 else []))
-               for vs, score in vals)
-        self.chart[item] = self.chart.sum(seq)
+        self.chart.set(item, vals)
+        # seq = (reduce(lambda x, y: x * y, [self.chart[v] for v in vs] +
+        #         ([self.chart.sr(score)] if score != 0.0 else []))
+        #        for vs, score in vals)
+        # self.chart[item] = self.chart.sum(seq)
 
             # self.chart[item] = v
         # e;se
         # self.chart[item] = None
 
     def regen(self):
-        self.pot = ph.LogViterbiPotentials(self.hypergraph) \
-            .from_vector((self.score(edge.label) if edge.label else 0.0
-                          for edge in self.hypergraph.edges ))
+        scores = np.zeros(len(self.hypergraph.edges))
+        for edge_num, label, tail_labels in self.hypergraph.node_labels():
+            #scores[edge_num] = self.score(label, len(self.hypergraph.edges[edge_num].tail))
+            #len(self.hypergraph.edges[edge_num].tail)
+            scores[edge_num] = self.score(label, len(tail_labels))
 
+        self.pot = ph.LogViterbiPotentials(self.hypergraph) \
+            .from_array(scores)
         path = ph.best_path(self.hypergraph, self.pot)
         return [node.label for node in path.nodes]
 
     def backtrace(self, item):
         self.hypergraph = self.chart.finish()
-        self.pot = ph.LogViterbiPotentials(self.hypergraph) \
-            .from_vector((self.score(edge.label) if edge.label else 0.0
-                          for edge in self.hypergraph.edges ))
 
-        path = ph.best_path(self.hypergraph, self.pot)
+        scores = np.zeros(len(self.hypergraph.edges))
+        for edge_num, label, tail_labels in self.hypergraph.node_labels():
+            scores[edge_num] = self.score(label, len(tail_labels))
+        self.pot = ph.LogViterbiPotentials(self.hypergraph) \
+            .from_array(scores)
+
+        if self.m != None:
+            counts = np.zeros(len(self.hypergraph.edges), dtype=np.int32)
+            if self.m > (self.n / 2):
+                m2 = self.n - self.m
+                for edge_num, label, tail_labels in self.hypergraph.node_labels():
+                    typ, d, s, t, _ = label
+                    if typ == interface.Tri and d == interface.Right and len(tail_labels) == 1:
+                        if t != s:
+                            counts[edge_num] = (t - s)
+
+                self.counts = ph.CountingPotentials(self.hypergraph) \
+                    .from_array(counts)
+                hmap = ph.extend_hypergraph_by_count(self.hypergraph, self.counts, 0, m2, m2)
+            else:
+                for edge_num, label in self.hypergraph.head_labels():
+                    counts[edge_num] = 1 if (label[0] == interface.Trap) else 0
+
+                self.counts = ph.CountingPotentials(self.hypergraph) \
+                    .from_array(counts)
+                hmap = ph.extend_hypergraph_by_count(self.hypergraph, self.counts, 0, self.m, self.m)
+
+            new_pot = self.pot.up_project(hmap.domain_hypergraph, hmap)
+            path = ph.best_path(hmap.domain_hypergraph, new_pot)
+        else:
+            path = ph.best_path(self.hypergraph, self.pot)
         return [node.label for node in path.nodes]
-        # items = []
-        # def collect(item, depth):
-        #     items.append(item)
-        #     if self.chart[item].bp:
-        #         for item in self.chart[item].bp:
-        #             collect(item, depth+1)
-        # collect(item, 0)
-        # return items
+
+
+def parse_bigram(sent_len, scorer, m=None):
+    c = Chart(sent_len + 1, m)
+    return interface.Parser().parse_bigram(sent_len, scorer, None, c)
+    # hypergraph = c.hypergraph
+    # return interface.make_parse(sent_len+1, c.regen())
 
 def parse_binary_search(sent_len, scorer, m):
     def binary_search(seq, t):
@@ -62,7 +98,7 @@ def parse_binary_search(sent_len, scorer, m):
             m = (min + max) / 2.0
 
             size = seq(m)
-            print t, m, size
+            #print t, m, size
             if size < t:
                 min = m
             elif size > t:
@@ -70,20 +106,21 @@ def parse_binary_search(sent_len, scorer, m):
             else:
                 return m
         return m
-    c = Chart()
+    c = Chart(sent_len+1)
     interface.Parser().parse_bigram(sent_len, scorer, None, c)
     hypergraph = c.hypergraph
     pot = c.pot
 
 
-    def score(arc):
-        if isinstance(arc, interface.Arc):
-            return scorer.arc_score(arc.head, arc.mod)
-        elif isinstance(arc, interface.Bigram):
-            return scorer.bigram_score(arc.s1, arc.s2) - \
-                ((arc.s2 - arc.s1 - 1) * scorer.skip_penalty) if arc.s1 != arc.s2 else 0.0
-        else:
-            return 0.0
+    def score(label, tail_size):
+        typ, d, s, t, _ = label
+        if typ == interface.Trap:
+            if d == interface.Left: s, t = t, s
+            return scorer.arc_score(s, t)
+        if typ == interface.Tri and d == interface.Right and tail_size == 1:
+            return scorer.bigram_score(s, t+1) - \
+                ((t+1 - s - 1) * scorer.skip_penalty) if s != t+1 else 0.0
+        return 0.0
 
     def f(pen):
         scorer.skip_penalty = pen

@@ -90,7 +90,7 @@ def check_binary_search(n, m, scorer):
 
 
 def biggie():
-    n = 30
+    n = 50
     m = 20
     arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
     bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
@@ -102,15 +102,63 @@ def biggie():
 
 def pydecode():
     import interface_pydecode as ip
-    n = 50
-    m = 20
+    n = 20
+    m = 2
     arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
     bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
+    #bigram_scores = [[0.0 for i in range(n+3) ] for j in range(n+3)]
     score1 = Scorer(n, arc_scores)
-    score2 = Scorer(n, arc_scores, bigram_scores)
+    score2 = Scorer(n, arc_scores, bigram_scores= bigram_scores, skip_penalty=0.0)
     # Parser().parse_skip(n, score1, m)
     # Parser().parse_bigram(n, score2, m)
-    ip.parse_binary_search(n, score2, m)
+    # ip.parse_binary_search(n, score2, m)
+    import time
+
+    tim = time.time()
+    c = ip.parse_binary_search(n, score2, m)
+    print "DONE C", time.time() - tim
+    tim = time.time()
+    a = ip.parse_bigram(n, score2, m)
+    print "DONE A", time.time() - tim
+    tim = time.time()
+    b = Parser().parse_bigram(n, score2, m)
+    print "DONE B", time.time() - tim
+
+    # b = Parser().parse_bigram(n, score2, None)
+
+    print a.heads, score2.score(a), score1.score(a)
+    print b.heads, score2.score(b), score1.score(b)
+    # # print parse_all(n, score2).heads
+    # print a == b
+
+def dev_speed():
+    import interface_pydecode as ip
+    import time
+    for l in open("sizes"):
+
+        n, m = map(int, l.split())
+        if n > 50: continue
+        arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
+        bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
+        score = Scorer(n, arc_scores, bigram_scores= bigram_scores, skip_penalty=0.0)
+        print n,m
+        tim = time.time()
+        a = ip.parse_bigram(n, score, m)
+        print "DONE A", time.time() - tim
+
+def dev_speed2():
+    import interface_pydecode as ip
+    import time
+    for l in open("sizes"):
+        n, m = map(int, l.split())
+        arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
+        bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
+        score = Scorer(n, arc_scores, bigram_scores= bigram_scores, skip_penalty=0.0)
+        print n,m
+        tim = time.time()
+        c = ip.parse_binary_search(n, score, m)
+        print "DONE B", time.time() - tim
 
 if __name__ == "__main__":
-    pydecode()
+    #pydecode()
+    dev_speed()

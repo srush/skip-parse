@@ -14,104 +14,30 @@
 
 This note describes a new algorithm for sentence compression using dependency parsing. We begin by giving notation for standard dependency parsing and then introduce our extensions.
 
-\newcommand{\abox}{\scalebox{0.2}{\tikz{
-    \coordinate (A) at (0,0);
-    \coordinate (B) at (0,1.5cm);
-    \coordinate (C) at (-2cm, 1.5cm);
-    \coordinate (D) at (-2cm, 0cm);
-    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
-    }}}
-
-\newcommand{\rtrap}{\scalebox{0.2}{\tikz{
-    \coordinate (A) at (0,0);
-    \coordinate (B) at (90:1.5cm);
-    \coordinate (C) at (2.5,0.9cm);
-    \coordinate (D) at (0:2.5cm);
-    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
-    }}}
-
-
-\newcommand{\ltrap}{\scalebox{0.2}{\tikz{
-    \coordinate (A) at (0,0);
-    \coordinate (B) at (90:1.5cm);
-    \coordinate (C) at (-2.5,0.9cm);
-    \coordinate (D) at (180:2.5cm);
-    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
-    }}}
-
-% \newcommand{\rtrapskip}{\scalebox{0.2}{\tikz{
-%     \coordinate (A) at (0,0);
-%     \coordinate (B) at (90:1.5cm);
-%     \coordinate (C) at (2.5,0.9cm);
-%     \coordinate (D) at (0:2.5cm);
-%     \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
-%     }}}
-
-\newcommand{\rtrapskip}{\scalebox{0.2}{\tikz{
-      \begin{scope}[decoration={
-          markings,
-          mark=at position 0.3 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.55 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.8 with {\arrow[scale=1.75]{<}}
-        }]
-        \coordinate (A) at (0,0);
-        \coordinate (B) at (90:1.5cm);
-        \coordinate (C) at (2.5,0.9cm);
-        \coordinate (D) at (0:2.5cm);
-        \draw[postaction={decorate}, line width = 0.05cm] (B) -- (C);
-        \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
-      \end{scope}
-    }}}
-
-\newcommand{\rtriskip}{\scalebox{0.2}{\tikz{
-      \begin{scope}[decoration={
-          markings,
-          mark=at position 0.3 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.55 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.8 with {\arrow[scale=1.75]{<}}
-        }]
-    \coordinate (A) at (0,0);
-    \coordinate (B) at (90:1.5cm);
-    \coordinate (C) at (180:-1.7cm);
-        \draw[postaction={decorate}, line width = 0.05cm] (B) -- (C);
-        \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
-      \end{scope}
-    }}}
-
-\newcommand{\rtri}{\scalebox{0.2}{\tikz{
-    \coordinate (A) at (0,0);
-    \coordinate (B) at (90:1.5cm);
-    \coordinate (C) at (180:-1.7cm);
-    \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
-    }}}
-
-\newcommand{\ltri}{\scalebox{0.2}{\tikz{
-    \coordinate (A) at (0,0);
-    \coordinate (B) at (90:1.5cm);
-    \coordinate (C) at (180:1.7cm);
-    \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
-    }}}
 
 
 \section{First-Order Dependency Parsing }
 
 Each item for standard dependency parsing consists of a tuple $(t, i, j)$ where $t$ is a symbol in $\{\ltri,\rtri, \ltrap, \rtrap \}$  and $0\leq i \leq j \leq n$.
 
-\noindent \textbf{Premise:}
-\[(\rtri, i,i), (\ltri, i,i)\ \ \  \forall i \in \{0 \ldots n\}\]
+
+\begin{figure}\centering
+
+  \noindent \textbf{Premise:}
+  \[(\rtri, i,i), (\ltri, i,i)\ \ \ \forall i \in \{0 \ldots n\}\]
 
 
-\noindent\textbf{Rules:}
+  \noindent\textbf{Rules:}
 
 \begin{eqnarray*}
-\infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
-\infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
-\infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i< k \leq j \\\\
-\infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j
+  \infer[(i \rightarrow j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
+  \infer[(j \rightarrow i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j \\\\
+  \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i< k \leq j \\\\
+  \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j
 \end{eqnarray*}
 
 \noindent \textbf{Goal:}\[ (\rtri, 0,n)\]
-
+\end{figure}
 The first group of rules create attachments and the second complete the items
 
 % \pagebreak
