@@ -102,8 +102,8 @@ def biggie():
 
 def pydecode():
     import interface_pydecode as ip
-    n = 20
-    m = 2
+    n = 40
+    m = 30
     arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
     bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
     #bigram_scores = [[0.0 for i in range(n+3) ] for j in range(n+3)]
@@ -117,17 +117,17 @@ def pydecode():
     tim = time.time()
     c = ip.parse_binary_search(n, score2, m)
     print "DONE C", time.time() - tim
+    # tim = time.time()
+    # a = ip.parse_bigram(n, score2, m)
+    # print "DONE A", time.time() - tim
     tim = time.time()
-    a = ip.parse_bigram(n, score2, m)
-    print "DONE A", time.time() - tim
-    tim = time.time()
-    b = Parser().parse_bigram(n, score2, m)
-    print "DONE B", time.time() - tim
+    # b = Parser().parse_bigram(n, score2, m)
+    # print "DONE B", time.time() - tim
 
     # b = Parser().parse_bigram(n, score2, None)
 
-    print a.heads, score2.score(a), score1.score(a)
-    print b.heads, score2.score(b), score1.score(b)
+    # print a.heads, score2.score(a), score1.score(a)
+    #print b.heads, score2.score(b), score1.score(b)
     # # print parse_all(n, score2).heads
     # print a == b
 
@@ -161,4 +161,4 @@ def dev_speed2():
 
 if __name__ == "__main__":
     #pydecode()
-    dev_speed()
+    dev_speed2()

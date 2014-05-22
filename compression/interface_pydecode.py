@@ -33,22 +33,38 @@ class Chart:
         # e;se
         # self.chart[item] = None
 
-    def regen(self):
-        scores = np.zeros(len(self.hypergraph.edges))
-        for edge_num, label, tail_labels in self.hypergraph.node_labels():
-            #scores[edge_num] = self.score(label, len(self.hypergraph.edges[edge_num].tail))
-            #len(self.hypergraph.edges[edge_num].tail)
-            scores[edge_num] = self.score(label, len(tail_labels))
+    def regen(self, penalty, counts):
+        # scores = np.zeros(len(self.hypergraph.edges))
+        # for edge_num, label, tail_labels in self.hypergraph.node_labels():
+        #     #scores[edge_num] = self.score(label, len(self.hypergraph.edges[edge_num].tail))
+        #     #len(self.hypergraph.edges[edge_num].tail)
+        #     #scores[edge_num] = self.score(label, len(tail_labels))
+        #     typ, d, s, t, _ = label
+        #     if typ == interface.Trap:
+        #         if d == interface.Left: s, t = t, s
+        #         scores[edge_num] = scorer.arc_score(s, t)
+        #     if typ == interface.Tri and d == interface.Right and len(tail_labels) == 1:
+        #         scores[edge_num] =  scorer.bigram_score(s, t+1) - \
+        #             ((t+1 - s - 1) * scorer.skip_penalty) if s != t+1 else 0.0
 
         self.pot = ph.LogViterbiPotentials(self.hypergraph) \
-            .from_array(scores)
+            .from_array(self.scores + (penalty * counts))
         path = ph.best_path(self.hypergraph, self.pot)
         return [node.label for node in path.nodes]
+
+    def counts(self):
+        counts = np.zeros(len(self.hypergraph.edges), dtype=np.int32)
+        for edge_num, label in self.hypergraph.head_labels():
+            counts[edge_num] = 1 if (label[0] == interface.Trap) else 0
+        return counts
 
     def backtrace(self, item):
         self.hypergraph = self.chart.finish()
 
         scores = np.zeros(len(self.hypergraph.edges))
+        self.skips = np.zeros(len(self.hypergraph.edges))
+        self.scores = scores
+
         for edge_num, label, tail_labels in self.hypergraph.node_labels():
             scores[edge_num] = self.score(label, len(tail_labels))
         self.pot = ph.LogViterbiPotentials(self.hypergraph) \
@@ -98,7 +114,7 @@ def parse_binary_search(sent_len, scorer, m):
             m = (min + max) / 2.0
 
             size = seq(m)
-            #print t, m, size
+            print t, m, size
             if size < t:
                 min = m
             elif size > t:
@@ -108,26 +124,28 @@ def parse_binary_search(sent_len, scorer, m):
         return m
     c = Chart(sent_len+1)
     interface.Parser().parse_bigram(sent_len, scorer, None, c)
-    hypergraph = c.hypergraph
-    pot = c.pot
+    counts = c.counts()
+
+    # hypergraph = c.hypergraph
+    # pot = c.pot
 
 
-    def score(label, tail_size):
-        typ, d, s, t, _ = label
-        if typ == interface.Trap:
-            if d == interface.Left: s, t = t, s
-            return scorer.arc_score(s, t)
-        if typ == interface.Tri and d == interface.Right and tail_size == 1:
-            return scorer.bigram_score(s, t+1) - \
-                ((t+1 - s - 1) * scorer.skip_penalty) if s != t+1 else 0.0
-        return 0.0
+    # def score(label, tail_size):
+    #     typ, d, s, t, _ = label
+    #     if typ == interface.Trap:
+    #         if d == interface.Left: s, t = t, s
+    #         return scorer.arc_score(s, t)
+    #     if typ == interface.Tri and d == interface.Right and tail_size == 1:
+    #         return scorer.bigram_score(s, t+1) - \
+    #             ((t+1 - s - 1) * scorer.skip_penalty) if s != t+1 else 0.0
+    #     return 0.0
 
     def f(pen):
         scorer.skip_penalty = pen
-        c.score = score
-        parse = interface.make_parse(sent_len+1, c.regen())
+        # c.score = score
+        parse = interface.make_parse(sent_len+1, c.regen(pen, counts))
         return sent_len - parse.skipped_words()
 
     pen = binary_search(f, m)
     scorer.skip_penalty = pen
-    return interface.make_parse(sent_len+1, c.regen())
+    return interface.make_parse(sent_len+1, c.regen(pen, counts))
