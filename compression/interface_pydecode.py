@@ -114,7 +114,7 @@ def parse_binary_search(sent_len, scorer, m):
             m = (min + max) / 2.0
 
             size = seq(m)
-            print t, m, size
+            #print t, m, size
             if size < t:
                 min = m
             elif size > t:
