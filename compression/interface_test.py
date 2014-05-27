@@ -48,6 +48,8 @@ def test_parsing():
                 score4 = Scorer(n, arc_scores, bigram_scores, skip_penalty=random.random(), second_order=second_order_scores)
                 yield check_skip, n, m, score1
                 yield check_bigram, n, m, score2
+                yield check_bigram_ip, n, m, score2
+                yield check_bigram_any, n, None, score2
                 yield check_bigram, n, None, score2
                 yield check_bigram, n, None, score3
                 # yield check_binary_search, n, m, score2
@@ -67,6 +69,22 @@ def check_skip(n, m, scorer):
 def check_bigram(n, m, scorer):
     parse = parse_all(n, scorer, m)
     parse2 = Parser().parse_bigram(n, scorer, m)
+    print parse.heads, scorer.score(parse)
+    print parse2.heads, scorer.score(parse2)
+    assert(parse == parse2)
+
+def check_bigram_ip(n, m, scorer):
+    import interface_pydecode as ip
+    parse = parse_all(n, scorer, m)
+    parse2 = ip.parse_bigram(n, scorer, m)
+    print parse.heads, scorer.score(parse)
+    print parse2.heads, scorer.score(parse2)
+    assert(parse == parse2)
+
+
+def check_bigram_any(n, m, scorer):
+    parse = parse_all(n, scorer, m)
+    parse2 = Parser().parse_bigram_any(n, scorer)
     print parse.heads, scorer.score(parse)
     print parse2.heads, scorer.score(parse2)
     assert(parse == parse2)
@@ -134,14 +152,14 @@ def pydecode():
 def dev_speed():
     import interface_pydecode as ip
     import time
-    for l in open("sizes"):
+    for l in list(open("sizes")):
 
         n, m = map(int, l.split())
-        if n > 50: continue
         arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
         bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
         score = Scorer(n, arc_scores, bigram_scores= bigram_scores, skip_penalty=0.0)
         print n,m
+
         tim = time.time()
         a = ip.parse_bigram(n, score, m)
         print "DONE A", time.time() - tim
@@ -149,7 +167,7 @@ def dev_speed():
 def dev_speed2():
     import interface_pydecode as ip
     import time
-    for l in open("sizes"):
+    for l in list(open("sizes")):
         n, m = map(int, l.split())
         arc_scores = [[random.random() -0.75 for i in range(n+1) ] for j in range(n+1)]
         bigram_scores = [[random.random() -0.75 for i in range(n+3) ] for j in range(n+3)]
@@ -161,4 +179,4 @@ def dev_speed2():
 
 if __name__ == "__main__":
     #pydecode()
-    dev_speed2()
+    dev_speed()

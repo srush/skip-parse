@@ -2,7 +2,6 @@ from itertools import izip
 import itertools
 from collections import namedtuple, defaultdict
 
-# range = xrange
 class Parse:
     """
     Class representing a dependency parse with
@@ -255,6 +254,9 @@ class Chart:
         self.chart = {}
         self.score = score
 
+    def Node(self, *args):
+        return args
+
     def initialize(self, item, score=0.0):
         """
         Initialize an item in the chart.
@@ -322,13 +324,15 @@ class Chart:
 
 
 # Globals
-Tri = 1
-TrapSkipped = 2
-Trap = 3
+kShapes = 6
+Tri = 0
+TrapSkipped = 1
+Trap = 2
+TriSkipped = 3
 Box = 4
-TriSkipped = 5
-TriSkipped1 = 6
+TriSkipped1 = 5
 
+kDirs = 2
 Right = 0
 Left = 1
 
@@ -420,6 +424,7 @@ def make_parse(n, back_trace):
     return Parse(mods)
 
 class Parser(object):
+
     def parse_skip(self, sentence_length, scorer, m, chart=None):
         """
         Parses with skips.
@@ -444,6 +449,7 @@ class Parser(object):
             c = chart
         else:
             c = Chart(lambda arc: scorer.arc_score(arc.head, arc.mod) if arc != 0.0 else 0.0)
+
         n = sentence_length + 1
 
         # Add terminal nodes.
@@ -555,6 +561,89 @@ class Parser(object):
         pen = binary_search(f, m)
         scorer.skip_penalty = pen
         return self.parse_bigram(sent_len, scorer, None)
+
+    def parse_bigram_any(self, sent_len, scorer, chart=None):
+        """
+        Parses with bigrams.
+
+        Parameters
+        -----------
+        n : int
+           The length of the sentence.
+
+        scorer : Scorer
+           The arc-factored weights and bigram scores.
+
+        m : int
+           The length of the compressed sentence.
+           None if any length allowed.
+
+        Returns
+        -------
+        parse : Parse
+           The best dependency parse with these constraints.
+        """
+        n = sent_len + 1
+        #Node = ph.Quartet
+        def score_bigram(s, t):
+            return scorer.bigram_score(s, t) - \
+                ((t - s - 1) * scorer.skip_penalty) if s != t else 0.0
+
+        if chart != None:
+            c = chart
+            c.score = lambda a : a
+        else:
+            c = Chart(lambda a : a[0])
+            c.score = lambda a : a[0]
+
+
+        # Initialize the chart.
+        [c.initialize(c.Node(sh, d, s, s), 0.0)
+         for s in range(n)
+         for d in [Right, Left]
+         for sh in ([Tri] if d == Left else [TriSkipped])]
+
+        for s in range(n):
+            c.set(c.Node(Tri, Right, s, s),
+                  [Edge([c.Node(TriSkipped, Right, s, s)],
+                        [score_bigram(s, s+1), 0, 0])])
+
+        for k in range(1, n):
+            for s in range(n):
+                t = k + s
+                if t >= n: break
+
+                # First create incomplete items.
+                if s != 0:
+                    arc_score = scorer.arc_score(t, s)
+                    c.set(c.Node(Trap, Left, s, t),
+                          [((c.Node(Tri, Right, s, r),
+                             c.Node(Tri, Left, r+1, t)), [arc_score, 1, 0])
+                           for r in xrange(s, t)])
+
+                arc_score = scorer.arc_score(s, t)
+                c.set(c.Node(Trap, Right, s, t),
+                      [((c.Node(Tri, Right, s, r),
+                         c.Node(Tri, Left, r+1, t)), [arc_score, 1, 0])
+                       for r in xrange(s, t)])
+
+                if s != 0:
+                    c.set(c.Node(Tri, Left, s, t),
+                          [((c.Node(Tri, Left, s, r),
+                             c.Node(Trap, Left, r, t)), [0.0, 0, 0])
+                           for r in xrange(s, t)])
+
+                c.set(c.Node(Tri, Right, s, t),
+                      [((c.Node(Trap, Right, s, r),
+                         c.Node(Tri, Right, r, t)), [0.0, 0, 0])
+                       for r in xrange(s + 1, t + 1)]
+                      +
+                      [Edge([c.Node(TriSkipped, Right, s, s)],
+                            [score_bigram(s, t+1), 0, t-s])])
+
+        return make_parse(n,
+                          c.backtrace(c.Node(Tri, Right, 0, n-1)))
+
 
     def parse_bigram(self, sent_len, scorer, m=None, chart=None):
         """
