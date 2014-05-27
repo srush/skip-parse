@@ -38,23 +38,23 @@ class Chart:
         path = ph.best_path(self.hypergraph, self.pot, chart=self._internal_chart)
         return [node.label.unpack() for node in path.nodes]
 
-    def constrained_search(self):
+    def constrained_search(self, m):
         self.skips = np.zeros(len(self.hypergraph.edges))
         self.pot = ph.LogViterbiPotentials(self.hypergraph) \
             .from_array(self.scores)
 
 
-        if self.m != None:
-            if self.m < (self.n / 2):
+        if m != None:
+            if m < (self.n / 2):
                 counts = ph.CountingPotentials(self.hypergraph) \
                     .from_array(self.counts)
 
-                path = ph.count_constrained_viterbi(self.hypergraph, self.pot, counts, self.m)
+                path = ph.count_constrained_viterbi(self.hypergraph, self.pot, counts, m)
             else:
                 counts = ph.CountingPotentials(self.hypergraph) \
                     .from_array(self.reverse_counts)
 
-                path = ph.count_constrained_viterbi(self.hypergraph, self.pot, counts, self.n - self.m)
+                path = ph.count_constrained_viterbi(self.hypergraph, self.pot, counts, self.n - m)
             return [node.label.unpack() for node in path.nodes]
         else:
             return []
@@ -63,7 +63,7 @@ class Chart:
     def backtrace(self, item):
         self.hypergraph = self.chart.finish(False)
         self._internal_chart = ph.LogViterbiChart(self.hypergraph)
-        return self.constrained_search()
+        return self.constrained_search(self.m)
 
 
 def parse_bigram(sent_len, scorer, m):
@@ -108,4 +108,4 @@ def parse_binary_search(sent_len, scorer, m, limit=10, min_val=-10, max_val=10):
     else:
         scorer.skip_penalty = 0.0
         c.regen(0.0, c.counts)
-        return interface.make_parse(sent_len+1, c.constrained_search())
+        return interface.make_parse(sent_len+1, c.constrained_search(m))
