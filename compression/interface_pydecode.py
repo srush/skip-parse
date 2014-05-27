@@ -80,7 +80,6 @@ def parse_binary_search(sent_len, scorer, m, limit=10, min_val=-10, max_val=10):
             m = (min + max) / 2.0
 
             size = seq(m)
-            print size, t, m
             if size < t:
                 min = m
             elif size > t:
@@ -90,7 +89,7 @@ def parse_binary_search(sent_len, scorer, m, limit=10, min_val=-10, max_val=10):
         return m, False
 
     c = Chart(sent_len+1)
-    print sent_len+1
+
 
     interface.Parser().parse_bigram_any(sent_len, scorer, c)
 
@@ -102,7 +101,6 @@ def parse_binary_search(sent_len, scorer, m, limit=10, min_val=-10, max_val=10):
         return sent_len - parse.skipped_words()
 
     pen, success = binary_search(f, m)
-    print success
     if success:
         scorer.skip_penalty = pen
         c.regen(pen, c.counts)
