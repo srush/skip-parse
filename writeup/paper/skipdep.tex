@@ -1,0 +1,349 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+\documentclass[11pt]{article}
+\usepackage{acl2014}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{tikz}
+\usepackage{proof}
+\usepackage{todonotes}
+\usetikzlibrary{arrows}
+\usepackage{algpseudocode}
+\usetikzlibrary{decorations.markings}
+\tikzset{
+  >=latex,text height=1.5ex,text depth=0.25ex
+}
+
+%\setlength\titlebox{5cm}
+
+\newcommand{\NULL}{\mathrm{NULL}}
+\newcommand{\Enum}[1]{\{1 \ldots #1\}}
+\newcommand{\EnumS}[2]{\{#1 \ldots #2\}}
+\newcommand{\Set}[1]{\big\{ #1 \big\}}
+\newcommand{\Bin}[1]{\{0,1\}^{#1}}
+
+\newcommand{\IndexSet}{{\cal I}}
+\newcommand{\IndexSetB}{{\cal J}}
+
+% Commands for drawing the dependency glyphs.
+
+\newcommand{\abox}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (0,1.5cm);
+    \coordinate (C) at (-2cm, 1.5cm);
+    \coordinate (D) at (-2cm, 0cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+    }}}
+
+\newcommand{\rtrap}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (2.5,0.9cm);
+    \coordinate (D) at (0:2.5cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+    }}}
+
+
+\newcommand{\ltrap}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (-2.5,0.9cm);
+    \coordinate (D) at (180:2.5cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+    }}}
+
+% \newcommand{\rtrapskip}{\scalebox{0.2}{\tikz{
+%     \coordinate (A) at (0,0);
+%     \coordinate (B) at (90:1.5cm);
+%     \coordinate (C) at (2.5,0.9cm);
+%     \coordinate (D) at (0:2.5cm);
+%     \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+%     }}}
+
+\newcommand{\rtrapskip}{\scalebox{0.2}{\tikz{
+      \begin{scope}[decoration={
+          markings,
+          mark=at position 0.3 with {\arrow[scale=1.75]{<}},
+          mark=at position 0.55 with {\arrow[scale=1.75]{<}},
+          mark=at position 0.8 with {\arrow[scale=1.75]{<}}
+        }]
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (90:1.5cm);
+        \coordinate (C) at (2.5,0.9cm);
+        \coordinate (D) at (0:2.5cm);
+        \draw[postaction={decorate}, line width = 0.05cm] (B) -- (C);
+        \draw[line width = 0.05cm] (A)--(B)--(C)--(D)--cycle;
+      \end{scope}
+    }}}
+
+\newcommand{\rtriskip}{\scalebox{0.2}{\tikz{
+      \begin{scope}[decoration={
+          markings,
+          mark=at position 0.3 with {\arrow[scale=1.75]{<}},
+          mark=at position 0.55 with {\arrow[scale=1.75]{<}},
+          mark=at position 0.8 with {\arrow[scale=1.75]{<}}
+        }]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (180:-1.7cm);
+        \draw[postaction={decorate}, line width = 0.05cm] (B) -- (C);
+        \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+      \end{scope}
+    }}}
+
+\newcommand{\rtri}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (180:-1.7cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+    }}}
+
+\newcommand{\ltri}{\scalebox{0.2}{\tikz{
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (90:1.5cm);
+    \coordinate (C) at (180:1.7cm);
+    \draw[line width = 0.05cm] (A)--(B)--(C)--cycle;
+    }}}
+
+
+\title{SkipDep Compression}
+
+\author{First Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\\And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+\end{abstract}
+
+\section{Introduction}
+
+\section{Background}
+
+Our aim is to simultaneously maximize
+
+
+Given a sentence $s_1 \ldots s_n$ we would like to find the maximum ski-dependency parse for a sentence.
+
+Define the set of dependency arcs as
+
+\[ \IndexSet = \Set{(h,m) : \forall \  h \in \EnumS{0}{n}, m \in \Enum{n}, h \neq m } \]
+
+A projective dependency parse is a vector in $y$ in ${\cal Y}$ where ${\cal Y} \subset \Bin^{\IndexSet}$ where
+
+\[{\cal Y } = \mathrm{ forms a directed tree }  \]
+
+Note that in standard dependency parsing, we require this to a be a full directed \textem{spanning tree}. For this work we only require that it be a tree
+
+For a parse in $y \in {Y}$ define the span of $y$ as $||y||_1 = \sum_{h, m} y(h,m)$. Standard dependency parsing requires the span of a parse to be $n$.
+
+Define the set of possible bigrams as
+
+\[ \IndexSetB = \Set{(i,j) : \forall \ i \in \EnumS{0}{n}, j \in \EnumS{(i+1)}{(n+1)}} \]
+
+\begin{eqnarray*}
+  {\cal Z} = \sum_{i=1}^{n+1} y(0, i) = 1, \sum_{i=0}^n y(i, n+1) = 1 \\
+  \sum_{i=0}^{j-1} y(i,j) = \sum_{k=j+1}^{n+1} y(j, k)\\
+\end{eqnarray*}
+
+
+
+Our aim to find the highest-scoring combination of dependency parse score and language model score.
+
+\begin{eqnarray*}
+ \max_{z\in {\cal Z}} \sum_{(h,m) \in \IndexSet} \theta(h,m) y(h,m) + \sum_{(i,j) \in \IndexSetB} \omega(i,j) z(i,j) \mathrm{\ s.t. \ } \\
+  \sum_{h=0:h\neq m}^n y(h, m) = \sum_{j = m + 1}^{n+1} y(m, j)
+\end{eqnarray*}
+
+Define the score of a dependency arc as
+
+\[\theta(\uparray, h,m) = w \cdot \phi(s, h, m)  \]
+
+maybe the bigram scores come from a language model.
+
+\[\omega(i,j) = \log p(s_i, s_j) \]
+
+
+
+\section{Decoding Algorithm}
+
+We now present the decoding algorithm for this problem. The
+main idea is quite simple. We extend the standard Eisner parsing
+algorithm to allow each premises to ``skip'' words.
+
+
+\subsection{Skip-Word Dependency Parsing}
+
+
+We extend the first order model to skip parsing to additionally score the bigrams chosen in the final parse. To do this we extend the item definition to include the anticipated next word $(t, i, j)$.
+
+The only new addition is that we use the ``hook trick'' to select the best next word for each premise item before using it. The other rules are all identical.
+
+Note that for this to work, it is crucial that we only allow skipping words on the right and that the left side index $i$ is always the left-most word used in the item.
+
+This parsing algorithm has runtime $O(n^3)$.
+
+
+\begin{figure}
+
+  \noindent \textbf{Premise:}
+  \[(\rtriskip, i,i), (\ltri, i,i)\ \ \ \forall i \in \{0 \ldots n\}\]
+
+  \noindent \textbf{Rules:}
+
+
+\begin{eqnarray*}
+  \infer[z(i,j+1)=1]{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall 0 \leq i \leq j \leq n\\\\
+  \infer{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall0 \leq i \leq j\leq n + 1\\\\
+  \infer{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall  i\leq k < j  \\\\
+  \infer{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j\\\\
+  \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+  \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+  % \infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < p\\\\
+  % \infer{(\rtriskip, i,k, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
+\end{eqnarray*}
+
+\noindent \textbf{Goal:}\[ (\rtri, 0,n, n + 1)\]
+\end{figure}
+
+\section{Extensions}
+
+\subsection{Span Requirements}
+
+For compression problems we often have a target size of the compressed sentence. That is we are given a ratio $r$ such that our target sentence should have $\floor{n / r} = M$ words. We can incorporate this constraint directly into our combinatorial optimization problem
+
+\begin{eqnarray*}
+  q(M) = \max_{z\in {\cal Z}} \theta^\top y +  \omega^\top z \mathrm{s .t} \\
+  \sum_{h=0:h\neq m}^n y(h, m) = \sum_{j = m + 1}^{n+1} y(m, j) \\
+  \sum_{(h,m) \in \IndexSet} y(h, m) = M
+\end{eqnarray*}
+
+This extra requirement can be represented by a single constraint. However in practice it is difficult to incorporate this into the dynamic programming algorithm. One idea is to intersect with a counting FSA. In general each item may span $d$ vertices with $0 \leq d \leq M$, and each sub-item may span $d'$ and $d - d'$ vertices respectively, i.e.
+\[
+\infer{(\rtri, i,j, d)}{(\rtrap, i,k, d')  &  (\rtri, k, j, d) }    &  \forall i< k \leq j, 0\leq d' < d \leq < M  \\\\
+\]
+
+This intersection adds a factor of $M^2$ to the running time, which makes the full algorithm $O(n^5)$ which is intractable in practice.
+
+An alternative approach is to relax the single span constraint.
+
+\begin{eqnarray*}
+  L(\lambda, y, z) =  \theta^\top y +  \omega^\top z + \lambda (||y||_1 ) - M\lambda \mathrm{s .t} \\
+  \sum_{h=0:h\neq m}^n y(h, m) = \sum_{j = m + 1}^{n+1} y(m, j) \\
+\end{eqnarray*}
+
+For any fixed value of $\lambda$ we can calculate $y_\lambda, z_\lambda\argmax_{y, z} L(\lambda, y, z)$ using the dynamic programming algorithm shown. We simply replace $\theta$ with $\theta'$ where $\theta'(h,m) = \theta(h,m) + \lambda$ for all $(h,m) \in \IndexSet$.
+
+By weak duality $\theta^\top y_\lambda + \omega^\top z_\lambda$ will always give an upper bound on the optimal constrained solution $y^*, z^*$. And if $||y_\lambda||_1 = M$ then this upper bound is provably tight.
+Past work in NLP has looked at minimizing this dual upper bound with subgradient descent; however we can exploit the fact that there is only a single dual variable $\lambda$ and use a more efficient method.
+
+
+We will minimize $L(\lambda)$ using the bisection method. First note that
+with $M=n$ we can solve $q(m)$ by setting $\lambda$ to the max bigram score  , similarly
+with $M=0$ we can solve $q(0)$ by setting $\lambda$ to the inverse of the max bigram score.
+
+
+The bisection method is guaranteed to find an optimal solution if one exists in $$ iterations
+\todo[inline]{Figure this result out.}
+
+
+
+\begin{figure}
+  \begin{algorithmic}
+    \Procedure{Bisection}{$M$}
+    \State{$\lambda^{(\uparrow)} \gets \max_{(i, j) \in \IndexSetB} \omega(i,j)$}
+    \State{$\lambda^{(\downarrow)} \gets -\max_{(i, j) \in \IndexSetB} \omega(i,j)$}
+    \State{$\lambda^{(0)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(\downarrow)}}{2}$}
+    \For{$k = 1\hbox{ to }K$}
+    \State{ $y^{(k)}, z^{(k)} = \argmax_{y, z} L(\lambda^{(k-1)}, y, z)$}
+    \If{$||y^{(k)}||_1 = M$}
+    \State{\Return{$y^{(k)}, z^{(k)}$}}
+    \ElseIf{$||y^{(k)}||_1 > M$}
+    \State{$\lambda^{(\uparrow)} \gets \lambda^{(k)}$}
+    \State{$\lambda^{(k+1)} \gets \frac{\lambda^{(k)} + \lambda^{(\downarrow)}}{2}$}
+    \ElseIf{$||y^{(k)}||_1 < M$}
+    \State{$\lambda^{(\downarrow)} \gets \lambda^{(k)}$}
+    \State{$\lambda^{(k+1)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(k)}}{2}$}
+    \EndIf{}
+    \EndFor{}
+    \EndProcedure{}
+  \end{algorithmic}
+\end{figure}
+
+\subsection{Second-Order Parsing}
+
+The same method extends to second-order dependency parsing. For a second-order parser
+we replace the index set $\IndexSet$ with a new index set that also includes a \textit{sibling}
+index.
+
+\[ \IndexSet=  \begin{cases} (h,s,m) : &
+    h \in \EnumS{0}{n}, m \in \Enum{n}, h \neq m, \\
+    & h < s < m \hbox{ or } m < s < h \hbox{ or } s = \NULL
+  \end{cases} \ \]
+
+Second order parsing also require $O(n^3)$ time.
+
+The main complication is that standard second-order parsing includes a rule of the form
+
+\[  \infer{(\rtrap, i,j)}{(\rtri, i,i)  &  (\ltri, i+1, j) } &\ \  \forall i < j\]
+
+for constructing an arc $y(i, \NULL, j)$. This rule relies on an implicit property that $(\rtri, i,i)$ is the only right-facing item that has not yet taken a modifier.
+
+We replace these rules with
+
+\[  \infer{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &\ \  \forall i \leq k < j \]
+
+where the symbol $\rtriskip$ implies that the word $s_i$ has not yet taken a modifier and that the words $s_{i+1}$ through $s_{k}$ have been ``skipped''.
+
+Besides this change the rules are identical to standard second-order parsing.
+
+\begin{figure}
+
+  \noindent \textbf{Premise:}
+  \[(\rtriskip, i,i), (\ltri, i,i)\ \ \ \forall i \in \{0 \ldots n\}\]
+
+  \noindent \textbf{Rules:}
+
+\begin{eqnarray*}
+  \infer[z(i,j+1)]{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall 0 \leq i \leq j \leq n\\\\
+  % \infer[\mathrm{Bigram}(i,p)]{(\rtriskip, i,i, p)}{(\rtriskip, i, i,i)} &  \forall  0 \leq i < p \leq n + 1\\\\
+  \infer{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall0 \leq i \leq j\leq n + 1\\\\
+  \infer{(\abox, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
+  \infer[y(i, \NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  \forall i < j\\\\
+  \infer[y(j, \NULL i)]{(\ltrap, i,j)}{(\rtri, i,j-1)  &  (\ltri, j, j) } & \forall i < j \\\\
+  \infer[y(i, k, j)]{(\rtrap, i,j)}{(\rtrap, i,k)  &  (\abox, k, j) } &  \forall i\leq k < j \\\\
+  \infer[y(j,  k i)]{(\ltrap, i,j)}{(\abox, i,k)  &  (\ltrap, k, j) } &  \forall i\leq k < j \\\\
+  \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
+  \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+\end{eqnarray*}
+\end{figure}
+
+\section{Training}
+
+
+\section{Features}
+
+
+\section{Experiments}
+
+
+
+% include your own bib file like this:
+\bibliographystyle{acl}
+\bibliography{full.bib}
+
+\end{document}
