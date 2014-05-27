@@ -179,4 +179,4 @@ def dev_speed2():
 
 if __name__ == "__main__":
     #pydecode()
-    dev_speed()
+    dev_speed2()
