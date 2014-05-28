@@ -1,5 +1,6 @@
+
 import pydecode.hyper as ph
-import interface
+import skipdep.interface as interface
 import numpy as np
 
 class Chart:
@@ -56,7 +57,7 @@ class Bisector(object):
     def __init__(self, min_val=-10, max_val=10, limit=10):
         self.min_val = min_val
         self.max_val = max_val
-        self.limit = 10
+        self.limit = limit
 
     def run(self, f, target):
         cur_min = self.min_val
@@ -67,13 +68,14 @@ class Bisector(object):
                 return -1, False
             m = (cur_min + cur_max) / 2.0
             result = f(m)
+            self.history.append((m, result, target))
             if result < target:
                 cur_min = m
             elif result > target:
                 cur_max = m
             else:
                 return True
-            self.history.append((m, target))
+
         return False
 
 
@@ -92,10 +94,13 @@ def parse_second_bigram(sent_len, scorer, m):
     return interface.make_parse(n, c.constrained_search(m))
 
 def parse_binary_search(sent_len, scorer, m,
-                        searcher):
+                        searcher, order=1):
     n = sent_len + 1
     c = Chart(n)
-    interface.Parser().parse_bigram(sent_len, scorer, c)
+    if order == 1:
+        interface.Parser().parse_bigram(sent_len, scorer, c)
+    elif order == 2:
+        interface.Parser().parse_second_bigram(sent_len, scorer, c)
     c.finish()
 
     def f(pen):
