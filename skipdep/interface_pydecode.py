@@ -1,11 +1,9 @@
 import pydecode.hyper as ph
-import pydecode.chart as chart
 import interface
 import numpy as np
-import time
 
 class Chart:
-    def __init__(self, n, m=None, score=None):
+    def __init__(self, n):
         self.chart = \
             ph.DPChartBuilder(build_hypergraph=True, strict=False)
         hasher = ph.QuartetHash(ph.Quartet(interface.kShapes, interface.kDirs, n+1, n+1))
@@ -18,9 +16,6 @@ class Chart:
         self.chart.set_expected_size(hasher.max_size(), num_edges, max_arity=2)
 
         self.Node = ph.Quartet
-
-        self.score = score
-        self.m = m
         self.n = n - 1
 
     def initialize(self, item, score=0.0):
@@ -29,26 +24,19 @@ class Chart:
     def set(self, item, vals):
         self.chart.set(item, vals)
 
-    def regen(self, penalty, counts):
-        #print self.scores
+    def reweight(self, penalty):
         self.pot = ph.LogViterbiPotentials(self.hypergraph) \
-            .from_array(self.scores + (penalty * counts))
+            .from_array(self.scores + (penalty * self.counts))
 
     def unconstrained_search(self):
         path = ph.best_path(self.hypergraph, self.pot, chart=self._internal_chart)
         return [node.label.unpack() for node in path.nodes]
 
     def constrained_search(self, m):
-        self.skips = np.zeros(len(self.hypergraph.edges))
-        self.pot = ph.LogViterbiPotentials(self.hypergraph) \
-            .from_array(self.scores)
-
-
         if m != None:
             if m < (self.n / 2):
                 counts = ph.CountingPotentials(self.hypergraph) \
                     .from_array(self.counts)
-
                 path = ph.count_constrained_viterbi(self.hypergraph, self.pot, counts, m)
             else:
                 counts = ph.CountingPotentials(self.hypergraph) \
@@ -57,55 +45,69 @@ class Chart:
                 path = ph.count_constrained_viterbi(self.hypergraph, self.pot, counts, self.n - m)
             return [node.label.unpack() for node in path.nodes]
         else:
-            return []
+            return self.unconstrained_search()
 
-
-    def backtrace(self, item):
+    def finish(self):
         self.hypergraph = self.chart.finish(False)
         self._internal_chart = ph.LogViterbiChart(self.hypergraph)
-        return self.constrained_search(self.m)
+        self.reweight(0.0)
+
+class Bisector(object):
+    def __init__(self, min_val=-10, max_val=10, limit=10):
+        self.min_val = min_val
+        self.max_val = max_val
+        self.limit = 10
+
+    def run(self, f, target):
+        cur_min = self.min_val
+        cur_max = self.max_val
+        self.history = []
+        for i in range(self.limit):
+            if cur_max < cur_min:
+                return -1, False
+            m = (cur_min + cur_max) / 2.0
+            result = f(m)
+            if result < target:
+                cur_min = m
+            elif result > target:
+                cur_max = m
+            else:
+                return True
+            self.history.append((m, target))
+        return False
 
 
 def parse_bigram(sent_len, scorer, m):
-    c = Chart(sent_len + 1, m)
-    return interface.Parser().parse_bigram_any(sent_len, scorer, c)
+    n = sent_len + 1
+    c = Chart(n)
+    interface.Parser().parse_bigram(sent_len, scorer, c)
+    c.finish()
+    return interface.make_parse(n, c.constrained_search(m))
 
-def parse_binary_search(sent_len, scorer, m, limit=10, min_val=-10, max_val=10):
-    def binary_search(seq, t):
-        min = min_val
-        max = max_val
-        for i in range(limit):
-            if max < min:
-                return -1, False
-            m = (min + max) / 2.0
+def parse_second_bigram(sent_len, scorer, m):
+    n = sent_len + 1
+    c = Chart(n)
+    interface.Parser().parse_second_bigram(sent_len, scorer, c)
+    c.finish()
+    return interface.make_parse(n, c.constrained_search(m))
 
-            size = seq(m)
-            if size < t:
-                min = m
-            elif size > t:
-                max = m
-            else:
-                return m, True
-        return m, False
-
-    c = Chart(sent_len+1)
-
-
-    interface.Parser().parse_bigram_any(sent_len, scorer, c)
-
+def parse_binary_search(sent_len, scorer, m,
+                        searcher):
+    n = sent_len + 1
+    c = Chart(n)
+    interface.Parser().parse_bigram(sent_len, scorer, c)
+    c.finish()
 
     def f(pen):
-        scorer.skip_penalty = pen
-        c.regen(pen, c.counts)
-        parse = interface.make_parse(sent_len+1, c.unconstrained_search())
+        c.reweight(pen)
+        parse = interface.make_parse(n, c.unconstrained_search())
         return sent_len - parse.skipped_words()
+    success = searcher.run(f, m)
 
-    pen, success = binary_search(f, m)
     if success:
-        scorer.skip_penalty = pen
-        c.regen(pen, c.counts)
-        return interface.make_parse(sent_len+1, c.unconstrained_search())
+        return interface.make_parse(n,
+                                    c.unconstrained_search())
     else:
-        scorer.skip_penalty = 0.0
-        c.regen(0.0, c.counts)
-        return interface.make_parse(sent_len+1, c.constrained_search(m))
+        c.reweight(0.0)
+        return interface.make_parse(n,
+                                    c.constrained_search(m))
