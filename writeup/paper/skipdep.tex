@@ -1,16 +1,14 @@
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
-
 \documentclass[11pt]{article}
 \usepackage{acl2014}
 \usepackage{times}
 \usepackage{url}
 \usepackage{latexsym}
+\usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{proof}
 \usepackage{todonotes}
+\usepackage{caption}
+\usepackage{subcaption}
 \usetikzlibrary{arrows}
 \usepackage{algpseudocode}
 \usetikzlibrary{decorations.markings}
@@ -20,11 +18,12 @@
 
 %\setlength\titlebox{5cm}
 
-\newcommand{\NULL}{\mathrm{NULL}}
+\newcommand{\NULL}{\ensuremath{\epsilon}}
 \newcommand{\Enum}[1]{\{1 \ldots #1\}}
 \newcommand{\EnumS}[2]{\{#1 \ldots #2\}}
 \newcommand{\Set}[1]{\big\{ #1 \big\}}
 \newcommand{\Bin}[1]{\{0,1\}^{#1}}
+\newcommand{\Reals}{\mathbb{R}}
 
 \newcommand{\IndexSet}{{\cal I}}
 \newcommand{\IndexSetB}{{\cal J}}
@@ -110,7 +109,7 @@
     }}}
 
 
-\title{SkipDep Compression}
+\title{Sentence Compression as Dependency Parsing}
 
 \author{First Author \\
   Affiliation / Address line 1 \\
@@ -132,58 +131,98 @@
 
 \section{Introduction}
 
+\section{Related Work}
+
+
+\cite{eisner99dp}
+
+\cite{huang2005machine}
+
 \section{Background}
+We begin by presenting formal background for the structures underlying
+our approach for sentence compression. Our system models sentence
+compression as a joint parsing and language modeling problem. We first
+describe the specifics of these techniques and then their combined use.  
 
-Our aim is to simultaneously maximize
+Given an input sentence $x_1 \ldots x_n$, define the set of feasible
+compressions as all ordered subsets, i.e. a compression is $x_{p_1} \ldots x_{p_m}$ for a sequence $p$ with
+$1 \leq p_1 < \ldots < p_m \leq n$ and $m < n$. The length of the compression is $m$.
+
+Our aim is the find the highest-scoring compression under a given
+objective.
 
 
-Given a sentence $s_1 \ldots s_n$ we would like to find the maximum ski-dependency parse for a sentence.
+Define the set of possible bigrams ${\cal Y}$ as
+
+\[ \IndexSet = \Set{(i,j) : 0 \leq i < j \leq n+1} \]
+
+\begin{equation*}
+  {\cal Y} = \begin{cases}\displaystyle
+    \sum_{i=1}^{n+1} y(0, i) = 1, \sum_{i=0}^n y(i, n+1) = 1 \\\displaystyle
+    \sum_{i=0}^{j-1} y(i,j) = \sum_{k=j+1}^{n+1} y(j, k)\end{cases}
+\end{equation*}
+
+The score of a bigram sequence is $\theta \in \Reals^{\IndexSet}$  
+
+
+
+% The aim of the problem is to find the highest-scoring compression under 
+% an objective function $f$  
+
+
+
+% Our aim is to simultaneously maximize
 
 Define the set of dependency arcs as
 
-\[ \IndexSet = \Set{(h,m) : \forall \  h \in \EnumS{0}{n}, m \in \Enum{n}, h \neq m } \]
+\[ \IndexSetB = \Set{(i,j) : \forall \  i \in \EnumS{0}{n}, j \in \Enum{n} } \]
 
 A projective dependency parse is a vector in $y$ in ${\cal Y}$ where ${\cal Y} \subset \Bin^{\IndexSet}$ where
 
-\[{\cal Y } = \mathrm{ forms a directed tree }  \]
+\[{\cal Z } = \{z \in \Bin{\IndexSetB}: \hbox$z$ { forms\ a\ directed tree } \} \] \]
 
-Note that in standard dependency parsing, we require this to a be a full directed \textem{spanning tree}. For this work we only require that it be a tree
+Note that in standard dependency parsing, we require this to be a full directed \textem{spanning tree}. For this work we only require that it be a tree. For a parse in $y \in {Y}$ define the span of $y$ as $||y||_1 = \sum_{h, m} y(h,m)$. Standard dependency parsing requires the span of a parse to be $n$.
 
-For a parse in $y \in {Y}$ define the span of $y$ as $||y||_1 = \sum_{h, m} y(h,m)$. Standard dependency parsing requires the span of a parse to be $n$.
 
-Define the set of possible bigrams as
-
-\[ \IndexSetB = \Set{(i,j) : \forall \ i \in \EnumS{0}{n}, j \in \EnumS{(i+1)}{(n+1)}} \]
-
-\begin{eqnarray*}
-  {\cal Z} = \sum_{i=1}^{n+1} y(0, i) = 1, \sum_{i=0}^n y(i, n+1) = 1 \\
-  \sum_{i=0}^{j-1} y(i,j) = \sum_{k=j+1}^{n+1} y(j, k)\\
-\end{eqnarray*}
+The score of a dependency sequence is $\omega \in \Reals^{\IndexSetB}$  
 
 
 
 Our aim to find the highest-scoring combination of dependency parse score and language model score.
 
 \begin{eqnarray*}
- \max_{z\in {\cal Z}} \sum_{(h,m) \in \IndexSet} \theta(h,m) y(h,m) + \sum_{(i,j) \in \IndexSetB} \omega(i,j) z(i,j) \mathrm{\ s.t. \ } \\
-  \sum_{h=0:h\neq m}^n y(h, m) = \sum_{j = m + 1}^{n+1} y(m, j)
+ \max_{y \in {\cal Y}, z\in {\cal Z}} &&\theta^\top y +  \omega^\top z \\
+\mathrm{s.t.} &&  \sum_{i = 0}^{j-1} y(i, j) =  \sum_{i=0}^n z(i, j) \ \ \forall 1 \leq j \leq n 
 \end{eqnarray*}
 
-Define the score of a dependency arc as
-
-\[\theta(\uparray, h,m) = w \cdot \phi(s, h, m)  \]
-
-maybe the bigram scores come from a language model.
-
-\[\omega(i,j) = \log p(s_i, s_j) \]
 
 
+The  find the highest-scoring structure in this objective. However, past work has shown that this problem is NP-hard \cite{}. Some success has been shown for using ILP solvers \cite{} and dual decomposition \cite{}.
 
-\section{Decoding Algorithm}
+ 
+In this paper we focus on a variant of this problem where we further assume that ${\cal Z}$ is \textit{projective}. Projective dependency parsing is widely used in the parsing literature.  Informally, this means that for any $z(i,j)=1$ and $z(i',j')=1$ the arcs do not cross each other. 
 
-We now present the decoding algorithm for this problem. The
-main idea is quite simple. We extend the standard Eisner parsing
-algorithm to allow each premises to ``skip'' words.
+With this assumption we can show that finding the highest-scoring compression can be found in much more efficiently.
+
+
+% Define the score of a dependency arc as
+
+% \[\theta(\uparray, h,m) = w \cdot \phi(s, h, m)  \]
+
+% maybe the bigram scores come from a language model.
+
+% \[\omega(i,j) = \log p(s_i, s_j) \]
+
+
+
+\section{Decoding}
+
+We now present the decoding algorithm for this problem. We begin by reviewing the standard decoding algorithm for projective dependency parsing, and then give the extension for this problem. 
+
+\subsection{Eisner's Algorithm}
+% The
+% main idea is quite simple. We extend the standard Eisner parsing
+% algorithm to allow each premises to ``skip'' words.
 
 
 \subsection{Skip-Word Dependency Parsing}
@@ -198,27 +237,6 @@ Note that for this to work, it is crucial that we only allow skipping words on t
 This parsing algorithm has runtime $O(n^3)$.
 
 
-\begin{figure}
-
-  \noindent \textbf{Premise:}
-  \[(\rtriskip, i,i), (\ltri, i,i)\ \ \ \forall i \in \{0 \ldots n\}\]
-
-  \noindent \textbf{Rules:}
-
-
-\begin{eqnarray*}
-  \infer[z(i,j+1)=1]{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall 0 \leq i \leq j \leq n\\\\
-  \infer{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall0 \leq i \leq j\leq n + 1\\\\
-  \infer{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall  i\leq k < j  \\\\
-  \infer{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & \forall i\leq k < j\\\\
-  \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
-  \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
-  % \infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < p\\\\
-  % \infer{(\rtriskip, i,k, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
-\end{eqnarray*}
-
-\noindent \textbf{Goal:}\[ (\rtri, 0,n, n + 1)\]
-\end{figure}
 
 \section{Extensions}
 
@@ -311,26 +329,77 @@ where the symbol $\rtriskip$ implies that the word $s_i$ has not yet taken a mod
 
 Besides this change the rules are identical to standard second-order parsing.
 
-\begin{figure}
 
-  \noindent \textbf{Premise:}
-  \[(\rtriskip, i,i), (\ltri, i,i)\ \ \ \forall i \in \{0 \ldots n\}\]
+\begin{figure*}
+  \noindent \textbf{Premises:}
+  \[(\ltri, i,i), (\rtri, i,i)\ \ \forall\ 0 \leq i \leq j \leq  n\]
 
-  \noindent \textbf{Rules:}
+\noindent \textbf{Goal:}\[ (\rtri, 0,n)\]
+
+\noindent \textbf{Completion Rules:}
 
 \begin{eqnarray*}
-  \infer[z(i,j+1)]{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall 0 \leq i \leq j \leq n\\\\
-  % \infer[\mathrm{Bigram}(i,p)]{(\rtriskip, i,i, p)}{(\rtriskip, i, i,i)} &  \forall  0 \leq i < p \leq n + 1\\\\
-  \infer{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall0 \leq i \leq j\leq n + 1\\\\
-  \infer{(\abox, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall i\leq k < j \\\\
-  \infer[y(i, \NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  \forall i < j\\\\
-  \infer[y(j, \NULL i)]{(\ltrap, i,j)}{(\rtri, i,j-1)  &  (\ltri, j, j) } & \forall i < j \\\\
-  \infer[y(i, k, j)]{(\rtrap, i,j)}{(\rtrap, i,k)  &  (\abox, k, j) } &  \forall i\leq k < j \\\\
-  \infer[y(j,  k i)]{(\ltrap, i,j)}{(\abox, i,k)  &  (\ltrap, k, j) } &  \forall i\leq k < j \\\\
-  \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall i<  k \leq j \\\\
-  \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall i\leq k < j \\\\
+  \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall\ 0 \leq i<  k \leq j \leq n\\\\
+  \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall\ 0 < i\leq k < j \leq n\\\\
 \end{eqnarray*}
-\end{figure}
+
+\begin{subfigure}{0.5\textwidth}
+
+
+\noindent \textbf{First-Order Rules:}
+
+\begin{eqnarray*}
+  \infer[z(i, j) = 1]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) }  \\ \forall\  0 \leq i\leq k < j\leq n  \\\\
+  \infer[z(j, i) = 1]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } \\ \forall\ 0 < i\leq k < j \leq n\\\\
+  % \infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < p\\\\
+  % \infer{(\rtriskip, i,k, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
+\end{eqnarray*}
+
+\end{subfigure}%
+\begin{subfigure}{0.5\textwidth}
+
+% \begin{figure}
+
+%   \noindent \textbf{Premises:}
+%   \[(\ltri, i,i), (\rtriskip, i,i)\ \ \forall\ 0 \leq i \leq j \leq  n\]
+
+% \noindent \textbf{Goal:}\[ (\rtri, 0,n)\]
+
+  \noindent \textbf{Second-Order Rules:}
+
+\begin{eqnarray*}
+  % \infer[\mathrm{Bigram}(i,p)]{(\rtriskip, i,i, p)}{(\rtriskip, i, i,i)} &  \forall  0 \leq i < p \leq n + 1\\\\
+  \infer{(\abox, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall\ 0 < i\leq k < j \leq n \\\\
+  \infer[z(i, \NULL, j)]{(\rtrap, i,j)}{(\rtri, i,i)  &  (\ltri, i+1, j) } &  \forall\ 0 \leq i < j \leq n\\\\
+  \infer[z(j, \NULL, i)]{(\ltrap, i,j)}{(\rtri, i,j-1)  &  (\ltri, j, j) } & \forall\ 0 <  i < j \leq n\\\\
+  \infer[z(i, k, j)]{(\rtrap, i,j)}{(\rtrap, i,k)  &  (\abox, k, j) } &  \forall\ i\leq k < j \\\\
+  \infer[z(j,  k, i)]{(\ltrap, i,j)}{(\abox, i,k)  &  (\ltrap, k, j) } &  \forall\ 0 \leq i\leq k < j \leq n\\\\
+  % \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall\ 0 \leq i <  k \leq j \leq n \\\\
+  % \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall\ 0< i\leq k < j\leq n \\\\
+\end{eqnarray*}
+% \textbf{Additional Rules:}
+
+% \begin{eqnarray*}
+%   % \infer[z(i,j+1)]{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall\ 0 \leq i \leq j\leq n\\\\
+%   % \infer{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall\ 0 \leq i < j \leq n\\\\
+%   \infer[y(i, \NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  \forall\ 0 \leq i < j \leq n\\\\
+% \end{eqnarray*}
+\end{subfigure}
+
+
+  \noindent \textbf{Revised Premises:}
+  \[(\ltri, i,i), (\rtriskip, i,i)\ \ \forall\ 0 \leq i \leq j \leq  n\]
+  
+  \noindent \textbf{Additional Rules:}
+
+\begin{eqnarray*}
+  \infer[y(i,j+1)=1]{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall\ 0 \leq i \leq j \leq  n \\\\
+  \infer{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall\  0 \leq i < j \leq n\\\\
+   \infer[y(i,k + 1), z(i, \NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  \forall\ 0 \leq i<  k <  j \leq n \hbox{\ \ [2nd-Order only]}
+\end{eqnarray*}
+
+\caption{Deductive rules for skip-bigram parsing. }
+\end{figure*}
 
 \section{Training}
 
@@ -347,3 +416,10 @@ Besides this change the rules are identical to standard second-order parsing.
 \bibliography{full.bib}
 
 \end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
