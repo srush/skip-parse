@@ -1,0 +1,3753 @@
+=== Helpful Macros ==========================================================
+@preamble{ "\def\superst{$^{\mbox{\scriptsize{st}}}$}" }
+@preamble{ "\def\supernd{$^{\mbox{\scriptsize{nd}}}$}" }
+@preamble{ "\def\superrd{$^{\mbox{\scriptsize{rd}}}$}" }
+@preamble{ "\def\superth{$^{\mbox{\scriptsize{th}}}$}" }
+
+
+=== Linguistics =============================================================
+
+@InProceedings{hanamoto-matsuzaki-tsujii:2012:EACL2012,
+  author    = {Hanamoto, Atsushi  and  Matsuzaki, Takuya  and  Tsujii, Jun'ichi},
+  title     = {Coordination Structure Analysis using Dual Decomposition},
+  booktitle = {Proceedings of the 13th Conference of the European Chapter of the Association for Computational Linguistics},
+  month     = {April},
+  year      = {2012},
+  address   = {Avignon, France},
+  publisher = {Association for Computational Linguistics},
+  pages     = {430--438},
+  url       = {http://www.aclweb.org/anthology/E12-1044}
+}
+
+
+@conference{rush2010,
+  title={{On Dual Decomposition and Linear Programming Relaxations for
+Natural Language Processing}},
+  author={A.M. Rush and
+          D. Sontag and
+          M. Collins and
+          T. Jaakkola},
+  booktitle={Proc. EMNLP},
+  year={2010}
+}
+
+@conference{pauleisner,
+author = {Michael J. Paul and Jason Eisner},
+title = {Implicitly Intersecting Weighted Automata using Dual Decomposition},
+  booktitle={Proc. NAACL},
+  year={2012}
+}
+
+@conference{rush2011,
+  title={{Exact Decoding of Syntactic Translation Models through Lagrangian Relaxation}},
+  author={A.M. Rush and
+          M. Collins},
+  booktitle={Proc. ACL},
+  year={2011}
+}
+
+@InProceedings{rushemnlp2012,
+  author    = {Rush, Alexander  and  Reichart, Roi  and  Collins, Michael  and  Globerson, Amir},
+  title     = {Improved Parsing and POS Tagging Using Inter-Sentence Consistency Constraints},
+  booktitle = {Proceedings of the 2012 Joint Conference on Empirical Methods in Natural Language Processing and Computational Natural Language Learning},
+  month     = {July},
+  year      = {2012},
+  address   = {Jeju Island, Korea},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1434--1444},
+  url       = {http://www.aclweb.org/anthology/D12-1131}
+}
+
+
+@conference{denero2011,
+  title={{Model-Based Aligner Combination Using Dual Decomposition}},
+  author={J. DeNero and
+          K. Macherey},
+  booktitle={Proc. ACL},
+  year={2011}
+}
+
+@book{chomsky69aspects,
+  author = {N. Chomsky},
+  title = "{Aspects of the Theory of Syntax}",
+  publisher = {The MIT Press},
+  year = {1969}
+}
+
+@book{shor85,
+   author = {N. Z. Shor},
+title = "{Minimization Methods for Non-differentiable Functions}",
+publisher = {Springer Series in Computational Mathematics. Springer},
+year = {1985}
+}
+
+@book{boydclassnotes,
+author = {Stephen Boyd and Almir Mutapcic},
+title = {Subgradient Methods},
+publisher = {Course Notes for EE364b, Stanford University, Winter 2006-07},
+http = {http://www.stanford.edu/class/ee364b/lectures/subgrad_method_notes.pdf},
+year = {2007}
+}
+
+  author = {N. Chomsky},
+  title = "{Aspects of the Theory of Syntax}",
+  publisher = {The MIT Press},
+  year = {1969}
+}
+
+@book{haegeman91gb,
+  author = {L. Haegeman},
+  title = "{Introduction to Government and Binding Theory}",
+  publisher = {Wiley-Blackwell},
+  year = {1991},
+}
+
+@article{chomsky56three,
+  author = {N. Chomsky},
+  title = "{Three Models for the Description of Language}",
+  journal = {IRE Transactions on Information Theory},
+  volume = "2",
+  number = "3",
+  pages = "113--124",
+  year = "1956",
+  month = "September"
+}
+
+
+=== Dependency parsing ======================================================
+
+@inproceedings{koo10dp,
+  author    = {T. Koo and M. Collins},
+  title     = {{Efficient Third-order Dependency Parsers}},
+  booktitle = {Proc. ACL},
+  year      = {2010},
+  pages     = {(to appear)}
+}
+
+@inproceedings{nivrenilsson,
+  author    = {J. Nivre  and J. Nilsson},
+  title     = {{Pseudo-Projective Dependency Parsing}},
+  booktitle = {Proc. ACL},
+  year      = {2005},
+  pages     = {99--106},
+}
+
+
+@InProceedings{martins08stack,
+  author    = {A.F.T. Martins  and  D. Das  and  N.A. Smith  and   E.P. Xing},
+  title     = {{Stacking Dependency Parsers}},
+  booktitle = {Proc. EMNLP},
+  year      = {2008},
+  pages     = {157--166},
+}
+  url       = {http://www.aclweb.org/anthology/D08-1017}
+
+@inproceedings{nivre-mcdonald08,
+  author    = {J. Nivre  and  R. McDonald},
+  title     = {{Integrating Graph-Based and Transition-Based Dependency Parsers}},
+  booktitle = {Proc. ACL},
+  year      = {2008},
+  pages     = {950--958},
+}
+  url       = {http://www.aclweb.org/anthology/P/P08/P08-1108},
+
+@inproceedings{nivre-mcdonald07,
+  author    = {R. McDonald  and  J. Nivre},
+  title     = {{Characterizing the Errors of Data-Driven Dependency Parsers}},
+  booktitle = {Proc. EMNLP-CoNLL},
+  year      = {2007},
+  pages     = {122--131},
+}
+
+@inproceedings{nivre06malt,
+  author    = {J. Nivre and J. Hall and J. Nilsson and G. Eryi\v{g}it and S. Marinov},
+  title     = {{Labeled Pseudo-Projective Dependency Parsing with Support Vector Machines}},
+  booktitle = {Proc. CoNLL},
+  year      = {2006},
+  pages     = {221--225},
+}
+
+@inproceedings{attardi06dp,
+  author    = {G. Attardi},
+  title     = {{Experiments with a Multilanguage Non-Projective Dependency Parser}},
+  booktitle = {Proc. CoNLL},
+  pages     = {166--170},
+  year      = {2006},
+}
+
+@inproceedings{hallnovak,
+  author = {K. Hall and V. Nov\'{a}k},
+  title = {{Corrective Modeling for Non-Projective Dependency Parsing}},
+  booktitle = {Proc. IWPT},
+  year = {2005},
+  pages     = {42--52},
+}
+
+@phdthesis{mcdonaldthesis,
+  author = {R. McDonald},
+  title = {{Discriminative Training and Spanning Tree Algorithms for Dependency Parsing}},
+  school = {University of Pennsylvania},
+  address = {Philadelphia, PA, USA},
+  month = {July},
+  year = {2006},
+}
+
+@inproceedings{huang2005machine,
+  title={Machine translation as lexicalized parsing with hooks},
+  author={Huang, Liang and Zhang, Hao and Gildea, Daniel},
+  booktitle={Proceedings of the Ninth International Workshop on Parsing Technology},
+  pages={65--73},
+  year={2005},
+  organization={Association for Computational Linguistics}
+}
+
+@phdthesis{koothesis,
+  author = {T. Koo},
+  title = {{Advances in Discriminative Dependency Parsing}},
+  school = {Massachusetts Institute of Technology},
+  address = {Cambridge, MA, USA},
+  month = {June},
+  year = {2010},
+}
+
+@inproceedings{conll07,
+author = {J. Nivre and J. Hall and S. K\"{u}bler and R. McDonald and J. Nilsson and S. Riedel and D. Yuret},
+title = {{The CoNLL 2007 Shared Task on Dependency Parsing}},
+  booktitle = {Proc. EMNLP-CoNLL},
+  pages     = {915--932},
+year = {2007},
+}
+
+
+@inproceedings{WainwrightJW05a,
+ author    = {M. Wainwright and
+              T. Jaakkola and
+              A. Willsky},
+ title     = {{MAP} estimation via agreement on trees: message-passing and
+              linear programming.},
+ booktitle   = {IEEE Transactions on Information Theory},
+ volume    = {51},
+ number    = {11},
+ year      = {2005},
+ pages     = {3697-3717},
+}
+
+
+
+
+
+
+@InProceedings{riedel-clarke:2006:EMNLP,
+  author    = {S. Riedel  and  J. Clarke},
+  title     = {{Incremental Integer Linear Programming for Non-projective Dependency Parsing}},
+  booktitle = {Proc. EMNLP},
+  year      = {2006},
+  pages     = {129--137},
+  url       = {http://www.aclweb.org/anthology/W/W06/W06-1616}
+}
+
+
+
+
+@inproceedings{mcdonald05dp,
+  author    = {R. McDonald and K. Crammer and F. Pereira},
+  title     = {{Online Large-Margin Training of Dependency Parsers}},
+  booktitle = {Proc. ACL},
+  pages     = {91--98},
+  year      = 2005,
+}
+
+@inproceedings{mcdonald05mst,
+  author    = {R. McDonald and F. Pereira and K. Ribarov and J. Haji\v{c}},
+  title     = {{Non-Projective Dependency Parsing using Spanning Tree Algorithms}},
+  booktitle = {Proc. HLT-EMNLP},
+  year      = {2005},
+  pages     = {523--530},
+}
+
+@inproceedings{mcdonald06eacl,
+  title     = {{Online Learning of Approximate Dependency Parsing Algorithms}},
+  author    = {R. McDonald and F. Pereira},
+  booktitle = {Proc. EACL},
+  year      = {2006},
+  pages     = {81--88},
+}
+
+@inproceedings{mcdonald06conll,
+  author = {R. McDonald and K. Lerman and F. Pereira},
+  title = {{Multilingual Dependency Parsing with a Two-Stage Discriminative Parser}},
+  booktitle = {Proc. CoNLL},
+  pages = {216--220},
+  year = {2006},
+}
+
+@InProceedings{alshawi:1996:ACL,
+  author    = {H. Alshawi},
+  title     = {{Head Automata and Bilingual Tiling: Translation with Minimal Representations}},
+  booktitle = {Proc. ACL},
+  year      = {1996},
+  pages     = {167--176},
+  url       = {http://www.aclweb.org/anthology/P96-1023},
+  doi       = {10.3115/981863.981886}
+}
+
+
+
+@inproceedings{eisner96dp,
+ author =       {J. Eisner},
+ title =        {{Three New Probabilistic Models for Dependency Parsing: An Exploration}},
+ booktitle = {Proc. COLING},
+ year =         {1996},
+ pages     = {340--345},
+}
+
+@InProceedings{eisner99dp,
+  author = 	 {J. Eisner and G. Satta},
+  title = 	 {{Efficient Parsing for Bilexical Context-Free 
+                  Grammars and Head-Automaton Grammars}},
+  booktitle = {Proc. ACL},
+  year = 	 1999,
+  pages =	 {457--464},
+}
+
+
+@inproceedings{carreras07hodp,
+  author = {X. Carreras},
+  title     = {{Experiments with a Higher-Order Projective Dependency Parser}},
+  booktitle = {Proc. EMNLP-CoNLL},
+  pages     = {957--961},
+  year = {2007},
+}
+
+@inproceedings{nivre04memory,
+  author = {J. Nivre and J. Hall and J. Nilsson},
+  year = {2004},
+  title = {{Memory-Based Dependency Parsing}},
+   editors = {Hwee Tou Ng and Ellen Riloff},
+   pages = {49--56},
+  booktitle = {Proc. CoNLL},
+}
+
+@inproceedings{cheng05machine,
+  author = {Y. Cheng and M. Asahara and Y. Matsumoto},
+  title = {{Machine Learning-Based Dependency Analyzer for Chinese}},
+  year = {2005},
+  booktitle = {Proc. ICCC},
+}
+% ICCC = International Conference on Chinese Computing
+
+
+
+=== Phrase-structure parsing ================================================
+
+@inproceedings{bikel00wsdparse,
+  author = {D. Bikel},
+  title = {{A Statistical Model for Parsing and Word-Sense Disambiguation}},
+  booktitle = {Proc. EMNLP},
+  year = {2000},
+}
+
+@inproceedings{ratnaparkhi94pp,
+  author    = {A. Ratnaparkhi and J. Reynar and S. Roukos},
+  title     = {{A Maximum Entropy Model for Prepositional Phrase Attachment}},
+  booktitle = {Proc. ARPA HLTW},
+  year      = {1994},
+  pages     = {250--255},
+}
+
+@inproceedings{ratnaparkhi94parse,
+  author    = {A. Ratnaparkhi and S. Roukos and R.T. Ward},
+  title     = {{A Maximum Entropy Model for Parsing}},
+  booktitle = {Proc. ICSLP},
+  year      = {1994},
+}
+
+@inproceedings{black93towards,
+    author = {E. Black and F. Jelinek and J. Lafferty and D.M. Magerman and R.L. Mercer and S. Roukos},
+    title = {{Towards History-Based Grammars: Using Richer Models for Probabilistic Parsing}},
+    booktitle = {Meeting of the Association for Computational Linguistics},
+    pages = {31--37},
+    year = {1993},
+}
+
+@inproceedings{petrov07c2f,
+  author    = {S. Petrov  and  D. Klein},
+  title     = {{Improved Inference for Unlexicalized Parsing}},
+  booktitle = {Proc. HLT-NAACL},
+  year      = {2007},
+  pages     = {404--411},
+}
+
+
+@inproceedings{baker79insideoutside,
+author = {J. Baker},
+editors = {J.J. Wolf and D.H. Klatt},
+booktitle = {Proc. ASA},
+title = {{Trainable Grammars for Speech Recognition}},
+year = {1979},
+}
+
+@techreport{cocke,
+  author      = {J. Cocke and J.T. Schwartz},
+  title       = {{Programming Languages and Their Compilers: Preliminary Notes}},
+  institution = {New York University},
+  year        = {1970},
+}
+
+@techreport{kasami,
+  author      = {T. Kasami},
+  title       = {{An Efficient Recognition and Syntax-analysis Algorithm for Context-free Languages}},
+  institution = {Air Force Cambridge Research Lab},
+  year        = {1965},
+  number      = {AFCRL-65-758},
+}
+
+@article{younger,
+  author      = {D.H. Younger},
+  title       = {Recognition and parsing of context-free languages in time $n^3$},
+  journal     = {Information and Control},
+  volume      = {10},
+  number      = {2},
+  pages       = {189--208},
+  year        = {1967},
+}
+
+@techreport{paskin01insideoutside,
+  author = {M.A. Paskin},
+  title = {{Cubic-time Parsing and Learning Algorithms for Grammatical Bigram Models}},
+  institution = {University of California, Berkeley},
+  year = {2001},
+  number = {UCB/CSD-01-1148},
+}
+
+@inproceedings{riezler03lfg,
+  author    = {S. Riezler and T.H. King and R.S. Crouch and A. Zaenen},
+  title     = {{Statistical Sentence Condensation using Ambiguity Packing and Stochastic Disambiguation Methods for Lexical--Functional
+               Grammar}},
+  booktitle = {Proc. HLT-NAACL},
+  year      = {2003},
+}
+
+@article{johnson98parentannot,
+    author  = {M. Johnson},
+    title   = {{PCFG Models of Linguistic Tree Representations}},
+    journal = {Computational Linguistics},
+    volume  = {24},
+    number  = {4},
+    pages   = {613--632},
+    year    = {1998},
+}
+
+@inproceedings{riezler02wsj,
+  author    = {S. Riezler and T.H. King and R.M. Kaplan and R.S. Crouch and J.T. Maxwell III and M. Johnson},
+  title     = {{Parsing the Wall Street Journal using a Lexical-Functional Grammar and Discriminative Estimation Techniques}},
+  booktitle = {Proc. ACL},
+  year      = {2002},
+}
+
+@inproceedings{clark04ccg,
+  author    = {S. Clark and J.R. Curran},
+  title     = {{Parsing the WSJ Using CCG and Log-Linear Models.}},
+  booktitle = {Proc. ACL},
+  year      = {2004},
+  pages     = {103--110},
+}
+
+@inproceedings{collins95prep,
+  author    = {M. Collins and J. Brooks},
+  title     = {{Prepositional Phrase Attachment through a Backed-off Model}},
+  booktitle = {Proc. VLC},
+  year      = {1995},
+}
+
+@inproceedings{collins96new,
+  author    = {M. Collins},
+  title     = {{A New Statistical Parser Based on Bigram Lexical Dependencies}},
+  booktitle = {Proc. ACL},
+  year      = {1996},
+  pages     = {184--191},
+}
+
+@inproceedings{collins97three,
+  author    = {M. Collins},
+  title     = {{Three Generative, Lexicalised Models for Statistical Parsing}},
+  booktitle = {Proc. ACL},
+  year      = {1997},
+  pages     = {16--23},
+}
+
+@phdthesis{collinsthesis,
+  author       = {M. Collins},
+  title        = {Head-Driven Statistical Models for Natural Language Parsing},
+  school       = {University of Pennsylvania},
+  address      = {Philadelphia, PA, USA},
+  year         = {1999},
+}
+
+@inproceedings{collins02ne,
+  author    = {M. Collins},
+  title     = {{Ranking Algorithms for Named Entity Extraction: Boosting and the Voted Perceptron}},
+  booktitle = {Proc. ACL},
+  year      = {2002},
+}
+
+@inproceedings{collins02kernel,
+  author    = {M. Collins and N. Duffy},
+  title     = {{New Ranking Algorithms for Parsing and Tagging: Kernels over Discrete Structures, and the Voted Perceptron}},
+  booktitle = {Proc. ACL},
+  year      = {2002},
+}
+
+@InProceedings{collins99czech,
+  author    = {M. Collins  and  J. Haji\v{c}  and  L. Ramshaw  and  C. Tillmann},
+  title     = "{A Statistical Parser for Czech}",
+  booktitle = {Proc. ACL},
+  year      = {1999},
+  pages     = {505--512},
+}
+
+
+@article{collins03head,
+  author    = {M. Collins},
+  title     = {{Head-Driven Statistical Models for Natural Language Parsing}},
+  journal   = {Computational Linguistics},
+  volume    = {29},
+  number    = {4},
+  year      = {2003},
+  pages     = {589--637},
+}
+
+
+@article{charniak97tech,
+  author    = {E. Charniak},
+  title     = {{Statistical Techniques for Natural Language Parsing}},
+  journal   = {AI Magazine},
+  volume    = {18},
+  number    = {4},
+  year      = {1997},
+  pages     = {33--44},
+}
+
+@inproceedings{charniak97pars,
+  author    = {E. Charniak},
+  title     = {{Statistical Parsing with a Context-Free Grammar and Word Statistics}},
+  booktitle = {Proc. AAAI-IAAI},
+  year      = {1997},
+  pages     = {598--603},
+}
+
+@inproceedings{charniak00maximum,
+    author = {E. Charniak},
+    title = {{A Maximum-Entropy-Inspired Parser}},
+    booktitle = {Proc. {NAACL}},
+    year = {2000},
+}
+
+@inproceedings{charniak05c2f,
+  author    = {E. Charniak and M. Johnson},
+  title     = {{Coarse-to-fine $N$-best Parsing and MaxEnt Discriminative Reranking}},
+  booktitle = {Proc. ACL},
+  year      = {2005},
+}
+
+@inproceedings{klein03unlex,
+  author    = {D. Klein and C.D. Manning},
+  title     = {{Accurate Unlexicalized Parsing}},
+  booktitle = {Proc. ACL},
+  year      = {2003},
+  pages     = {423--430},
+}
+
+
+@inproceedings{carreras08tag,
+    author = {X. Carreras and M. Collins and T. Koo},
+    title = {{TAG, Dynamic Programming, and the Perceptron for Efficient, Feature-rich Parsing}},
+    booktitle = {{Proceedings of the 12\superth{} CoNLL}},
+    pages = {9--16},
+    year = {2008},
+}
+
+@inproceedings{finkel08cfg,
+  author = "J.R. Finkel and  A. Kleeman and C.D. Manning",
+  title = "{Efficient, Feature-based, Conditional Random Field Parsing}",
+  booktitle = {Proc. ACL},
+  pages = "959--967",
+  year = "2008",
+}
+
+@InProceedings{finkel07dp,
+  author    = {J.R. Finkel  and   T. Grenager  and   C.D. Manning},
+  title     = "{The Infinite Tree}",
+  booktitle = {Proc. ACL},
+  year      = {2007},
+  pages     = {272--279},
+}
+
+@InProceedings{goodman96metrics,
+  author    = {J. Goodman},
+  title     = {{Parsing Algorithms and Metrics}},
+  booktitle = {Proc. ACL},
+  year      = {1996},
+  pages     = {177--183},
+}
+
+@inproceedings{magerman95dtree,
+    author = {D.M. Magerman},
+    title = {{Statistical Decision-Tree Models for Parsing}},
+    booktitle = {{Proceedings of the 33rd Annual Meeting of the Association for Computational Linguistics}},
+    year = {1995},
+    pages = {276--283},
+}
+
+@inproceedings{jelinek94dtree,
+    author = {F. Jelinek and J. Lafferty and D.M. Magerman and R.L. Mercer and A. Ratnaparkhi and S. Roukos},
+    title = {Decision tree parsing using a hidden derivation model},
+    booktitle = {Proc. DARPA SNLW},
+    year = {1994},
+}
+
+@inproceedings{johnson01loglin,
+  author = {M. Johnson},
+ title = {{Joint and Conditional Estimation of Tagging and Parsing Models}},
+ booktitle = {Proc. ACL},
+ year = {2001},
+ pages = {322--329},
+}
+
+@inproceedings{johnson99ubg,
+  author = {M. Johnson and S. Geman and S. Canon and Z. Chi and S. Riezler},
+  title = {{Estimators for Stochastic ``Unification-Based'' Grammars}},
+  booktitle = {Proc. ACL},
+  year      = {1999},
+}
+
+@inproceedings{riezler04shallow,
+title = {{Speed and Accuracy in Shallow and Deep Stochastic Parsing}},
+author = {R.M. Kaplan and S. Riezler and T.H. King and J.T. Maxwell and A. Vasserman and R. Crouch},
+booktitle = {Proc. HLT-NAACL},
+year = {2004},
+}
+
+@inproceedings{sha03crf,
+ author = {F. Sha and F. Pereira},
+ title = {{Shallow Parsing with Conditional Random Fields}},
+ booktitle = {Proc. HLT-NAACL},
+ year = {2003},
+}
+
+
+
+=== Reranking Methods =======================================================
+
+@inproceedings{walker01spot,
+  author    = {M.A. Walker and O. Rambow and M. Rogati},
+  title     = {{SPoT: A Trainable Sentence Planner}},
+  booktitle = {Proc. NAACL},
+  year      = {2001},
+}
+
+@inproceedings{collins00rerank,
+    author = {M. Collins},
+    title = {{Discriminative Reranking for Natural Language Parsing}},
+    booktitle = {{Proc. ICML}},
+    year = {2000},
+}
+
+@article{collins05rerank,
+  author = {M. Collins and T. Koo},
+  title = "{Discriminative Reranking for Natural Language Parsing}",
+  journal = {Computational Linguistics},
+  volume = {31},
+  number = {1},
+  year = {2005},
+  pages = {25--69},
+}
+
+@InProceedings{huang08forest,
+  author    = {L. Huang},
+  title     = "{Forest Reranking: Discriminative Parsing with Non-Local Features}",
+  booktitle = {Proc. ACL},
+  year      = {2008},
+  pages     = {586--594},
+}
+
+@article{shen05rank,
+  author    = {L. Shen and A.K. Joshi},
+  title     = {{Ranking and Reranking with Perceptron}},
+  journal   = {Machine Learning, Special Issue on Learning in Speech and Language Technologies},
+  volume    = {60},
+  number    = {1--3},
+  pages     = {73--96},
+  year      = {2005},
+}
+
+@article{joshi1997tree,
+  title={{Tree-Adjoining Grammars}},
+  author={Joshi, A.K. and Schabes, Y.},
+  journal={Handbook of Formal Languages: Beyond Words},
+  volume={3},
+  pages={69--123},
+  year={1997}
+}
+
+@book{steedman2000syntactic,
+  title={{The Syntactic Process}},
+  author={Steedman, M.},
+  year={2000},
+  publisher={MIT Press}
+}
+
+
+
+=== Machine Translation =====================================================
+
+@InProceedings{huang08mt,
+  author    = {H. Mi   and  L. Huang  and  Q. Liu},
+  title     = "{Forest-Based Translation}",
+  booktitle = {Proc. ACL},
+  year      = {2008},
+  pages     = {192--199},
+}
+
+@inproceedings{shen04mt,
+  author    = {L. Shen and A. Sarkar and F.J. Och},
+  title     = {{Discriminative Reranking for Machine Translation}},
+  booktitle = {HLT-NAACL},
+  year      = {2004},
+  pages     = {177--184},
+}
+
+@inproceedings{och02mt,
+  author    = {F.J. Och and H. Ney},
+  title     = {{Discriminative Training and Maximum Entropy Models for Statistical Machine Translation}},
+  booktitle = {Proc. ACL},
+  year      = {2002},
+  pages     = {295--302},
+}
+
+@inproceedings{och04smorg,
+  author    = {F.J. Och and D. Gildea and S. Khudanpur and A. Sarkar and K. Yamada and A. Fraser and S. Kumar and L. Shen and D. Smith and K. Eng and V. Jain and Z. Jin and D. Radev},
+  title     = {{A Smorgasbord of Features for Statistical Machine Translation}},
+  booktitle = {HLT-NAACL},
+  year      = {2004},
+  pages     = {161--168},
+}
+
+
+
+
+
+=== Syntax-based models =====================================================
+
+
+@inproceedings{zettlemoyer07ccg,
+    author = {L. Zettlemoyer and M. Collins},
+    title = {{Online Learning of Relaxed CCG Grammars for Parsing to Logical Form}},
+    booktitle = {Proc. EMNLP-CoNLL},
+  pages     = {678--687},
+    year = {2007},
+}
+
+@inproceedings{siddharthan04summ,
+    author = {A. Siddharthan and A. Nenkova and K. McKeown},
+    title = {{Syntactic Simplification for Improving Content Selection in Multi-Document Summarization}},
+    booktitle = {Proc. COLING},
+    year = {2004},
+}
+
+@inproceedings{chandrasekar96text,
+  author    = {R. Chandrasekar and C. Doran and S. Bangalore},
+  title     = {Motivations and Methods for Text Simplification},
+  booktitle = {COLING},
+  year      = {1996},
+  pages     = {1041-1044},
+}
+  ee        = {http://acl.ldc.upenn.edu/C/C96/C96-2183.pdf},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+
+@inproceedings{carroll99text,
+    author = {J. Carroll and G. Minnen and D. Pearce and Y. Canning and S. Devlin and J. Tait},
+    title = {{Simplifying Text for Language-Impaired Readers}},
+    booktitle = {{Proceedings of the 9\superth{} EACL}},
+    year = {1999},
+    pages = {269--270},
+}
+
+@InProceedings{shen08mt,
+  author    = {L. Shen  and  J. Xu  and  R. Weischedel},
+  title     = {{A New String-to-Dependency Machine Translation Algorithm with a Target Dependency Language Model}},
+  booktitle = {Proc. ACL},
+  year      = {2008},
+  pages     = {577--585},
+}
+
+@phdthesis{cowanthesis,
+    author = {B. Cowan},
+    title = {{A Tree-to-Tree Model for Statistical Machine Translation}},
+    school = {Massachusetts Institute of Technology},
+    address = {Cambridge, MA, USA},
+    month = {June},
+    year = {2008},
+}
+
+@inproceedings{carreras09mt,
+    author = {X. Carreras and M. Collins},
+    title = {{Non-Projective Parsing for Statistical Machine Translation}},
+    booktitle = {Proc. EMNLP},
+  pages     = {200--209},
+    year = {2009},
+}
+
+@inproceedings{conll08sharedtask,
+    author = {M. Surdeanu and R. Johansson and A. Meyers and L. M\`{a}rquez and J. Nivre},
+    title = {{The CoNLL-2008 Shared Task on Joint Parsing of Syntactic and Semantic Dependencies}},
+    booktitle = {Proc. CoNLL},
+    year = {2008},
+}
+
+@InProceedings{martins-smith-xing:2009:ACLIJCNLP,
+  author    = {A.F.T. Martins  and  N.A. Smith  and  E.P. Xing},
+  title     = {{Concise Integer Linear Programming Formulations for Dependency Parsing}},
+  booktitle = {Proc. ACL},
+  year      = {2009},
+  pages     = {342--350},
+  url       = {http://www.aclweb.org/anthology/P/P09/P09-1039}
+}
+
+
+@inproceedings{conll09sharedtask,
+    author = {J. Haji\v{c} and M. Ciaramita and R. Johansson and D. Kawahara and M.A. Mart\'{i} and L. M\`{a}rquez and A. Meyers and J. Nivre and S. Pad\'{o} and J. \v{S}t\v{e}p\'{a}nek and P. Stra\v{n}\'{a}k and M. Surdeanu and N. Xue and Y. Zhang},
+    title = {{The CoNLL-2009 Shared Task: Syntactic and Semantic Dependencies in Multiple Languages}},
+    booktitle = {{Proceedings of the Thirteenth Conference on Computational Natural Language Learning (CoNLL): Shared Task}},
+    pages = {1--18},
+    year = {2009},
+}
+
+
+
+=== Hidden-variable models ==================================================
+
+@inproceedings{rush2012vine,
+  title={Vine pruning for efficient multi-pass dependency parsing},
+  author={Rush, A. and Petrov, S.},
+  booktitle={Joint Human Language Technology Conference/Annual Meeting of the North American Chapter of the Association for Computational Linguistics (HLT-NAACL’12)},
+  year={2012}
+}
+
+@incollection{petrov10rand,
+ title     = {Products of Random Latent Variable Grammars},
+ author    = {S. Petrov},
+ booktitle = {Proc. NAACL},
+ year      = {2010},
+}
+
+@incollection{quattoni05or,
+  author    = {AA. Quattoni and M. Collins and T. Darrell},
+  title     = {{Conditional Random Fields for Object Recognition}},
+  booktitle = {NIPS},
+  year      = {2005},
+}
+
+@inproceedings{koo05,
+  author = {T. Koo and M. Collins},
+  title = {{Hidden-Variable Models for Discriminative Reranking}},
+  pages     = {507--514},
+  booktitle = {Proc. HLT-EMNLP},
+  year = {2005},
+}
+
+@inproceedings{titov,
+  author = {I. Titov and J. Henderson},
+  title = {{Constituent Parsing with Incremental Sigmoid Belief Networks}},
+  booktitle = {Proc. ACL},
+  year      = {2007},
+  pages     = {632--639},
+}
+
+@inproceedings{matsuzaki05pcfg,
+  author    = {T. Matsuzaki  and  Y. Miyao  and  J. Tsujii},
+  title     = {{Probabilistic CFG with Latent Annotations}},
+  booktitle = {Proc. ACL},
+  year      = {2005},
+  pages     = {75--82},
+}
+
+
+@inproceedings{petrov,
+  title = {{Learning Accurate, Compact, and Interpretable Tree Annotation}},
+  author = {S. Petrov and L. Barrett and R. Thibaux and D. Klein},
+  booktitle = {Proc. COLING-ACL},
+  pages     = {433--440},
+  year = {2006},
+}
+
+
+
+=== Clustering ==============================================================
+
+@inproceedings{huffman,
+  author = {D.A. Huffman},
+  title = "{A Method for the Construction of Minimum-Redundancy Codes}",
+  booktitle = {Proc. IRE},
+  year = {1952},
+  pages = {1098--1102}
+}
+
+@inproceedings{clark00clus,
+  author = {A. Clark},
+  title = "{Inducing Syntactic Categories by Context Distribution Clustering}",
+  booktitle = {Proceedings of the 2\supernd{} Workshop on Learning Language in Logic and the 4\superth{} Conference on Computational Natural Language Learning},
+  pages = {91--94},
+  year = {2000},
+}
+
+@inproceedings{galechurch,
+  author = {W.A. Gale and K.W. Church and D. Yarowsky},
+  title = "{One Sense Per Discourse}",
+  booktitle = {Proceedings of the Workshop on Speech and Natural Language in the Human Language Technology Conference},
+  year = {1992},
+  pages = {233--237}
+}
+
+@article{brown92class,
+    author = {P.F. Brown and V.J. Della Pietra and P.V. {deSouza} and J.C. Lai and R.L. Mercer},
+    title = {{Class-Based $n$-gram Models of Natural Language}},
+    journal = {Computational Linguistics},
+    volume = {18},
+    number = {4},
+    pages = {467--479},
+    year = {1992},
+}
+
+@inproceedings{toutanova04random,
+  author    = {K. Toutanova and
+               C.D. Manning and
+               A.Y. Ng},
+  title     = {{Learning Random Walk Models for Inducing Word Dependency Distributions}},
+  booktitle = {Proc. ICML},
+  year      = {2004},
+}
+
+@inproceedings{pereira93dist,
+  author    = {F. Pereira and
+               N. Tishby and
+               L. Lee},
+  title     = {{Distributional Clustering of English Words}},
+  booktitle = {Proc. ACL},
+  year      = {1993},
+  pages     = {183--190},
+}
+
+@techreport{miller93wn,
+  author      = {G.A. Miller and R. Beckwith and C. Fellbaum and D. Gross and K. Miller},
+  title       = {{Five Papers on WordNet}},
+  institution = {Stanford University},
+  year        = {1993},
+}
+
+@inproceedings{johnson03sup,
+  author    = {M. Ciaramita and M. Johnson},
+  title     = {{Supersense Tagging of Unknown Nouns in WordNet}},
+  booktitle = {Proc. EMNLP},
+  year      = {2003},
+}
+
+@article{teh06hdp,
+  author = {Y.W. Teh and M.I. Jordan and M.J. Beal and D.M. Blei},
+  title = "{Hierarchical Dirichlet Processes}",
+  journal = {Journal of the American Statistical Association},
+  volume = {101},
+  number = {476},
+  pages = {1566--1581},
+  year = {2006},
+}
+
+
+
+=== Semi-supervised sequence learning =======================================
+
+@inproceedings{mccallum-hmmlda,
+  author = {W. Li and A. McCallum},
+  title = {{Semi-Supervised Sequence Modeling with Syntactic Topic Models}},
+  booktitle = {Proc. AAAI},
+  year = {2005},
+  pages = {813--818},
+}
+
+@mastersthesis{percythesis,
+  author = {P. Liang},
+  title = {{Semi-Supervised Learning for Natural Language}},
+  school = {Massachusetts Institute of Technology},
+  year = {2005},
+}
+
+@inproceedings{miller04ner,
+  author    = {S. Miller  and  J. Guinness  and  A. Zamanian},
+  title     = {{Name Tagging with Word Clusters and Discriminative Training}},
+  booktitle = {Proc. HLT-NAACL},
+  year      = 2004,
+  pages     = {337--342},
+}
+
+@InProceedings{suzuki07ss,
+  author    = {J. Suzuki  and  A. Fujino   and  H. Isozaki},
+  title     = "{Semi-Supervised Structured Output Learning Based on a Hybrid Generative and Discriminative Approach}",
+  booktitle = {Proc. EMNLP-CoNLL},
+  year      = {2007},
+  pages     = {791--800},
+}
+
+@InProceedings{suzuki08giga,
+  author    = {J. Suzuki  and H. Isozaki},
+  title     = "{Semi-Supervised Sequential Labeling and Segmentation Using Giga-Word Scale Unlabeled Data}",
+  booktitle = {Proc. ACL},
+  year      = {2008},
+  pages     = {665--673},
+}
+
+
+
+
+=== Semi-supervised parsing =================================================
+
+@inproceedings{selftraining,
+  author    = {D. McClosky and E. Charniak and M. Johnson},
+  title     = {{Effective Self-Training for Parsing}},
+  booktitle = {Proc. HLT-NAACL},
+  year      = {2006},
+  pages     = {152--159},
+}
+
+@inproceedings{wang,
+  author    = {Q.I. Wang and D. Schuurmans and D. Lin},
+  title     = {{Strictly Lexical Dependency Parsing}},
+  booktitle = {{Proceedings of the 9\superth{} IWPT}},
+  year      = {2005},
+  pages     = {152--159},
+}
+
+@inproceedings{koo08acl,
+  author    = {T. Koo and X. Carreras and M. Collins},
+  title     = {{Simple Semi-supervised Dependency Parsing}},
+  booktitle = {Proc. ACL},
+  year      = {2008},
+  pages     = {595--603},
+}
+
+@inproceedings{suzuki09ssdp,
+  author    = {J. Suzuki and H. Isozaki and X. Carreras and M. Collins},
+  title     = {{An Empirical Study of Semi-supervised Structured Conditional Models for Dependency Parsing}},
+  pages     = {551--560},
+  booktitle = {Proc. EMNLP},
+  year      = {2009},
+}
+
+
+
+=== Other Matrix-Tree papers ================================================
+
+@inproceedings{mcdonald07mtt,
+  author    = {R. McDonald and G. Satta},
+  title     = {{On the Complexity of Non-Projective Data-Driven Dependency Parsing}},
+  booktitle = {Proc. IWPT},
+  year      = {2007},
+}
+
+@book{korte2008combinatorial,
+  title={{Combinatorial Optimization: Theory and Algorithms}},
+  author={Korte, B.H. and Vygen, J.},
+  year={2008},
+  publisher={Springer Verlag}
+}
+
+@inproceedings{Lemarechal,
+ author = {C. Lemar\'{e}chal},
+ title = {{Lagrangian Relaxation}},
+ booktitle = {Computational Combinatorial Optimization, Optimal or Provably Near-Optimal Solutions [based on a Spring School]},
+ year = {2001},
+ isbn = {3-540-42877-1},
+ pages = {112--156},
+ publisher = {Springer-Verlag},
+ address = {London, UK},
+ }
+
+
+@inproceedings{smith07mtt,
+  author    = {D.A. Smith and N.A. Smith},
+  title     = {{Probabilistic Models of Nonprojective Dependency Trees}},
+  booktitle = {Proc. EMNLP-CoNLL},
+  pages     = {132--140},
+  year      = {2007},
+}
+
+@InProceedings{smith-eisner:2008:EMNLP,
+  author    = {D.A. Smith  and  J. Eisner},
+  title     = {{Dependency Parsing by Belief Propagation}},
+  booktitle = {Proc. EMNLP},
+  year      = {2008},
+  pages     = {145--156},
+  url       = {http://www.aclweb.org/anthology/D08-1016}
+}
+
+@incollection{Punyakanok05,
+title = {{Learning and Inference over Constrained Output}},
+author = {V. Punyakanok and D. Roth and W. Yih and D. Zimak},
+booktitle = {Proc. IJCAI},
+year = {2005},
+pages = {1124--1129}
+}
+
+
+
+@inproceedings{koo07mtt,
+  author    = {T. Koo and A. Globerson and X. Carreras and M. Collins},
+  title     = {{Structured Prediction Models via the Matrix-Tree Theorem}},
+  booktitle = {Proc. EMNLP-CoNLL},
+  pages     = {141--150},
+  year      = {2007},
+}
+
+
+=== POS tagging =============================================================
+
+@inproceedings{mxpost,
+    author = {A. Ratnaparkhi},
+    title = {{A Maximum Entropy Model for Part-Of-Speech Tagging}},
+    booktitle = {Proc. EMNLP},
+    pages = {133--142},
+    year = {1996},
+}
+
+
+
+=== EG Algorithms ===========================================================
+
+@inproceedings{bartlett04eg,
+ author = {Peter L. Bartlett and M. Collins and B. Taskar and D. McAllester},
+ title = {{Exponentiated Gradient Algorithms for Large-Margin Structured Classification}},
+ booktitle = {NIPS},
+ year = {2004},
+}
+
+@inproceedings{globerson07eg,
+    author = {A. Globerson and T. Koo and X. Carreras and M. Collins},
+    title = {Exponentiated Gradient Algorithms for Log-Linear Structured Prediction},
+    booktitle = {Proc. ICML},
+    pages = {305--312},
+    editor = {Zoubin Ghahramani},
+    year = {2007},
+}
+
+@article{collins08eg,
+    author = {M. Collins and A. Globerson and T. Koo and X. Carreras and P.L. Bartlett},
+    title = {{Exponentiated Gradient Algorithms for Conditional Random Fields and Max-Margin Markov Networks}},
+    journal = {Journal of Machine Learning Research},
+    pages = {1775--1822},
+    volume = {9},
+    month = {Aug},
+    year = {2008},
+}
+
+@article{kivinen01bounds,
+  author = {J. Kivinen and M.K. Warmuth},
+  title = "{Relative Loss Bounds for Multidimensional Regression Problems}",
+  journal = {Machine Learning},
+  volume = {45},
+  number = {3},
+  pages = {301--329},
+  year  = {2001}
+}
+
+@article{kivinen97eg,
+  author = {J. Kivinen and M.K. Warmuth},
+  title = "{Exponentiated Gradient versus Gradient Descent for Linear Predictors}",
+  journal = {Information and Computation},
+  volume = {132},
+  number = {1},
+  pages = {1--63},
+  year = {1997}
+}
+
+@article{bregman,
+  author = "L.M. Bregman",
+  title = "{The Relaxation Method of Finding the Common Point of Convex Sets and its Application to the Solution of Problems in Convex Programming}",
+  journal = "{U.S.S.R.} Computational Mathematics and Mathematical Physics",
+  volume = "7",
+  issue = "1",
+  pages = "200--217",
+  year = "1967"
+}
+
+
+
+=== Log-linear optimization =================================================
+
+
+@inproceedings{jaakkola99pkr,
+    author = {Tommi S. Jaakkola and D. Haussler},
+    title = "{Probabilistic Kernel Regression Models}",
+    booktitle = {Proc. AISTATS},
+    year = {1999},
+}
+@inproceedings{lafferty01crf,
+    author = {J. Lafferty and A. McCallum and F. Pereira},
+    title = {{Conditional Random Fields: Probabilistic Models for Segmenting and Labeling Sequence Data}},
+    booktitle = {Proc. ICML},
+    pages = {282--289},
+    year = {2001},
+}
+
+@incollection{lebanon02boosting,
+  author = "G. Lebanon and J. Lafferty",
+  title = "{Boosting and Maximum Likelihood for Exponential Models}",
+  editor = {T.G. Dietterich and S. Becker and Z. Ghahramani},
+  booktitle = "Advances in Neural Information Processing Systems 14",
+  pages = {447--454},
+  year = "2002",
+}
+
+@inproceedings{smith05ce,
+  author = {N.A. Smith and J. Eisner},
+  title = {{Contrastive Estimation: Training Log-Linear Models on Unlabeled Data}},
+  booktitle = {Proc. ACL},
+  pages =        {354--362},
+  year = {2005},
+}
+
+@InProceedings{smith07mest,
+  author    = {N.A. Smith  and  D.L. Vail  and  J.D. Lafferty},
+  title     = "{Computationally Efficient M-Estimation of Log-Linear Structure Models}",
+  booktitle = {Proc. ACL},
+  year      = {2007},
+  pages     = {752--759},
+}
+
+
+
+
+
+=== Max-margin optimization =================================================
+
+@inproceedings{boser92svm,
+  author = {B.E. Boser and I.M. Guyon and V.N. Vapnik},
+  title = "{A Training Algorithm for Optimal Margin Classifiers}",
+  booktitle = {Proc. COLT},
+  pages = {144--152},
+  year = {1992},
+}
+
+@article{cortes95svm,
+  author = {C. Cortes and V.N. Vapnik},
+  title = "{Support-vector Networks}",
+  journal = {Machine Learning},
+  volume = {20},
+  number = {3},
+  year = {1995},
+  pages = {273--297},
+}
+
+@inproceedings{shen03svm,
+   author     = {L. Shen and A.K. Joshi},
+   title      = {{An SVM-based Voting Algorithm with Application to Parse Reranking}},
+   booktitle = {Proc. CoNLL},
+   editor     = {Walter Daelemans and Miles Osborne},
+   pages      = {9--16},
+   year       = {2003},
+}
+
+@inproceedings{taskar03mmmn,
+  title={{Max-margin Markov networks}},
+  author={Taskar, B. and Guestrin, C. and Koller, D.},
+  year={2003},
+  booktitle={NIPS}
+}
+
+@inproceedings{taskar2004learning,
+ author = {B. Taskar and V. Chatalbashev and D. Koller},
+ title = {{Learning Associative Markov Networks}},
+ booktitle = {Proc. ICML},
+ year = {2004},
+ pages = {102},
+}
+
+
+
+@inproceedings{taskar04parsing,
+  title = {{Max-Margin Parsing}},
+  author = {B. Taskar and D. Klein and M. Collins and D. Koller and C.D. Manning},
+  booktitle = {Proc. EMNLP},
+  year = {2004},
+}
+
+@inproceedings{tsochantaridis04svm,
+    author = {I. Tsochantaridis and T. Hofmann and T. Joachims and Y. Altun},
+    title = {{Support Vector Machine Learning for Interdependent and Structured Output Spaces}},
+    booktitle = {{Proc. ICML}},
+    year = {2004},
+}
+
+@article{joachims09cut,
+  author = {T. Joachims and T. Finley and C.J. Yu},
+  title = "{Cutting-plane Training of Structural SVMs}",
+  journal = {Machine Learning},
+  volume = {77},
+  number = {1},
+  year = {2009},
+  publisher = {Springer Netherlands},
+}
+
+@article{taskar06exg,
+  author = {B. Taskar and S. Lacoste-Julien and M.I. Jordan},
+  title = {{Structured Prediction, Dual Extragradient and Bregman Projections}},
+  journal = {Journal of Machine Learning Research},
+  year = {2006},
+  volume = {7},
+  pages = {1627--1653},
+}
+
+@inproceedings{pegasos,
+  author = "S. Shalev-Shwartz and Y. Singer and N. Srebro",
+  booktitle = {Proc. ICML},
+  title = "{Pegasos: Primal Estimated sub-GrAdient SOlver for SVM}",
+  pages = "807--814",
+  year = "2007"
+}
+
+@article{forgetron,
+  author = {O. Dekel and S. Shalev-Shwartz and Y. Singer},
+  journal = {SIAM Journal on Computing},
+  volume = {37},
+  number = {5},
+  year = {2008},
+  month = {January},
+  page = {1342--1372}
+}
+
+@inproceedings{crammer03budget,
+    author = {K. Crammer and J. Kandola and Y. Singer},
+    title = "{Online Classification on a Budget}",
+    booktitle = {Advances in Neural Information Processing Systems 16},
+    year = {2003},
+}
+
+@article{mira-jmlr,
+    author = {K. Crammer and Y. Singer},
+    title = {{Ultraconservative Online Algorithms for Multiclass Problems}},
+    journal = {Journal of Machine Learning Research},
+    volume = {3},
+    year = {2003},
+    pages = {951--991},
+}
+
+@incollection{mira-nips,
+  author = {K. Crammer and O. Dekel and S. Shalev-Shwartz and Y. Singer},
+  title = {{Online Passive-Aggressive Algorithms}},
+  booktitle = {NIPS 16},
+  editor = {Sebastian Thrun and Lawrence K. Saul and Bernhard Sch\"{o}lkopf},
+  pages = {1229--1236},
+  year = {2004},
+}
+
+@book{vapnik,
+  author = "V. Vapnik",
+  title = "{The Nature of Statistical Learning Theory}",
+  publisher = "Springer-Verlag",
+  year = "1995"
+}
+
+
+=== Perceptron learning =====================================================
+
+@inproceedings{mcdonald10perc,
+  author = {R. McDonald and K. Hall and G. Mann},
+  title = "{Distributed Training Strategies for the Structured Perceptron}",
+  booktitle = {Proc. NAACL},
+  year = {2010}
+}
+
+@article{freund,
+    author = {Y. Freund and R.E. Schapire},
+    title = {{Large Margin Classification Using the Perceptron Algorithm}},
+    journal = {Machine Learning},
+    volume = {37},
+    number = {3},
+    pages = {277--296},
+    year = {1999},
+}
+
+
+@article{rosenblatt,
+  author = "F. Rosenblatt",
+  title = "{The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain}",
+  journal = "Psychological Review",
+  volume = "65",
+  number = "6",
+  pages = "386--408",
+  year = "1958"
+}
+
+@inproceedings{novikoff,
+  author = "A.B. Novikoff",
+  title = "{On convergence proofs on perceptrons}",
+  booktitle = "Proceedings of the Symposium on the Mathematical Theory of Automata",
+  volume = "12",
+  pages = "615--622",
+  year = "1962"
+}
+
+@inproceedings{zhang04sgd,
+  author = "T. Zhang",
+  title = "{Solving Large Scale Linear Prediction Problems Using Stochastic Gradient Descent Algorithms}",
+  booktitle = {Proc. ICML},
+  year = "2004"
+}
+
+
+
+=== AI foundations ==========================================================
+
+@article{baumwelch,
+  author = {L.E. Baum and T. Petrie and  G. Soules and N. Weiss},
+  title = {{A Maximization Technique Occurring in the Statistical Analysis of Probabilistic Functions of Markov Chains}},
+  journal = {The Annals of Mathematical Statistics},
+  volume = {41},
+  pages = {164--171},
+  year = {1970},
+}
+
+@book{pearl88bp,
+  author =       {J. Pearl},
+  title =        {{Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference (2nd edition)}},
+  Publisher =    {Morgan Kaufmann Publishers},
+  place = {San Francisco},
+  year =         {1988},
+}
+
+@book{cowell99prob,
+  author    = {R.G. Cowell and A. Philip Dawid and S.L. Lauritzen and D.J. Spiegelhalter},
+  title     = {{Probabilistic Networks and Expert Systems}},
+  publisher = {Springer},
+  year      = {1999},
+}
+
+@article{lecun98grad,
+  author  = {Y. LeCun and L. Bottou and Y. Bengio and P. Haffner},
+  title   = {{Gradient-Based Learning Applied to Document Recognition}},
+  journal = {Proceedings of IEEE},
+  month   = {November},
+  volume  = {86},
+  number  = {11},
+  pages   = {2278--2324},
+  year    = {1998},
+}
+
+@incollection{bottou04sgd,
+  author = {B. L\'{e}on},
+  title = {{Stochastic Learning}},
+  booktitle = {Advanced Lectures on Machine Learning},
+  pages = {146--168},
+  publisher = {Springer Verlag},
+  year = {2004},
+  editor = {Bousquet, Olivier and von Luxburg, Ulrike},
+  series = {Lecture Notes in Artificial Intelligence, LNAI~3176},
+}
+
+@inbook{yedidia03bp,
+  author    = {J.S. Yedidia and W.T. Freeman and Y. Weiss},
+  title     = {{Exploring Artificial Intelligence in the New Millennium}},
+  type      = {Chapter},
+  chapter   = {8: ``Understanding Belief Propagation and Its Generalizations''},
+  pages     = {239--236},
+  publisher = {Science \& Technology Books},
+  year      = {2003},
+}
+
+@book{devroye,
+  author = {L. Devroye and L. Gy\"{o}rfi and G. Lugosi},
+  title = "{A Probabilistic Theory of Pattern Recognition}",
+  publisher = {Springer-Verlag},
+  year = {1996}
+}
+
+@book{vapnik,
+  author = {V.N. Vapnik},
+  title = "{Statistical Learning Theory}",
+  publisher = {Wiley-Interscience},
+  year = {1998}
+}
+
+
+=== Mathematical foundations ================================================
+
+@article{chuliu,
+title = {{On the Shortest Arborescence of a Directed Graph}},
+author = {Y.J. Chu and T.H. Liu},
+year = {1965},
+journal= {Science Sinica},
+pages = {1396--1400},
+volume = {14},
+}
+
+@article{edmonds,
+  author = {J.R. Edmonds},
+  year = {1967},
+  title = {{Optimum Branchings}},
+  journal = {Journal of Research of the National Bureau of Standards},
+  volume = {71B},
+  pages = {233--240},
+}
+
+@book{tutte,
+  author =       {W.T. Tutte},
+  title =        {Graph Theory},
+  publisher =    {Addison-Wesley},
+  place = {Menlo Park, CA},
+  year =         {1984},
+}
+
+@article{kirchhoff,
+    author = {G. Kirchhoff},
+    title = {{\"{U}ber die Aufl\"{o}sung der Gleichungen, auf welche man bei der untersuchung der linearen verteilung galvanischer Str\"{o}me gef\"{u}hrt wird}},
+    journal = {{The Annals of Physical Chemistry}},
+    volume = {72},
+    pages = {497--508},
+    year = {1847},
+}
+
+% proving that the spanning tree polytope has exponentially
+% many constraints
+@article{chopra89polyhedron,
+  author = {S. Chopra},
+  title = {{On the Spanning Tree Polyhedron}},
+  journal = {Operations Research Letters},
+  pages = {25--29},
+  volume = {8},
+  year = {1989},
+}
+
+@inproceedings{mcallester99complex,
+    author    = {D.A. McAllester},
+    title     = {{On the Complexity Analysis of Static Analyses}},
+    booktitle = {Proceedings of the 6\superth{} Static Analysis Symposium},
+    year      = {1999},
+    pages     = {312--329},
+}
+
+
+@incollection{Kulesza08,
+ title = {Structured Learning with Approximate Inference},
+ author = {A. Kulesza and F. Pereira}, 
+ booktitle = {NIPS},
+ year = {2008}
+}
+
+@inproceedings{Finley08,
+ author = {T. Finley and T. Joachims},
+ title = {Training Structural SVMs when Exact Inference is Intractable},
+ booktitle = {ICML},
+ year = {2008},
+ isbn = {978-1-60558-205-4},
+ pages = {304--311},
+ location = {Helsinki, Finland},
+ doi = {http://doi.acm.org/10.1145/1390156.1390195},
+ }
+
+
+=== References for corpora ==================================================
+
+@book{pdt1,
+  author = {J. Haji\v{c} and E. Haji\v{c}ov\'{a} and P. Pajas and J. Panevova and P. Sgall},
+  title = {{The Prague Dependency Treebank 1.0, LDC No.~LDC2001T10}},
+  year = {2001},
+  place = {Philadelphia, CA},
+  publisher = {Linguistics Data Consortium},
+}
+
+@incollection{pdt2,
+      author = {J. Haji\v{c}},
+      title = {{Building a Syntactically Annotated Corpus: The Prague Dependency Treebank}},
+      booktitle = {Issues of Valency and Meaning. Studies in Honor of Jarmila Panevov\'{a}},
+      editor = {Eva Haji\v{c}ov\'{a}},
+      pages = {12--19},
+      year = {1998},
+}
+
+@article{penntreebank,
+  author = {M.P. Marcus and B. Santorini and M.A. Marcinkiewicz},
+  title = {{Building a Large Annotated Corpus of English: The Penn Treebank}},
+  journal = {Computational Linguistics},
+  volume = {19},
+  number = {2},
+  pages = {313--330},
+  year = {1993},
+}
+
+@Book{bllip,
+  author =       {E. Charniak and D. Blaheta and N. Ge and K. Hall and M. Johnson},
+  title =        {{BLLIP 1987--89 WSJ Corpus Release 1, LDC No.~LDC2000T43}},
+  Publisher =    {Linguistic Data Consortium},
+  place = {Philadelphia, CA},
+  year =         {2000},
+}
+
+@inproceedings{PADT,
+ author =       {J. Haji\v{c} and O. Smr\v{z} and P. Zem{\'a}nek and Jan
+\v{S}naidauf and Emanuel Be\v{s}ka},
+ title =        {{Prague} {Arabic} Dependency Treebank: Development in Data and Tools},
+ booktitle =    {Proceedings of the {NEMLAR} Intern. Conf. on {Arabic} Language
+Resources and Tools},
+ pages =        {110--117},
+ year =         2004
+}
+
+@inproceedings{Alpino,
+ author =       {L. {van der Beek} and G. Bouma and R. Malouf and G. {van Noord}},
+ title =        {The {Alpino} Dependency Treebank},
+ booktitle =    {Computational Linguistics in the Netherlands ({CLIN})},
+ year =         2002,
+}
+
+@TechReport{Verbmobil,
+ author =       {Y. Kawata and J. Bartels},
+ title =        {Stylebook for the {Japanese} Treebank in {VERBMOBIL}},
+ institution =  {Seminar f{\"u}r Sprachwissenschaft, Universit{\"a}t T{\"u}bingen},
+ year =         2000,
+ type =         {Verbmobil-Report},
+ number =       240
+}
+
+@inproceedings{SDT,
+ author =       {S. D\v{z}eroski and T. Erjavec and N. Ledinek and P. Pajas and Zdenek \v{Z}abokrtsk\'{y} and Andreja \v{Z}ele},
+ title =        {Towards a {Slovene} Dependency Treebank},
+ booktitle =    {Proceedings of the Fifth Intern. Conf. on Language Resources and
+Evaluation ({LREC})},
+ year =         2006,
+}
+
+@inproceedings{Cast3LB,
+ author =       {M. Civit Toruella and M\raisebox{1ex}{\small{a}} Ant\`{o}nia {Mart{\'{\i}}} Anton\'{\i}n},
+ title =        {Design Principles for a {Spanish} Treebank},
+ booktitle  =   {Proceedings of the First Workshop on Treebanks and Linguistic Theories ({TLT})},
+ year =         {2002},
+}
+
+@InCollection{MetuSabanci,
+ author =       {K. Oflazer and B. Say and D. Zeynep Hakkani-T\"{u}r and G. T\"{u}r},
+ title =        {Building a {Turkish} Treebank},
+ chapter =      15,
+ booktitle =    {Treebanks: Building and Using Parsed Corpora},
+ publisher =    {Kluwer Academic Publishers},
+ editor =       {A. Abeill{\'e}},
+ year =         2003
+}
+
+@inproceedings{sontag2010,
+author = {O. Meshi and  D. Sontag and T. Jaakkola and A. Globerson},
+title = {{Learning Efficiently with Approximate Inference via Dual Losses}},
+booktitle = {Proc. ICML},
+year = {2010}
+}
+
+
+@article{NANC,
+  title={North American News Text Corpus},
+  author={David Graff},
+  journal={Linguistic Data Consortium},
+  volume={LDC95T21},
+  year={1995}
+}
+
+@ARTICLE{Raphael01,
+    author = {Christopher Raphael},
+    title = {Coarse-to-Fine Dynamic Programming},
+    journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+    year = {2001},
+    volume = {23},
+    pages = {1379--1390}
+}
+
+
+@article{komodakis2011mrf,
+  title={MRF energy minimization and beyond via dual decomposition},
+  author={Komodakis, N. and Paragios, N. and Tziritas, G.},
+  journal={Pattern Analysis and Machine Intelligence, IEEE Transactions on},
+  number={99},
+  pages={1--1},
+  year={2011},
+  publisher={IEEE}
+}
+
+
+@article{ganchev2010posterior,
+  title={{Posterior Regularization for Structured Latent Variable Models}},
+  author={Ganchev, K. and Gra{\c{c}}a, J. and Gillenwater, J. and Taskar, B.},
+  journal={Journal of Machine Learning Research},
+  volume={11},
+  pages={2001--2049},
+  year={2010}
+}
+
+@conference{gillenwater2010sparsity,
+  title={{Sparsity in dependency grammar induction}},
+  author={Gillenwater, J. and Ganchev, K. and Gra{\c{c}}a, J. and Pereira, F. and Taskar, B.},
+  booktitle={Proceedings of the ACL 2010 Conference Short Papers},
+  year={2010},
+}
+
+@conference{mann2007simple,
+  title={{Simple, robust, scalable semi-supervised learning via expectation regularization}},
+  author={Mann, G.S. and McCallum, A.},
+  booktitle={ICML},
+  year={2007}
+}
+
+@INPROCEEDINGS{Chang07guidingsemi-supervision,
+    author = {Ming-Wei Chang and Lev Ratinov and Dan Roth},
+    title = {Guiding semi-supervision with constraint-driven learning},
+    booktitle = {ACL},
+    year = {2007}
+}
+
+@conference{chang2008learning,
+  title={{Learning and inference with constraints}},
+  author={Chang, M.W. and Ratinov, L. and Rizzolo, N. and Roth, D.},
+  booktitle={AAAI},
+  pages={1513--1518},
+  year={2008}
+}
+
+
+@article{Mann:2010:GEC:1756006.1756038,
+ author = {Mann, Gideon S. and McCallum, Andrew},
+ title = {Generalized Expectation Criteria for Semi-Supervised Learning with Weakly Labeled Data},
+ journal = {Journal of Machine Learning Research},
+ issue_date = {3/1/2010},
+ volume = {11},
+ month = {March},
+ year = {2010},
+ issn = {1532-4435},
+ pages = {955--984},
+ numpages = {30},
+ url = {http://portal.acm.org/citation.cfm?id=1756006.1756038},
+ acmid = {1756038},
+ publisher = {JMLR.org},
+} 
+
+@inproceedings{liang09measurements,
+  title = {Learning from Measurements in Exponential Families},
+  author = {P. Liang and M. I. Jordan and D. Klein},
+  booktitle = {ICML},
+  year = {2009},
+}
+
+@incollection{klein2005parsing,
+  title={Parsing and hypergraphs},
+  author={Klein, Dan and Manning, Christopher D},
+  booktitle={New developments in parsing technology},
+  pages={351--372},
+  year={2005},
+  publisher={Springer}
+}
+
+@conference{reichart2007self,
+  title={{Self-training for enhancement and domain adaptation of statistical parsers trained on small datasets}},
+  author={Reichart, R. and Rappoport, A.},
+  booktitle={ACL},
+  year={2007}
+}
+
+@article{hwa2004sample,
+  title={{Sample selection for statistical parsing}},
+  author={Hwa, R.},
+  journal={Computational Linguistics},
+  volume={30},
+  number={3},
+  pages={253--276},
+  issn={0891-2017},
+  year={2004},
+  publisher={MIT Press}
+}
+
+@inproceedings{Steedman:2003,
+ author = {Steedman, Mark and Osborne, Miles and Sarkar, Anoop and Clark, Stephen and Hwa, Rebecca and Hockenmaier, Julia and Ruhlen, Paul and Baker, Steven and Crim, Jeremiah},
+ title = {Bootstrapping statistical parsers from small datasets},
+ booktitle = {EACL},
+ year={2003},
+ url = {http://dx.doi.org/10.3115/1067807.1067851},
+ doi = {http://dx.doi.org/10.3115/1067807.1067851},
+ acmid = {1067851},
+} 
+
+@inproceedings{Cohen:2009,
+ author = {Cohen, Shay B. and Smith, Noah A.},
+ title = {Shared logistic normal distributions for soft parameter tying in unsupervised grammar induction},
+ booktitle = {NAACL},
+ series = {NAACL '09},
+ year = {2009},
+ isbn = {978-1-932432-41-1},
+ location = {Boulder, Colorado},
+ pages = {74--82},
+ numpages = {9},
+ url = {http://portal.acm.org/citation.cfm?id=1620754.1620766},
+ acmid = {1620766},
+ publisher = {Association for Computational Linguistics},
+ address = {Stroudsburg, PA, USA},
+} 
+
+
+@INPROCEEDINGS{Sutton04mccallum,
+    author = {Charles Sutton and Andrew Mccallum},
+    title = {Collective segmentation and labeling of distant entities in information extraction},
+    booktitle = {In ICML Workshop on Statistical Relational Learning and Its Connections},
+    year = {2004}
+}
+
+@conference{finkel2005incorporating,
+  title={{Incorporating non-local information into information extraction systems by gibbs sampling}},
+  author={Finkel, J.R. and Grenager, T. and Manning, C.},
+  booktitle={ACL},
+  year={2005}
+}
+
+@conference{blitzer2006domain,
+  title={{Domain adaptation with structural correspondence learning}},
+  author={Blitzer, J. and McDonald, R. and Pereira, F.},
+  booktitle={EMNLP},
+  pages={120--128},
+  isbn={1932432736},
+  year={2006},
+  organization={Association for Computational Linguistics}
+}
+
+@conference{daumé2007frustratingly,
+  title={{Frustratingly easy domain adaptation}},
+  author={Daum{\'e}, H.},
+  booktitle={ACL},
+  volume={45},
+  number={1},
+  pages={256},
+  issn={0736-587X},
+  year={2007}
+}
+
+
+@inproceedings{GlobersonJ07,
+  author    = {Amir Globerson and
+               Tommi Jaakkola},
+  title     = {Fixing Max-Product: Convergent Message Passing Algorithms
+               for MAP LP-Relaxations},
+  booktitle = {NIPS},
+  year      = {2007},
+  ee        = {http://books.nips.cc/papers/files/nips20/NIPS2007_0940.pdf},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{TaskerPK02,
+  author    = {Ben Taskar and
+               Pieter Abbeel and
+               Daphne Koller},
+  title     = {Discriminative Probabilistic Models for Relational Data},
+  booktitle = {UAI},
+  year      = {2002},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{BunescuM04,
+  author    = {Razvan C. Bunescu and
+               Raymond J. Mooney},
+  title     = {Collective Information Extraction with Relational Markov
+               Networks},
+  booktitle = {ACL},
+  year      = {2004},
+  ee        = {http://acl.ldc.upenn.edu/acl2004/main/pdf/329_pdf_2-col.pdf},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{McDonaldCP05,
+  author    = {Ryan T. McDonald and
+               Koby Crammer and
+               Fernando C. N. Pereira},
+  title     = {Online Large-Margin Training of Dependency Parsers},
+  booktitle = {ACL},
+  year      = {2005},
+  ee        = {http://acl.ldc.upenn.edu/P/P05/P05-1012.pdf},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{McDonaldPRH05,
+  author    = {Ryan T. McDonald and
+               Fernando Pereira and
+               Kiril Ribarov and
+               Jan Hajic},
+  title     = {Non-Projective Dependency Parsing using Spanning Tree Algorithms},
+  booktitle = {HLT/EMNLP},
+  year      = {2005},
+  ee        = {http://acl.ldc.upenn.edu/H/H05/H05-1066.pdf},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+
+@inproceedings{ToutanovaKMS03,
+  author    = {Kristina Toutanova and
+               Dan Klein and
+               Christopher D. Manning and
+               Yoram Singer},
+  title     = {Feature-Rich Part-of-Speech Tagging with a Cyclic Dependency
+               Network},
+  booktitle = {HLT-NAACL},
+  year      = {2003},
+  ee        = {http://acl.ldc.upenn.edu/N/N03/N03-1033.pdf},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+
+@inproceedings{Yarowsky95,
+  author    = {David Yarowsky},
+  title     = {Unsupervised Word Sense Disambiguation Rivaling Supervised
+               Methods},
+  booktitle = {ACL},
+  year      = {1995},
+  pages     = {189-196},
+}
+
+
+@conference{conllx,
+  title={{CoNLL-X shared task on multilingual dependency parsing}},
+  author={Buchholz, S. and Marsi, E.},
+  booktitle={Proceedings of the Tenth Conference on Computational Natural Language Learning},
+  pages={149--164},
+  year={2006},
+  organization={Association for Computational Linguistics}
+}
+@conference{taskar2005discriminative,
+  title={{A discriminative matching approach to word alignment}},
+  author={Taskar, B. and Lacoste-Julien, S. and Klein, D.},
+  booktitle={Proceedings of the conference on Human Language Technology and Empirical Methods in Natural Language Processing},
+  pages={73--80},
+  year={2005},
+  organization={Association for Computational Linguistics}
+}
+
+@conference{klein2003factored,
+  title={{Factored A* Search for Models over Sequences and Trees}},
+  author={Klein, D. and Manning, C.D.},
+  booktitle={Proc IJCAI},
+  volume={18},
+  pages={1246--1251},
+  issn={1045-0823},
+  year={2003},
+  organization={Citeseer}
+}
+
+@article{klein2002fast,
+  title={Fast exact inference with a factored model for natural language parsing},
+  author={Klein, D. and Manning, C.D.},
+  journal={Advances in neural information processing systems},
+  volume={15},
+  number={2002},
+  year={2002}
+}
+
+
+@inproceedings{Huber:2008:FAP:1347082.1347157,
+ author = {Huber, Mark and Law, Jenny},
+ title = {Fast approximation of the permanent for very dense problems},
+ booktitle = {Proceedings of the nineteenth annual ACM-SIAM symposium on Discrete algorithms},
+ series = {SODA '08},
+ year = {2008},
+ location = {San Francisco, California},
+ pages = {681--689},
+ numpages = {9},
+
+ address = {Philadelphia, PA, USA},
+} 
+
+@incollection{NIPS2009_0197,
+ title = {Exponential Family Graph Matching and Ranking},
+ author = {James Petterson and Tiberio Caetano and Julian McAuley and Jin Yu},
+ booktitle = {Advances in Neural Information Processing Systems 22},
+ editor = {Y. Bengio and D. Schuurmans and J. Lafferty and C. K. I. Williams and A. Culotta},
+ pages = {1455--1463},
+ year = {2009}
+}
+
+@article {held,
+   author = {Held, Michael and Karp, Richard M.},
+   affiliation = {IBM Systems Research Institute New York New York USA},
+   title = {The traveling-salesman problem and minimum spanning trees: Part II},
+   journal = {Mathematical Programming},
+   publisher = {Springer Berlin / Heidelberg},
+   issn = {0025-5610},
+   keyword = {Mathematics and Statistics},
+   pages = {6-25},
+   volume = {1},
+   issue = {1},
+   url = {http://dx.doi.org/10.1007/BF01584070},
+   note = {10.1007/BF01584070},
+   year = {1971}
+}
+
+
+@InProceedings{rush,
+  author    = {Rush, Alexander M  and  Sontag, David  and  Collins, Michael  and  Jaakkola, Tommi},
+  title     = {On Dual Decomposition and Linear Programming Relaxations for Natural Language Processing},
+  booktitle = {Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing},
+  month     = {October},
+  year      = {2010},
+  address   = {Cambridge, MA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1--11},
+  url       = {http://www.aclweb.org/anthology/D10-1001}
+}
+
+
+@InProceedings{koo,
+  author    = {Koo, Terry  and  Rush, Alexander M.  and  Collins, Michael  and  Jaakkola, Tommi  and  Sontag, David},
+  title     = {Dual Decomposition for Parsing with Non-Projective Head Automata},
+  booktitle = {Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing},
+  month     = {October},
+  year      = {2010},
+  address   = {Cambridge, MA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1288--1298},
+  url       = {http://www.aclweb.org/anthology/D10-1125}
+}
+
+
+@article{komodakis,
+  title={{Mrf energy minimization and beyond via dual decomposition}},
+  author={Komodakis, N. and Paragios, N. and Tziritas, G.},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  issn={0162-8828},
+  year={2010},
+  publisher={Published by the IEEE Computer Society}
+}@article{Sherali199483,
+title = "A hierarchy of relaxations and convex hull characterizations for mixed-integer zero--one programming problems",
+journal = "Discrete Applied Mathematics",
+volume = "52",
+number = "1",
+pages = "83 - 106",
+year = "1994",
+author = "Hanif D. Sherali and Warren P. Adams",
+}
+
+@inproceedings{Germann:2001:FDO:1073012.1073042,
+author = {Germann, Ulrich and Jahr, Michael and Knight, Kevin and
+Marcu, Daniel and Yamada, Kenji},
+title = {Fast decoding and optimal decoding for machine translation},
+booktitle = {Proceedings of the 39th Annual Meeting on Association
+for Computational Linguistics},
+series = {ACL '01},
+year = {2001},
+location = {Toulouse, France},
+pages = {228--235},
+numpages = {8},
+url = {http://dx.doi.org/10.3115/1073012.1073042},
+doi = {http://dx.doi.org/10.3115/1073012.1073042},
+acmid = {1073042},
+publisher = {Association for Computational Linguistics},
+address = {Morristown, NJ, USA},
+}
+
+@conference{riedel2009revisiting,
+ title={{Revisiting optimal decoding for machine translation IBM model 4}},
+ author={Riedel, S. and Clarke, J.},
+ booktitle={Proceedings of Human Language Technologies: The 2009
+Annual Conference of the North American Chapter of the Association for
+Computational Linguistics, Companion Volume: Short Papers},
+ pages={5--8},
+ year={2009},
+ organization={Association for Computational Linguistics}
+}
+
+@inproceedings{Liu:2006:TAT:1220175.1220252,
+author = {Liu, Yang and Liu, Qun and Lin, Shouxun},
+title = {Tree-to-string alignment template for statistical machine
+translation},
+booktitle = {Proceedings of the 21st International Conference on
+Computational Linguistics and the 44th annual meeting of the
+Association for Computational Linguistics},
+series = {ACL-44},
+year = {2006},
+location = {Sydney, Australia},
+pages = {609--616},
+numpages = {8},
+url = {http://dx.doi.org/10.3115/1220175.1220252},
+doi = {http://dx.doi.org/10.3115/1220175.1220252},
+acmid = {1220252},
+publisher = {Association for Computational Linguistics},
+address = {Morristown, NJ, USA},
+}
+
+
+
+@InProceedings{kumar-byrne:2005:HLTEMNLP,
+  author    = {Kumar, Shankar  and  Byrne, William},
+  title     = {Local Phrase Reordering Models for Statistical Machine Translation},
+  booktitle = {Proceedings of Human Language Technology Conference and Conference on Empirical Methods in Natural Language Processing},
+  month     = {October},
+  year      = {2005},
+  address   = {Vancouver, British Columbia, Canada},
+  publisher = {Association for Computational Linguistics},
+  pages     = {161--168},
+  url       = {http://www.aclweb.org/anthology/H/H05/H05-1021}
+}
+
+
+@inproceedings{byrnecl10,
+  title={{Hierarchical Phrase-Based Translation with Weighted Finite-State Transducers and Shallow-n Grammars}},
+  author={Adria de Gispert and Gonzalo Iglesias and Graeme Blackwood and Eduardo R. Banga and William Byrne},
+  booktitle={Computational linguistics},
+  volume={36},
+  number={3},
+  pages={505-533},
+  year={2010}
+}
+
+
+
+@InProceedings{iglesias-EtAl:2009:EACL,
+  author    = {Iglesias, Gonzalo  and  de Gispert, Adri\`{a}  and  Banga, Eduardo R.  and  Byrne, William},
+  title     = {Rule Filtering by Pattern for Efficient Hierarchical Translation},
+  booktitle = {Proceedings of the 12th Conference of the European Chapter of the ACL (EACL 2009)},
+  month     = {March},
+  year      = {2009},
+  address   = {Athens, Greece},
+  publisher = {Association for Computational Linguistics},
+  pages     = {380--388},
+  url       = {http://www.aclweb.org/anthology/E09-1044}
+}
+
+
+@InProceedings{iglesias-EtAl:2009:NAACLHLT09,
+  author    = {Iglesias, Gonzalo  and  de Gispert, Adri\`{a}  and  R. Banga, Eduardo  and  Byrne, William},
+  title     = {Hierarchical Phrase-Based Translation with Weighted Finite State Transducers},
+  booktitle = {Proceedings of Human Language Technologies: The 2009 Annual Conference of the North American Chapter of the Association for Computational Linguistics},
+  month     = {June},
+  year      = {2009},
+  address   = {Boulder, Colorado},
+  publisher = {Association for Computational Linguistics},
+  pages     = {433--441},
+  url       = {http://www.aclweb.org/anthology/N/N09/N09-1049}
+}
+
+
+@InProceedings{petrov-haghighi-klein:2008:EMNLP,
+  author    = {Petrov, Slav  and  Haghighi, Aria  and  Klein, Dan},
+  title     = {Coarse-to-Fine Syntactic Machine Translation using Language Projections},
+  booktitle = {Proceedings of the 2008 Conference on Empirical Methods in Natural Language Processing},
+  month     = {October},
+  year      = {2008},
+  address   = {Honolulu, Hawaii},
+  publisher = {Association for Computational Linguistics},
+  pages     = {108--116},
+  url       = {http://www.aclweb.org/anthology/D08-1012}
+}
+
+
+@article{chiang2007hierarchical,
+  title={{Hierarchical phrase-based translation}},
+  author={Chiang, D.},
+  journal={computational linguistics},
+  volume={33},
+  number={2},
+  pages={201--228},
+  issn={0891-2017},
+  year={2007},
+  publisher={MIT Press}
+}
+
+@InProceedings{huang-chiang:2007:ACLMain,
+  author    = {Huang, Liang  and  Chiang, David},
+  title     = {Forest Rescoring: Faster Decoding with Integrated Language Models},
+  booktitle = {Proceedings of the 45th Annual Meeting of the Association of Computational Linguistics},
+  month     = {June},
+  year      = {2007},
+  address   = {Prague, Czech Republic},
+  publisher = {Association for Computational Linguistics},
+  pages     = {144--151},
+  url       = {http://www.aclweb.org/anthology/P07-1019}
+}
+
+
+@InProceedings{huang-mi:2010:EMNLP,
+  author    = {Huang, Liang  and  Mi, Haitao},
+  title     = {Efficient Incremental Decoding for Tree-to-String Translation},
+  booktitle = {Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing},
+  month     = {October},
+  year      = {2010},
+  address   = {Cambridge, MA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {273--283},
+  url       = {http://www.aclweb.org/anthology/D10-1027}
+}
+
+
+@conference{langkilde,
+  title={{Forest-based statistical sentence generation}},
+  author={Langkilde, I.},
+  booktitle={Proceedings of the 1st North American chapter of the Association for Computational Linguistics conference},
+  pages={170--177},
+  year={2000},
+  organization={Morgan Kaufmann Publishers Inc.}
+}
+
+
+@InProceedings{libin,
+  author    = {Shen, Libin  and  Xu, Jinxi  and  Weischedel, Ralph},
+  title     = {A New String-to-Dependency Machine Translation Algorithm with a Target Dependency Language Model},
+  booktitle = {Proceedings of ACL-08: HLT},
+  month     = {June},
+  year      = {2008},
+  address   = {Columbus, Ohio},
+  publisher = {Association for Computational Linguistics},
+  pages     = {577--585},
+  url       = {http://www.aclweb.org/anthology/P/P08/P08-1066}
+}
+
+
+
+
+
+@conference{mcdonald2005non,
+  title={{Non-projective dependency parsing using spanning tree algorithms}},
+  author={McDonald, R. and Pereira, F. and Ribarov, K. and Hajic, J.},
+  booktitle={Proc. HLT/EMNLP},
+  pages={523--530},
+  year={2005}
+}
+
+@conference{pang2004sentimental,
+  title={{A sentimental education: Sentiment analysis using subjectivity summarization based on minimum cuts}},
+  author={Pang, B. and Lee, L.},
+  booktitle={Proc. ACL},
+  year={2004}
+}
+
+@inproceedings{meza2009jointly,
+  title={{Jointly identifying predicates, arguments and senses using markov logic}},
+  author={Meza-Ruiz, I. and Riedel, S.},
+  booktitle={Proc. NAACL},
+  pages={155--163},
+  year={2009},
+  organization={Association for Computational Linguistics}}
+
+
+
+@article{felzenszwalb2007generalized,
+  title={{The generalized A* architecture}},
+  author={Felzenszwalb, P. and McAllester, D.},
+  booktitle={Journal of Artificial Intelligence Research},
+  volume={29},
+  number={153-190},
+  pages={2Update},
+  year={2007}
+}
+
+@inproceedings{koo2008,
+  title={{Simple semi-supervised dependency parsing}},
+  author={Koo, T. and Carreras, X. and Collins, M.},
+  booktitle={Proc. ACL/HLT},
+  year={2008}
+}
+
+@inproceedings{eisner2000bilexical,
+  title={{Bilexical grammars and their cubic-time parsing algorithms}},
+  author={Eisner, J.},
+  booktitle={Advances in Probabilistic and Other Parsing Technologies},
+  pages={29--62},
+  year={2000}
+}
+
+@inproceedings{martins2009,
+  title={{Concise integer linear programming formulations for dependency parsing}},
+  author={Martins, A.F.T. and Smith, N.A. and Xing, E.P.},
+  booktitle={Proc. ACL},
+  year={2009}
+}
+
+@inproceedings{trombleeisner06,
+  author = {Tromble, Roy W. and Eisner, Jason},
+  title = {A fast finite-state relaxation method for enforcing global constraints on sequence decoding},
+  booktitle = {Proceedings of the main conference on Human Language Technology Conference of the North American Chapter of the \
+Association of Computational Linguistics},
+  series = {HLT-NAACL '06},
+  year = {2006},
+  location = {New York, New York},
+  pages = {423--430},
+  numpages = {8},
+  publisher = {Association for Computational Linguistics},
+  address = {Stroudsburg, PA, USA},
+}
+
+@inproceedings{riedelclarke06,
+  author = {Riedel, Sebastian and Clarke, James},
+  title = {Incremental integer linear programming for non-projective dependency parsing},
+  booktitle = {Proceedings of the 2006 Conference on Empirical Methods in Natural Language Processing},
+  series = {EMNLP '06},
+  year = {2006},
+  location = {Sydney, Australia},
+  pages = {129--137},
+  numpages = {9},
+  publisher = {Association for Computational Linguistics},
+  address = {Stroudsburg, PA, USA},
+}
+
+
+@inproceedings{smith2008,
+  title={{Dependency parsing by belief propagation}},
+  author={Smith, D.A. and Eisner, J.},
+  booktitle={Proc. EMNLP},
+  pages={145--156},
+  year={2008}
+}
+
+
+
+
+
+
+@inproceedings{werner2007linear,
+  title={{A linear programming approach to max-sum problem: A review}},
+  author={Werner, T.},
+  booktitle={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume={29},
+  number={7},
+  pages={1165--1179},
+  year={2007}
+}
+
+@inproceedings{mcallester2008case,
+  title={{Case-factor diagrams for structured probabilistic modeling}},
+  author={McAllester, D. and Collins, M. and Pereira, F.},
+  booktitle={Journal of Computer and System Sciences},
+  volume={74},
+  number={1},
+  pages={84--96},
+  year={2008}
+}
+
+@inproceedings{lafferty2001conditional,
+  title={{Conditional random fields: Probabilistic models for segmenting and labeling sequence data}},
+  author={Lafferty, J. and McCallum, A. and Pereira, F.},
+  booktitle={MACHINE LEARNING-INTERNATIONAL WORKSHOP THEN CONFERENCE-},
+  pages={282--289},
+  year={2001}
+}
+
+@inproceedings{wainwright2001tree,
+  title={{Tree-based reparameterization framework for approximate estimation of stochastic processes on graphs with cycles}},
+  author={Wainwright, M. and Jaakola, T. and Willsky, A.},
+  year={2001}
+}
+
+@inproceedings{schlesinger1976,
+title= {{False minima of the algorithm for minimizing energy of max-sum
+labeling problem}},
+author = {Schlesinger, M I.},
+year={1976}}
+
+
+@inproceedings{sontag2008tightening,
+  title={{Tightening LP relaxations for MAP using message passing}},
+  author={Sontag, D. and Meltzer, T. and Globerson, A. and Jaakkola, T. and Weiss, Y.},
+  booktitle={Proc. UAI},
+  year={2008}
+}
+
+@inproceedings{globerson2007,
+  title={{Fixing max-product: Convergent message passing algorithms for MAP LP-relaxations}},
+  author={Globerson, A. and Jaakkola, T.},
+  booktitle={NIPS},
+  volume={21},
+  year={2007}
+}
+
+
+@inproceedings{collins03,
+  title={{Head-driven statistical models for natural language parsing}},
+  author={Collins, M.},
+  booktitle={Computational linguistics},
+  volume={29},
+  number={4},
+  pages={589--637},
+  year={2003}
+}
+
+@inproceedings{klein2004parsing,
+  title={{Parsing and hypergraphs}},
+  author={Klein, D. and Manning, C.},
+  booktitle={New developments in parsing technology},
+  pages={351--372},
+  year={2004}
+}
+
+@inproceedings{martins2008stacking,
+  title={{Stacking dependency parsers}},
+  author={Martins, A.F.T. and Das, D. and Smith, N.A. and Xing, E.P.},
+  booktitle={Proc. EMNLP},
+  pages={157--166},
+  year={2008}
+}
+
+@inproceedings{nivre2008integrating,
+  title={{Integrating graph-based and transition-based dependency parsers}},
+  author={Nivre, J. and McDonald, R.},
+  booktitle={Proc. of ACL-08},
+  pages={950--958},
+  year={2008}
+}
+
+
+
+@inproceedings{ahuja1993network,
+  title={{Network flows: theory, algorithms, and applications}},
+  author={Ahuja, R.K. and Magnanti, T.L. and Orlin, J.B. and Weihe, K.},
+  year={1993},
+  publisher={Prentice hall Englewood Cliffs, NJ}
+}
+
+
+@inproceedings{koller2009probabilistic,
+  title={{Probabilistic graphical models}},
+  author={Koller, D. and Friedman, N.},
+  year={2009},
+  publisher={MIT Press}
+}
+
+@book{boyd2004convex,
+  title={{Convex optimization}},
+  author={Boyd, S.P. and Vandenberghe, L.},
+  year={2004},
+  publisher={Cambridge Univ Pr}
+}
+
+@article{martin1990,
+  title={{Polyhedral characterization of discrete dynamic programming}},
+  author={Martin, R.K. and Rardin, R.L. and Campbell, B.A.},
+  journal={Operations research},
+  volume=38,
+  number=1,
+  pages={127--138},
+  year=1990
+}
+
+
+
+@inproceedings{toutanova2003feature,
+  title={{Feature-rich part-of-speech tagging with a cyclic dependency network}},
+  author={Toutanova, K. and Klein, D. and Manning, C.D. and Singer, Y.},
+  booktitle={Proc. NAACL},
+  pages={173--180},
+  year={2003}
+}
+
+
+
+
+@inproceedings{junqua27robustness,
+  title={{Robustness in language and speech technology}},
+  author={Junqua, J.C. and van Noord, G.},
+  booktitle={Computational Linguistics},
+  volume={27},
+  number={4}
+}
+
+
+@inproceedings{finkel2005,
+  title={{Incorporating non-local information into information extraction systems by gibbs sampling}},
+  author={Finkel, J.R. and Grenager, T. and Manning, C.},
+  booktitle={ANNUAL MEETING-ASSOCIATION FOR COMPUTATIONAL LINGUISTICS},
+  volume={43},
+  number={1},
+  pages={363},
+  year={2005}
+}
+
+
+@inproceedings{riedel2006,
+  title={{Incremental integer linear programming for non-projective dependency parsing}},
+  author={Riedel, S. and Clarke, J.},
+  booktitle={Proc. EMNLP},
+  pages={129--137},
+  year={2006}
+}
+
+
+@inproceedings{nedic2007,
+  title={{Approximate primal solutions and rate analysis for dual subgradient methods}},
+  author={Nedic, A. and Ozdaglar, A.},
+  booktitle={Urbana},
+  volume={51},
+  pages={61853},
+  year={2007}
+}
+
+
+@inproceedings{charniak2005,
+  title={{Coarse-to-fine n-best parsing and MaxEnt discriminative reranking}},
+  author={Charniak, E. and Johnson, M.},
+  booktitle={Proc. ACL},
+  pages={180},
+  year={2005}
+}
+
+@inproceedings{klein2003,
+  title={{A* parsing: Fast exact Viterbi parse selection}},
+  author={Klein, D. and Manning, C.D.},
+  booktitle={Proc. of HLT-NAACL},
+  volume={3},
+  pages={119--126},
+  year={2003}
+}
+
+@inproceedings{koehn2003,
+  title={{Statistical phrase-based translation}},
+  author={Koehn, P. and Och, F.J. and Marcu, D. and others},
+  booktitle={Proc. NAACL},
+  volume={1},
+  pages={48--54},
+  year={2003}
+}
+
+@inproceedings{wainwright2003,
+  title={{Variational inference in graphical models: The view from the marginal polytope}},
+  author={Wainwright, M.J. and Jordan, M.I.},
+  booktitle={Proc. Allerton},
+  volume={41},
+  number={2},
+  pages={961--971},
+  year={2003}
+}
+
+
+
+@inproceedings{WainwrightJW05b,
+ author    = {M. Wainwright and
+              T. Jaakkola and
+              A. Willsky},
+ title     = {A new class of upper bounds on the log partition function},
+ booktitle   = {IEEE Transactions on Information Theory},
+ volume    = {51},
+ number    = {7},
+ year      = {2005},
+ pages     = {2313-2335},
+ bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+
+
+
+
+@inproceedings{Liu:2006:TAT:1220175.1220252,
+author = {Liu, Yang and Liu, Qun and Lin, Shouxun},
+title = {Tree-to-string alignment template for statistical machine
+translation},
+booktitle = {Proceedings of the 21st International Conference on
+Computational Linguistics and the 44th annual meeting of the
+Association for Computational Linguistics},
+series = {ACL-44},
+year = {2006},
+location = {Sydney, Australia},
+pages = {609--616},
+numpages = {8},
+url = {http://dx.doi.org/10.3115/1220175.1220252},
+doi = {http://dx.doi.org/10.3115/1220175.1220252},
+acmid = {1220252},
+publisher = {Association for Computational Linguistics},
+address = {Morristown, NJ, USA},
+}
+
+
+@inproceedings{Watanabe:2006:LTG:1220175.1220273,
+author = {Watanabe, Taro and Tsukada, Hajime and Isozaki, Hideki},
+title = {Left-to-right target generation for hierarchical
+phrase-based translation},
+booktitle = {Proceedings of the 21st International Conference on
+Computational Linguistics and the 44th annual meeting of the
+Association for Computational Linguistics},
+series = {ACL-44},
+year = {2006},
+location = {Sydney, Australia},
+pages = {777--784},
+numpages = {8},
+url = {http://dx.doi.org/10.3115/1220175.1220273},
+doi = {http://dx.doi.org/10.3115/1220175.1220273},
+acmid = {1220273},
+publisher = {Association for Computational Linguistics},
+address = {Morristown, NJ, USA},
+}
+
+@InProceedings{iglesias-EtAl:2009:NAACLHLT09,
+  author    = {Iglesias, Gonzalo  and  de Gispert, Adri\`{a}  and  R. Banga, Eduardo  and  Byrne, William},
+  title     = {Hierarchical Phrase-Based Translation with Weighted Finite State Transducers},
+  booktitle = {Proceedings of Human Language Technologies: The 2009 Annual Conference of the North American Chapter of the Association for Computational Linguistics},
+  month     = {June},
+  year      = {2009},
+  address   = {Boulder, Colorado},
+  publisher = {Association for Computational Linguistics},
+  pages     = {433--441},
+  url       = {http://www.aclweb.org/anthology/N/N09/N09-1049}
+}
+
+
+
+
+
+
+
+@conference{chiang,
+  title={{A hierarchical phrase-based model for statistical machine translation}},
+  author={Chiang, D.},
+  booktitle={Proceedings of the 43rd Annual Meeting on Association for Computational Linguistics},
+  pages={263--270},
+  year={2005},
+  organization={Association for Computational Linguistics}
+}
+
+@conference{langkilde,
+  title={{Forest-based statistical sentence generation}},
+  author={Langkilde, I.},
+  booktitle={Proceedings of the 1st North American chapter of the Association for Computational Linguistics conference},
+  pages={170--177},
+  year={2000},
+  organization={Morgan Kaufmann Publishers Inc.}
+}
+
+@InProceedings{knight,
+  author    = {Marcu, Daniel and Wang, Wei and Echihabi, Abdessamad
+                  and Knight, Kevin},
+  title     = {SPMT: Statistical Machine Translation with Syntactified
+                  Target Language Phrases},
+  booktitle = {Proceedings of the 2006 Conference on Empirical Methods
+                  in Natural Language Processing},
+  month     = {July},
+  year      = {2006},
+  address   = {Sydney, Australia},
+  publisher = {Association for Computational Linguistics},
+  pages     = {44--52}
+}
+
+
+@conference{mcdonald2005non,
+  title={{Non-projective dependency parsing using spanning tree algorithms}},
+  author={McDonald, R. and Pereira, F. and Ribarov, K. and Hajic, J.},
+  booktitle={Proc. HLT/EMNLP},
+  pages={523--530},
+  year={2005}
+}
+
+@conference{pang2004sentimental,
+  title={{A sentimental education: Sentiment analysis using subjectivity summarization based on minimum cuts}},
+  author={Pang, B. and Lee, L.},
+  booktitle={Proc. ACL},
+  year={2004}
+}
+
+@inproceedings{meza2009jointly,
+  title={{Jointly identifying predicates, arguments and senses using markov logic}},
+  author={Meza-Ruiz, I. and Riedel, S.},
+  booktitle={Proc. NAACL},
+  pages={155--163},
+  year={2009},
+  organization={Association for Computational Linguistics}}
+
+@inproceedings{RothYi05,
+ author = {D. Roth and W. Yih},
+ title = {Integer Linear Programming Inference for Conditional Random Fields},
+ booktitle= {Proc. ICML},
+ year = {2005},
+ pages = {737--744}}
+
+
+@inproceedings{yanover2006linear,
+  title={{Linear Programming Relaxations and Belief Propagation--An Empirical Study}},
+  author={Yanover, C. and Meltzer, T. and Weiss, Y.},
+  booktitle={The Journal of Machine Learning Research},
+  volume={7},
+  pages={1907},
+  year={2006},
+  publisher={MIT Press}
+}
+
+
+@article{felzenszwalb2007generalized,
+  title={{The generalized A* architecture}},
+  author={Felzenszwalb, P. and McAllester, D.},
+  booktitle={Journal of Artificial Intelligence Research},
+  volume={29},
+  number={153-190},
+  pages={2Update},
+  year={2007}
+}
+
+
+@inproceedings{barhillel,
+  title={{On formal properties of simple phrase structure grammars}},
+  author={Bar-Hillel, Y. and Perles, M. and Shamir, E.},
+  booktitle={Language and Information: Selected Essays on their Theory and Application},
+  pages={116--150},
+  year={1964}
+}
+
+
+
+@inproceedings{dantzig1960,
+  title={{Decomposition principle for linear programs}},
+  author={Dantzig, G.B. and Wolfe, P.},
+  booktitle={Operations research},
+  volume={8},
+  number={1},
+  pages={101--111},
+  year={1960}
+  
+}
+
+
+
+
+
+
+
+@inproceedings{carreras2008tag,
+  title={{TAG, dynamic programming, and the perceptron for efficient, feature-rich parsing}},
+  author={Carreras, X. and Collins, M. and Koo, T.},
+  booktitle={Proc CONLL},
+  pages={9--16},
+  year={2008}
+}
+
+
+
+
+@inproceedings{werner2007linear,
+  title={{A linear programming approach to max-sum problem: A review}},
+  author={Werner, T.},
+  booktitle={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume={29},
+  number={7},
+  pages={1165--1179},
+  year={2007}
+}
+
+@inproceedings{mcallester2008case,
+  title={{Case-factor diagrams for structured probabilistic modeling}},
+  author={McAllester, D. and Collins, M. and Pereira, F.},
+  booktitle={Journal of Computer and System Sciences},
+  volume={74},
+  number={1},
+  pages={84--96},
+  year={2008}
+}
+
+
+@inproceedings{wainwright2001tree,
+  title={{Tree-based reparameterization framework for approximate estimation of stochastic processes on graphs with cycles}},
+  author={Wainwright, M. and Jaakola, T. and Willsky, A.},
+  year={2001}
+}
+
+@inproceedings{schlesinger1976,
+title= {{False minima of the algorithm for minimizing energy of max-sum
+labeling problem}},
+author = {Schlesinger, M I.},
+year={1976}}
+
+
+
+@inproceedings{klein2004parsing,
+  title={{Parsing and hypergraphs}},
+  author={Klein, D. and Manning, C.},
+  booktitle={New developments in parsing technology},
+  pages={351--372},
+  year={2004}
+}
+
+@inproceedings{martins2008stacking,
+  title={{Stacking dependency parsers}},
+  author={Martins, A.F.T. and Das, D. and Smith, N.A. and Xing, E.P.},
+  booktitle={Proc. EMNLP},
+  pages={157--166},
+  year={2008}
+}
+
+@inproceedings{nivre2008integrating,
+  title={{Integrating graph-based and transition-based dependency parsers}},
+  author={Nivre, J. and McDonald, R.},
+  booktitle={Proc. of ACL-08},
+  pages={950--958},
+  year={2008}
+}
+
+
+
+@inproceedings{ahuja1993network,
+  title={{Network flows: theory, algorithms, and applications}},
+  author={Ahuja, R.K. and Magnanti, T.L. and Orlin, J.B. and Weihe, K.},
+  year={1993},
+  publisher={Prentice hall Englewood Cliffs, NJ}
+}
+
+
+@inproceedings{koller2009probabilistic,
+  title={{Probabilistic graphical models}},
+  author={Koller, D. and Friedman, N.},
+  year={2009},
+  publisher={MIT Press}
+}
+
+
+
+@article{nedic2007approximate,
+author = {Angelia Nedi\'{c} and Asuman Ozdaglar},
+title = {Approximate Primal Solutions and Rate Analysis for Dual Subgradient Methods},
+publisher = {SIAM},
+year = {2009},
+journal = {SIAM Journal on Optimization},
+volume = {19},
+number = {4},
+pages = {1757-1780},
+}
+
+
+@inproceedings{toutanova2003feature,
+  title={{Feature-rich part-of-speech tagging with a cyclic dependency network}},
+  author={Toutanova, K. and Klein, D. and Manning, C.D. and Singer, Y.},
+  booktitle={Proc. NAACL},
+  pages={173--180},
+  year={2003}
+}
+
+
+
+
+@inproceedings{junqua27robustness,
+  title={{Robustness in language and speech technology}},
+  author={Junqua, J.C. and van Noord, G.},
+  booktitle={Computational Linguistics},
+  volume={27},
+  number={4}
+}
+
+
+@inproceedings{finkel2005,
+  title={{Incorporating non-local information into information extraction systems by gibbs sampling}},
+  author={Finkel, J.R. and Grenager, T. and Manning, C.},
+  booktitle={ANNUAL MEETING-ASSOCIATION FOR COMPUTATIONAL LINGUISTICS},
+  volume={43},
+  number={1},
+  pages={363},
+  year={2005}
+}
+
+@inproceedings{duchi2007,
+  title={{Using combinatorial optimization within max-product belief propagation}},
+  author={Duchi, J. and Tarlow, D. and Elidan, G. and Koller, D.},
+  booktitle={NIPS},
+  volume={19},
+  year={2007}
+}
+
+
+@inproceedings{nedic2007,
+  title={{Approximate primal solutions and rate analysis for dual subgradient methods}},
+  author={Nedic, A. and Ozdaglar, A.},
+  booktitle={Urbana},
+  volume={51},
+  pages={61853},
+  year={2007}
+}
+
+
+
+@inproceedings{charniak2005,
+  title={{Coarse-to-fine n-best parsing and MaxEnt discriminative reranking}},
+  author={Charniak, E. and Johnson, M.},
+  booktitle={Proc. ACL},
+  pages={180},
+  year={2005}
+}
+
+@inproceedings{klein2003,
+  title={{A* parsing: Fast exact Viterbi parse selection}},
+  author={Klein, D. and Manning, C.D.},
+  booktitle={Proc. of HLT-NAACL},
+  volume={3},
+  pages={119--126},
+  year={2003}
+}
+
+
+@inproceedings{wainwright2003,
+  title={{Variational inference in graphical models: The view from the marginal polytope}},
+  author={Wainwright, M.J. and Jordan, M.I.},
+  booktitle={Proc. Allerton},
+  volume={41},
+  number={2},
+  pages={961--971},
+  year={2003}
+}
+
+@conference{stanfordtagger,
+  title={{Enriching the knowledge sources used in a maximum entropy part-of-speech tagger}},
+  author={Toutanova, K. and Manning, C.D.},
+  booktitle={Proc. EMNLP},
+  pages={63--70},
+  year={2000}
+}
+
+@book{wainwrightbook,
+ author = {Wainwright, M. and Jordan, M. I.},
+ title = {Graphical Models, Exponential Families, and Variational Inference},
+ year = {2008},
+ isbn = {1601981848, 9781601981844},
+ publisher = {Now Publishers Inc.},
+ address = {Hanover, MA, USA},
+ }
+
+
+
+
+@InProceedings{riedel,
+  author    = {Riedel, Sebastian  and  McCallum, Andrew},
+  title     = {Fast and Robust Joint Models for Biomedical Event Extraction},
+  booktitle = {Proceedings of the 2011 Conference on Empirical Methods in Natural Language Processing},
+  month     = {July},
+  year      = {2011},
+  address   = {Edinburgh, Scotland, UK.},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1--12},
+  url       = {http://www.aclweb.org/anthology/D11-1001}
+}
+
+@InProceedings{auli,
+  author    = {Auli, Michael  and  Lopez, Adam},
+  title     = {A Comparison of Loopy Belief Propagation and Dual Decomposition for Integrated CCG Supertagging and Parsing},
+  booktitle = {Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies},
+  month     = {June},
+  year      = {2011},
+  address   = {Portland, Oregon, USA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {470--480}
+}
+
+@InProceedings{willskylr,
+author = {J.K. Johnson and D.M. Malioutov and A.S. Willsky},
+title = {Lagrangian relaxation for map estimation in graphical models},
+booktitle = {45th Annual Allerton Conference on Communication, Control and Computing},
+year = {2007}
+}
+
+@InProceedings{sontagsurvey,
+author = {D. Sontag and  A. Globerson and T. Jaakkola},
+title = {Introduction to Dual Decomposition for Inference},
+booktitle = {Optimization for Machine Learning},
+editor = {S. Sra and S. Nowozin and S. J. Wright},
+publisher = {MIT Press},
+year = {2010}
+}
+
+@INPROCEEDINGS{duchi,
+    author = {John Duchi and Daniel Tarlow and Gal Elidan and Daphne Koller},
+    title = {Using combinatorial optimization within max-product belief propagation},
+    booktitle = {Advances in Neural Information Processing Systems (NIPS)},
+    year = {2007}
+}
+
+@InProceedings{martins2011,
+  author    = {Martins, Andre  and  Smith, Noah  and  Figueiredo, Mario  and  Aguiar, Pedro},
+  title     = {Dual Decomposition with Many Overlapping Components},
+  booktitle = {Proceedings of the 2011 Conference on Empirical Methods in Natural Language Processing},
+  month     = {July},
+  year      = {2011},
+  address   = {Edinburgh, Scotland, UK.},
+  publisher = {Association for Computational Linguistics},
+  pages     = {238--249},
+  url       = {http://www.aclweb.org/anthology/D11-1022}
+}
+
+@inproceedings{jojic,
+  author = {V. Jojic and S. Gould and D. Koller},
+  title = {Fast and smooth: {A}ccelerated dual decomposition for {MAP} inference},
+  booktitle = {Proceedings of International Conference on Machine Learning (ICML)},
+  year = 2010
+}
+
+
+
+@techreport{magnanti,
+ author = {Magnanti, T. L. and Wolsey, L. A.},
+ title = {Optimal Trees},
+ year = {1994},
+ number = {290-94},
+ institution = {Massachusetts Institute of Technology, Operations Research Center}
+}
+
+@inproceedings{koehn03,
+  author = {Koehn, Philipp and Och, Franz Josef and Marcu, Daniel},
+  title = {Statistical phrase-based translation},
+  booktitle = {Proceedings of the 2003 Conference of the North American Chapter of the Association for Computational Linguistic\
+s on Human Language Technology},
+  year = {2003},
+  pages = {48--54},
+  series = {NAACL '03},
+  location = {Edmonton, Canada},
+  doi = {http://dx.doi.org/10.3115/1073445.1073462},
+}
+
+@article{fisher1981,
+     title = {The Lagrangian Relaxation Method for Solving Integer Programming Problems},
+     author = {Fisher, Marshall L.},
+     journal = {Management Science},
+     volume = {27},
+     number = {1},
+     pages = {pp. 1-18},
+     year = {1981},
+}
+
+@article{felzenszwalb2006efficient,
+  title={Efficient belief propagation for early vision},
+  author={Felzenszwalb, P.F. and Huttenlocher, D.P.},
+  journal={International journal of computer vision},
+  volume={70},
+  number={1},
+  pages={41--54},
+  year={2006},
+  publisher={Springer}
+}
+
+@inproceedings{SontagEtAl_uai08,
+ title  = {Tightening {LP} Relaxations for {MAP} using Message-Passing},
+ author = {David Sontag and Talya Meltzer and Amir Globerson and Yair Weiss and Tommi Jaakkola},
+ pages     = {503-510},
+ booktitle = {24th Conference in Uncertainty in Artificial Intelligence},
+ publisher = {AUAI Press},
+ year = {2008}
+}
+
+@inproceedings{riedel2006incremental,
+  title={Incremental integer linear programming for non-projective dependency parsing},
+  author={Riedel, S. and Clarke, J.},
+  booktitle={Proceedings of the 2006 Conference on Empirical Methods in Natural Language Processing},
+  pages={129--137},
+  year={2006},
+  organization={Association for Computational Linguistics}
+}
+
+
+@inproceedings{lacoste2006word,
+  title={Word alignment via quadratic assignment},
+  author={Lacoste-Julien, S. and Taskar, B. and Klein, D. and Jordan, M.I.},
+  booktitle={Proceedings of the main conference on Human Language Technology Conference of the North American Chapter of the Association of Computational Linguistics},
+  pages={112--119},
+  year={2006},
+  organization={Association for Computational Linguistics}
+}
+
+@inproceedings{roth2005integer,
+  title={Integer linear programming inference for conditional random fields},
+  author={Roth, D. and Yih, W.},
+  booktitle={Proceedings of the 22nd international conference on Machine learning},
+  pages={736--743},
+  year={2005},
+  organization={ACM}
+}
+
+@inproceedings{germann2001fast,
+  title={Fast decoding and optimal decoding for machine translation},
+  author={Germann, U. and Jahr, M. and Knight, K. and Marcu, D. and Yamada, K.},
+  booktitle={Proceedings of the 39th Annual Meeting on Association for Computational Linguistics},
+  pages={228--235},
+  year={2001},
+  organization={Association for Computational Linguistics}
+}
+
+@article{dantzig1960decomposition,
+  title={Decomposition principle for linear programs},
+  author={Dantzig, G.B. and Wolfe, P.},
+  journal={Operations research},
+  pages={101--111},
+  year={1960},
+  publisher={JSTOR}
+}
+
+@article{nesterov2005smooth,
+  title={Smooth minimization of non-smooth functions},
+  author={Nesterov, Y.},
+  journal={Mathematical Programming},
+  volume={103},
+  number={1},
+  pages={127--152},
+  year={2005},
+  publisher={programming}
+}
+
+@inproceedings{komodakis2007,
+  title={{MRF Optimization via Dual Decomposition: Message-Passing Revisited}},
+  author={Komodakis, N. and Paragios, N. and Tziritas, G.},
+  booktitle={Proc. ICCV},
+  year={2007}
+}
+
+@misc{cplex,
+    howpublished="\url{http://www.ilog.com/products/cplex/}",
+    url ={http://www.ilog.com/products/cplex/},
+    title ="{CPLEX}",
+    editor={ILOG}, 
+    author={ILOG},
+    year={2012} 
+}
+
+@article{kolmogorov2006convergent,
+  title={Convergent tree-reweighted message passing for energy minimization},
+  author={Kolmogorov, V.},
+  journal={Pattern Analysis and Machine Intelligence, IEEE Transactions on},
+  volume={28},
+  number={10},
+  pages={1568--1583},
+  year={2006},
+  publisher={IEEE}
+}
+
+@book{boyd2011distributed,
+  title={Distributed optimization and statistical learning via the alternating direction method of multipliers},
+  author={Boyd, S. and Parikh, N. and Chu, E. and Peleato, B. and Eckstein, J.},
+  year={2011},
+  publisher={Now Publishers}
+}
+
+@PhdThesis{martinsgeometry,
+  title={The Geometry of Constrained Structured Prediction: Applications to Inference and Learning of Natural Language Syntax},
+ year={2012},
+  author={Martins, A.F.T.}
+}
+
+
+@article{RushC12,
+  author    = {Alexander M. Rush and
+               Michael Collins},
+  title     = {A Tutorial on Dual Decomposition and Lagrangian Relaxation
+               for Inference in Natural Language Processing},
+  journal   = {J. Artif. Intell. Res. (JAIR)},
+  volume    = {45},
+  year      = {2012},
+  pages     = {305-362},
+  ee        = {http://dx.doi.org/10.1613/jair.3680},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{koo2010efficient,
+  title={Efficient third-order dependency parsers},
+  author={Koo, T. and Collins, M.},
+  booktitle={Proceedings of the 48th Annual Meeting of the Association for Computational Linguistics},
+  pages={1--11},
+  year={2010},
+  organization={Association for Computational Linguistics}
+}
+
+
+@Book{LBFGS,
+  author =   {J. Nocedal and S. J. Wright},
+  title =    "Numerical Optimization",
+  year =     1999,
+  publisher = "Springer",
+}
+
+
+@inproceedings{weiss2010structured,
+  title={Structured prediction cascades},
+  author={Weiss, D. and Taskar, B.},
+  booktitle={Proc. of AISTATS},
+  volume={1284},
+  year={2010},
+ pages={916--923},
+}
+
+
+
+@inproceedings{bergsma2010fast,
+  title={Fast and accurate arc filtering for dependency parsing},
+  author={Bergsma, S. and Cherry, C.},
+  booktitle={Proc. of COLING},
+  pages={53--61},
+  year={2010}
+}
+
+
+@inproceedings{eisner2005parsing,
+  title={Parsing with soft and hard constraints on dependency length},
+  author={Eisner, J. and Smith, N.A.},
+  booktitle={Proc. of IWPT},
+  pages={30--41},
+  year={2005},
+}
+
+@inproceedings{pauls09hierarchical,
+author = {A. Pauls and D. Klein},
+title = {Hierarchical Search for Parsing},
+year = {2009},
+booktitle = {Proc. of NAACL/HLT},
+pages     = {557--565},
+}
+
+
+@inproceedings{petrov2007improved,
+  title={Improved inference for unlexicalized parsing},
+  author={Petrov, S. and Klein, D.},
+  booktitle={Proc. of NAACL/HLT},
+  pages={404--411},
+  year={2007}
+}
+
+@InProceedings{petrov2008mt,
+  author    = {Petrov, S.  and  Haghighi, A.  and  Klein, D.},
+  title     = {Coarse-to-Fine Syntactic Machine Translation using Language Projections},
+  booktitle = {Proc. EMNLP},
+  year      = {2008},
+  pages     = {108--116},
+}
+
+@phdThesis{petrov2009thesis,
+  author    = {Petrov, S.},
+  title     = {Coarse-to-Fine Natural Language Processing},
+  school    = {University of California at Bekeley},
+  address   = {Berkeley, CA, USA},
+  year      = {2009},
+  url       = {http://www.petrovi.de/data/dissertation.pdf}
+}
+
+@inproceedings{goodman97global,
+  author = "J. Goodman",
+  title = "Global Thresholding and Multiple-Pass Parsing",
+  booktitle = {Proc. EMNLP},
+  pages = "11--25",
+  year = "1997",
+  url = "citeseer.ist.psu.edu/goodman97global.html"
+}
+
+@inProceedings{charniak98bestfirst,
+  author = "S. Caraballo and E. Charniak",
+  title = "New figures of merit for best--first probabilistic chart parsing",
+  booktitle = {Computational Linguistics},
+  year = "1998",
+  pages = "275--298"
+}
+
+@inproceedings{charniak05parser,
+  author =   {E. Charniak and M. Johnson},
+  title =    { Coarse-to-{F}ine {N}-{B}est {P}arsing and {M}ax{E}nt {D}iscriminative {R}eranking },
+  year =     2005,
+  booktitle =    {Proc. of ACL},
+  url =      {http://www.aclweb.org/anthology/P05-1022}
+}
+
+
+@inproceedings{charniak2006multilevel,
+  title={Multilevel coarse-to-fine {PCFG} parsing},
+  author={Charniak, E. and Johnson, M. and Elsner, M. and Austerweil, J. and Ellis, D. and Haxton, I. and Hill, C. and Shrivaths, R. and Moore, J. and Pozar, M. and others},
+  booktitle={Proc. of NAACL/HLT},
+  pages={168--175},
+  year={2006},
+}
+
+
+@inproceedings{collins02perc,
+title = {{Discriminative Training Methods for Hidden Markov Models: Theory and Experiments with Perceptron Algorithms}},
+author = {M. Collins},
+booktitle = {Proc. EMNLP},
+year = {2002},
+pages = {1--8},
+}
+
+
+@inproceedings{yamada2003statistical,
+  title={Statistical dependency analysis with support vector machines},
+  author={Yamada, H. and Matsumoto, Y.},
+  booktitle={Proc. of IWPT},
+  volume={3},
+  year={2003},
+  pages = {195--206}
+}
+
+@inproceedings{mcdonald2005online,
+  title={Online large-margin training of dependency parsers},
+  author={McDonald, R. and Crammer, K. and Pereira, F.},
+  booktitle={Proc. of ACL},
+  pages={91--98},
+  year={2005},
+}
+
+@inproceedings{roark2009linear,
+  title={Linear complexity context-free parsing pipelines via chart constraints},
+  author={Roark, B. and Hollingshead, K.},
+  booktitle={Proc. of NAACL/HLT},
+  pages={647--655},
+  year={2009},
+}
+
+@inproceedings{roark2008classifying,
+  title={Classifying chart cells for quadratic complexity context-free inference},
+  author={Roark, B. and Hollingshead, K.},
+  booktitle={Proc. of COLING},
+  pages={745--751},
+  year={2008},
+}
+
+@inproceedings{smith2006minimum,
+  title={Minimum risk annealing for training log-linear models},
+  author={Smith, D.A. and Eisner, J.},
+  booktitle={Proc. of COLING/ACL},
+  pages={787--794},
+  year={2006},
+}
+
+@inproceedings{kuhlmann2011dynamic,
+  title={Dynamic programming algorithms for transition-based dependency parsers},
+  author={Kuhlmann, M. and G{\'o}mez-Rodr{\'\i}guez, C. and Satta, G.},
+  booktitle={Proc. of ACL/HLT},
+  pages={673--682},
+  year={2011},
+}
+
+
+@article{lee2002fast,
+  title={Fast context-free grammar parsing requires fast boolean matrix multiplication},
+  author={Lee, L.},
+  journal={Journal of the ACM},
+  volume=49,
+  number=1,
+  pages={1--15},
+  year=2002,
+  publisher={ACM}
+}
+
+@inproceedings{shalev2007pegasos,
+  title={Pegasos: Primal estimated sub-gradient solver for svm},
+  author={Shalev-Shwartz, S. and Singer, Y. and Srebro, N.},
+  booktitle={Proc. of ICML},
+  pages={807--814},
+  year={2007},
+}
+
+
+@inproceedings{de2006generating,
+  title={Generating typed dependency parses from phrase structure parses},
+  author={De Marneffe, M.C. and MacCartney, B. and Manning, C.D.},
+  booktitle={Proc. of LREC},
+  volume={6},
+  pages={449--454},
+  year={2006}
+}
+
+@article{taskar2003max,
+  title={Max-margin Markov networks},
+  author={Taskar, B. and Guestrin, C. and Koller, D.},
+  journal={Advances in neural information processing systems},
+  volume={16},
+  year={2003},
+  pages={25--32},
+}
+
+
+@article{crammer2003ultraconservative,
+  title={Ultraconservative online algorithms for multiclass problems},
+  author={Crammer, K. and Singer, Y.},
+  journal={The Journal of Machine Learning Research},
+  volume={3},
+  pages={951--991},
+  year={2003},
+  publisher={JMLR. org}
+}
+
+@article{crammer2006online,
+  title={Online passive-aggressive algorithms},
+  author={Crammer, K. and Dekel, O. and Keshet, J. and Shalev-Shwartz, S. and Singer, Y.},
+  journal={The Journal of Machine Learning Research},
+  volume={7},
+  pages={551--585},
+  year={2006},
+  publisher={JMLR. org}
+}
+
+
+@InProceedings{petrov2011universal,
+  author    = {Petrov, S. and Das, D. and McDonald, R.},
+  title     = {A Universal Part-of-Speech Tagset},
+  booktitle = {LREC},
+  year      = {2012},
+}
+
+@inproceedings{zhang2011transition,
+  title={Transition-based dependency parsing with rich non-local features},
+  author={Zhang, Y. and Nivre, J.},
+  booktitle={Proc. of ACL},
+  year={2011},
+  pages = {188--193},
+}
+
+
+@inproceedings{huang2010dynamic,
+  title={Dynamic programming for linear-time incremental parsing},
+  author={Huang, L. and Sagae, K.},
+  booktitle={Proc. of ACL},
+  pages={1077--1086},
+  year={2010},
+}
+
+
+@article{tsochantaridis2006large,
+  title={Large margin methods for structured and interdependent output variables},
+  author={Tsochantaridis, I. and Joachims, T. and Hofmann, T. and Altun, Y.},
+  journal={Journal of Machine Learning Research},
+  volume=6,
+  number=2,
+  pages=1453,
+  year=2006,
+  publisher={THE MIT PRESS}
+}
+
+@phdthesis{mcdonald2006discriminative,
+  title={Discriminative learning and spanning tree algorithms for dependency parsing},
+  author={McDonald, R.},
+  year={2006},
+  school={University of Pennsylvania}
+}
+
+@misc{boyd2007subgradient,
+  author = {Boyd, Stephen and Mutapcic, Almir},
+  title = {Subgradient Methods},
+  institution = {Stanford University},
+  year = {2007},
+  url = {http://www.stanford.edu/class/ee364b/notes/subgrad_method_notes.pdf},
+}
+
+@book{polyak1987,
+  author = {Polyak, Boris},
+  title = {Introduction to Optimization},
+  publisher = {Optimization Software, Inc.},
+  year = {1987},
+}
+
+@inproceedings{moses,
+	author = {Koehn, Philipp and Hoang, Hieu and Birch, Alexandra and Callison-Burch, Chris and Federico, Marcello and Bertoldi, Nicola and Cowan, Brooke and Shen, Wade and Moran, Christine and Zens, Richard and Dyer, Chris and Bojar, Ond\v{r}ej and Constantin, Alexandra and Herbst, Evan},
+  title = {Moses: {O}pen source toolkit for statistical machine translation},
+  booktitle = {Proceedings of the 45th Annual Meeting of the ACL on Interactive Poster and Demonstration Sessions},
+  series = {ACL '07},
+  year = {2007},
+  location = {Prague, Czech Republic},
+  pages = {177--180},
+} 
+
+@article{knight1999decoding,
+  title={Decoding complexity in word-replacement translation models},
+  author={Knight, Kevin},
+  journal={Computational Linguistics},
+  volume={25},
+  number={4},
+  pages={607--615},
+  year={1999},
+  publisher={MIT Press}
+}
+
+@inproceedings{martins2011augmented,
+	title={An augmented Lagrangian approach to constrained MAP inference},
+	author={Martins, Andr{\'e} and Figueiredo, M{\'a}rio and Aguiar, Pedro and Smith, Noah A and Xing, Eric P},
+	booktitle={Proceedings of the 28th International Conference on Machine Learning (ICML-11)},
+	pages={169--176},
+	year={2011}
+}
+
+@misc{gurobi,
+  author = {Gurobi Optimization, Inc.},
+  title = {Gurobi Optimizer Reference Manual},
+  year = {2013},
+  url = {http://www.gurobi.com}
+}
+
+@inproceedings{manning2011part,
+  title={Part-of-speech tagging from 97\% to 100\%: is it time for some linguistics?},
+  author={Manning, C.},
+  journal={Proc. of CICLing},
+  year={2011}
+}
+
+@inproceedings{everett1963generalized,
+  title={Generalized Lagrange multiplier method for solving problems of optimum allocation of resources},
+  author={Everett III, H.},
+  journal={Operations Research},
+  pages={399--417},
+  year={1963},
+  publisher={JSTOR}
+}
+
+@inproceedings{huang2005better,
+  title={Better k-best parsing},
+  author={Huang, Liang and Chiang, David},
+  booktitle={Proceedings of the Ninth International Workshop on Parsing Technology},
+  pages={53--64},
+  year={2005},
+  organization={Association for Computational Linguistics}
+}
+
+@article{knuth1977generalization,
+  title={A generalization of Dijkstra's algorithm},
+  author={Knuth, Donald E},
+  journal={Information Processing Letters},
+  volume={6},
+  number={1},
+  pages={1--5},
+  year={1977},
+  publisher={Elsevier}
+}
+@article{nelson1989generalization,
+  title={A generalization of Dijkstra's calculus},
+  author={Nelson, Greg},
+  journal={ACM Transactions on Programming Languages and Systems (TOPLAS)},
+  volume={11},
+  number={4},
+  pages={517--561},
+  year={1989},
+  publisher={ACM}
+}
+
+@article{weaver1955translation,
+  title={Translation},
+  author={Weaver, Warren},
+  journal={Machine translation of languages},
+  volume={14},
+  pages={15--23},
+  year={1955},
+  publisher={Cambridge: Technology Press, MIT}
+}
+
+@conference{taskar2004max,
+  title={{Max-margin parsing}},
+  author={Taskar, B. and Klein, D. and Collins, M. and Koller, D. and Manning, C.},
+  booktitle={Proc. EMNLP},
+  pages={1--8},
+  year={2004}
+}
+
+@article{koehn2004pharaoh,
+  title={Pharaoh: a beam search decoder for phrase-based statistical machine translation models},
+  author={Koehn, Philipp},
+  volume={1},
+  journal={Machine translation: From real users to research},
+  pages={115--124},
+  year={2004},
+  publisher={Springer}
+}
+
+
+@inproceedings{das2012exact,
+  title={An Exact Dual Decomposition Algorithm for Shallow Semantic Parsing with Constraints},
+  author={Das, D. and Martins, A.F.T. and Smith, N.A.},
+  booktitle={Proceedings of SEM.[ii, 10, 50]},
+  year={2012}
+}
+
+@article{meshi2011alternating,
+  title={An alternating direction method for dual map lp relaxation},
+  author={Meshi, O. and Globerson, A.},
+  journal={Machine Learning and Knowledge Discovery in Databases},
+  pages={470--483},
+  volume={1},
+  year={2011},
+  publisher={Springer}
+}
+
+@inproceeding{dyer2010cdec,
+  title={cdec: A decoder, alignment, and learning framework for finite-state and context-free translation models},
+  author={Dyer, Chris and Lopez, Adam and Ganitkevitch, Juri and Weese, Jonathen and Ture, Ferhan and Blunsom, Phil and Setiawan, Hendra and Eidelman, Vlad and Resnik, Philip},
+  year={2010}
+}
+
+@inproceedings{tillmann06,
+  author = {Tillmann, Christoph},
+  title = {Efficient dynamic programming search algorithms for phrase-based {SMT}},
+  booktitle = {Proceedings of the Workshop on Computationally Hard Problems and Joint Inference in Speech and Language Processing},
+  series = {CHSLP '06},
+  year = {2006},
+  location = {New York City, New York},
+  pages = {9--16}
+}
+
+@inproceedings{chieu2012combining,
+  title={Combining local and non-local information with dual decomposition for named entity recognition from text},
+  author={Chieu, Hai Leong and Teow, Loo-Nin},
+  booktitle={Information Fusion (FUSION), 2012 15th International Conference on},
+  pages={231--238},
+  year={2012},
+  organization={IEEE}
+}
+
+@incollection{bach2012udrst,
+  title={UDRST: A novel system for unlabeled discourse parsing in the RST framework},
+  author={Bach, Ngo Xuan and Le Minh, Nguyen and Shimazu, Akira},
+  booktitle={Advances in Natural Language Processing},
+  pages={250--261},
+  year={2012},
+  publisher={Springer}
+}
+
+@article{xu2014joint,
+  title={Joint segmentation and named entity recognition using dual decomposition in Chinese discharge summaries},
+  author={Xu, Yan and Wang, Yining and Liu, Tianren and Liu, Jiahua and Fan, Yubo and Qian, Yi and Tsujii, Junichi and Chang, Eric I},
+  journal={Journal of the American Medical Informatics Association},
+  volume={21},
+  number={e1},
+  pages={e84--e92},
+  year={2014},
+  publisher={BMJ Publishing Group Ltd}
+}
+
+@inproceedings{reichart2012multi,
+  title={Multi event extraction guided by global constraints},
+  author={Reichart, Roi and Barzilay, Regina},
+  booktitle={Proceedings of the 2012 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  pages={70--79},
+  year={2012},
+  organization={Association for Computational Linguistics}
+}
+
+@article{mcclosky2012combining,
+  title={Combining joint models for biomedical event extraction},
+  author={McClosky, David and Riedel, Sebastian and Surdeanu, Mihai and McCallum, Andrew and Manning, Christopher D},
+  journal={BMC bioinformatics},
+  volume={13},
+  number={Suppl 11},
+  pages={S9},
+  year={2012},
+  publisher={BioMed Central Ltd}
+}
+
+@inproceedings{RushCC13,
+  added-at = {2013-11-10T00:00:00.000+0100},
+  author = {Rush, Alexander M. and Chang, Yin-Wen and Collins, Michael},
+  biburl = {http://www.bibsonomy.org/bibtex/2b8878ff2aabc0cebeeb640890c8aeb73/dblp},
+  booktitle = {EMNLP},
+  crossref = {conf/emnlp/2013},
+  ee = {http://aclweb.org/anthology//D/D13/D13-1022.pdf},
+  interhash = {885c2cfaf20e951436ec53bbeb368fcc},
+  intrahash = {b8878ff2aabc0cebeeb640890c8aeb73},
+  isbn = {978-1-937284-97-8},
+  keywords = {dblp},
+  pages = {210-221},
+  publisher = {ACL},
+  timestamp = {2013-11-10T00:00:00.000+0100},
+  title = {Optimal Beam Search for Machine Translation.},
+  url = {http://dblp.uni-trier.de/db/conf/emnlp/emnlp2013.html#RushCC13},
+  year = 2013
+}
+
+
+@inproceedings{Samdani,
+ author = {Samdani, Rajhans and Chang, Ming-Wei and Roth, Dan},
+ title = {Unified Expectation Maximization},
+ booktitle = {Proceedings of the 2012 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+ series = {NAACL HLT '12},
+ year = {2012},
+ isbn = {978-1-937284-20-6},
+ location = {Montreal, Canada},
+ pages = {688--698},
+ numpages = {11},
+ url = {http://dl.acm.org/citation.cfm?id=2382029.2382143},
+ acmid = {2382143},
+ publisher = {Association for Computational Linguistics},
+ address = {Stroudsburg, PA, USA},
+} 
+
+@inproceedings{wang2013joint,
+  title={Joint Word Alignment and Bilingual Named Entity Recognition Using Dual Decomposition},
+  author={Wang, Mengqiu and Che, Wanxiang and Manning, Christopher D},
+  booktitle={Proceedings of the 51st Annual Meeting of the Association for Computational Linguistics},
+  volume={1},
+  year={2013}
+}
+
+@inproceedings{almeida2013fast,
+  title={Fast and robust compressive summarization with dual decomposition and multi-task learning},
+  author={Almeida, Miguel B and Martins, Andr{\'e} FT},
+  booktitle={Proceedings of ACL},
+  pages={196--206},
+  year={2013}
+}
+
+@inproceedings{niu2012scaling,
+  title={Scaling Inference for Markov Logic via Dual Decomposition.},
+  author={Niu, Feng and Zhang, Ce and R{\'e}, Christopher and Shavlik, Jude W},
+  booktitle={ICDM},
+  pages={1032--1037},
+  year={2012}
+}
+
+@inproceedings{RouxRF13,
+  added-at = {2013-11-10T00:00:00.000+0100},
+  author = {Roux, Joseph Le and Rozenknop, Antoine and Foster, Jennifer},
+  biburl = {http://www.bibsonomy.org/bibtex/26a0688ab37553c49f60dc696fd7e071a/dblp},
+  booktitle = {EMNLP},
+  ee = {http://aclweb.org/anthology//D/D13/D13-1116.pdf},
+  interhash = {2b3e15885cd34b4d5c587645426a998b},
+  intrahash = {6a0688ab37553c49f60dc696fd7e071a},
+  isbn = {978-1-937284-97-8},
+  keywords = {dblp},
+  pages = {1158-1169},
+  publisher = {ACL},
+  timestamp = {2013-11-10T00:00:00.000+0100},
+  title = {Combining PCFG-LA Models with Dual Decomposition: A Case Study with Function Labels and Binarization.},
+  url = {http://dblp.uni-trier.de/db/conf/emnlp/emnlp2013.html#RouxRF13},
+  year = 2013
+}
+
+
+@inproceedings{chang2011,
+  title={{Exact Decoding of Phrase-based Translation Models through Lagrangian Relaxation}},
+  author={Y. Chang and M. Collins},
+  booktitle={To appear proc. of EMNLP},
+  year={2011}
+}
+
+
+
+@article{Floyd:1962,
+ author = {Floyd, Robert W.},
+ title = {Algorithm 97: Shortest path},
+ journal = {Commun. ACM},
+ volume = {5},
+ issue = {6},
+ year = {1962},
+ issn = {0001-0782},
+ pages = {345},
+ acmid = {368168},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
+
+@article{hopcroft2001introduction,
+  title={Introduction to automata theory, languages, and computation},
+  author={Hopcroft, John E and Motwani, Rajeev and Ullman, Jeffrey D},
+  journal={ACM SIGACT News},
+  volume={32},
+  number={1},
+  pages={60--65},
+  year={2001},
+  publisher={ACM}
+}
+
+@article{Mohri:1997:FTL:972695.972698,
+ author = {Mohri, Mehryar},
+ title = {Finite-state Transducers in Language and Speech Processing},
+ journal = {Comput. Linguist.},
+ issue_date = {June 1997},
+ volume = {23},
+ number = {2},
+ month = jun,
+ year = {1997},
+ issn = {0891-2017},
+ pages = {269--311},
+ numpages = {43},
+ url = {http://dl.acm.org/citation.cfm?id=972695.972698},
+ acmid = {972698},
+ publisher = {MIT Press},
+ address = {Cambridge, MA, USA},
+} 
