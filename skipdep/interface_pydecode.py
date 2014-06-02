@@ -29,6 +29,17 @@ class Chart:
         self.pot = ph.LogViterbiPotentials(self.hypergraph) \
             .from_array(self.scores + (penalty * self.counts))
 
+    def unconstrained_kbest_search(self):
+        chart = ph.inside(self.hypergraph, self.pot)
+        out_chart = ph.outside(self.hypergraph, self.pot, chart)
+        beam_groups = [node.id for node in self.hypergraph.nodes]
+        size = [100] * len(beam_groups)
+        beam_chart = ph.beam_search_LogViterbi(
+            self.hypergraph, self.pot,
+            ph.LogViterbiPotentials(self.hypergraph).from_array(np.array(self.counts, dtype=np.float)), out_chart,
+            -10000, beam_groups, size, recombine=False)
+        return beam_chart
+
     def unconstrained_search(self):
         path = ph.best_path(self.hypergraph, self.pot, chart=self._internal_chart)
         return [node.label.unpack() for node in path.nodes]
@@ -106,13 +117,30 @@ def parse_binary_search(sent_len, scorer, m,
     def f(pen):
         c.reweight(pen)
         parse = interface.make_parse(n, c.unconstrained_search())
+        print m, sent_len - parse.skipped_words()
         return sent_len - parse.skipped_words()
     success = searcher.run(f, m)
+
+
+
 
     if success:
         return interface.make_parse(n,
                                     c.unconstrained_search())
     else:
+        chart = c.unconstrained_kbest_search()
+        for i in range(100):
+            if chart.path(i) is None: break
+            path = chart.path(i)
+
+            a = interface.make_parse(n,
+                                     [node.label.unpack() for node in path.nodes])
+            print "O", m, sent_len - a.skipped_words()
+
+            if sent_len - a.skipped_words() == m:
+                print "OSuccess"
+                return a
+        print "OFail"
         c.reweight(0.0)
         return interface.make_parse(n,
                                     c.constrained_search(m))

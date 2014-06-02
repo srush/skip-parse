@@ -4,9 +4,11 @@
 \usepackage{url}
 \usepackage{latexsym}
 \usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{amsfonts}
 \usepackage{tikz}
 \usepackage{proof}
-\usepackage{todonotes}
 \usepackage{caption}
 \usepackage{subcaption}
 \usetikzlibrary{arrows}
@@ -16,7 +18,15 @@
   >=latex,text height=1.5ex,text depth=0.25ex
 }
 
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
 %\setlength\titlebox{5cm}
+
+\algtext*{EndFor}% Remove "end while" text
+\algtext*{EndWhile}% Remove "end while" text
+\algtext*{EndIf}% Remove "end if" text
+\algtext*{EndProcedure}% Remove "end procedure" text
 
 \newcommand{\NULL}{\ensuremath{\epsilon}}
 \newcommand{\Enum}[1]{\{1 \ldots #1\}}
@@ -24,6 +34,7 @@
 \newcommand{\Set}[1]{\big\{ #1 \big\}}
 \newcommand{\Bin}[1]{\{0,1\}^{#1}}
 \newcommand{\Reals}{\mathbb{R}}
+\newcommand{\air}{\vspace{0.25cm}}
 
 \newcommand{\IndexSet}{{\cal I}}
 \newcommand{\IndexSetB}{{\cal J}}
@@ -66,9 +77,9 @@
 \newcommand{\rtrapskip}{\scalebox{0.2}{\tikz{
       \begin{scope}[decoration={
           markings,
-          mark=at position 0.3 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.55 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.8 with {\arrow[scale=1.75]{<}}
+          mark=at position 0.3 with {\arrow[scale=2.75]{<}},
+          mark=at position 0.55 with {\arrow[scale=2.75]{<}},
+          mark=at position 0.8 with {\arrow[scale=2.75]{<}}
         }]
         \coordinate (A) at (0,0);
         \coordinate (B) at (90:1.5cm);
@@ -82,9 +93,9 @@
 \newcommand{\rtriskip}{\scalebox{0.2}{\tikz{
       \begin{scope}[decoration={
           markings,
-          mark=at position 0.3 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.55 with {\arrow[scale=1.75]{<}},
-          mark=at position 0.8 with {\arrow[scale=1.75]{<}}
+          %mark=at position 0.3 with {\arrow[scale=2.75]{|}},
+          %mark=at position 0.55 with {\arrow[scale=2.75]{|}},
+          mark=at position 0.7 with {\arrow[scale=2.75]{|}}
         }]
     \coordinate (A) at (0,0);
     \coordinate (B) at (90:1.5cm);
@@ -139,30 +150,40 @@
 \cite{huang2005machine}
 
 \section{Background}
-We begin by presenting formal background for the structures underlying
-our approach for sentence compression. Our system models sentence
-compression as a joint parsing and language modeling problem. We first
-describe the specifics of these techniques and then their combined use.  
+We begin by presenting formal background for sentence compression. Given an input sentence as a sequence $s_1 \ldots s_n$, a sentence compression is an ordered sub-sequence of tokens, i.e. a sequence $s_{p_1} \ldots s_{p_m}$ for some
+$1 \leq p_1 < \ldots < p_m \leq n$. 
 
-Given an input sentence $x_1 \ldots x_n$, define the set of feasible
-compressions as all ordered subsets, i.e. a compression is $x_{p_1} \ldots x_{p_m}$ for a sequence $p$ with
-$1 \leq p_1 < \ldots < p_m \leq n$ and $m < n$. The length of the compression is $m$.
+Instead of directly predicting the sub-sequence $p$, we model compression as a joint parsing and language modeling problem. We first give notation for these models and then describe their use for compression.
 
-Our aim is the find the highest-scoring compression under a given
-objective.
+% Our
+% system models compression as a joint parsing and language modeling
+% problem. We first describe the specifics of these techniques and then
+% their combined use.
 
+% Given an input sentence $s_1 \ldots s_n$, define the set of feasible
+% compressions as all ordered subsets, i.e. a compression is $s_{p_1} \ldots s_{p_m}$ for a sequence $p$ with
+% $1 \leq p_1 < \ldots < p_m \leq n$ and $m < n$. 
 
-Define the set of possible bigrams ${\cal Y}$ as
+% Our aim is the find the highest-scoring compression under a given
+% objective.
+
+To incorporate a simple language model over sub-sequences, we define the index set ${\cal I}$ of possible compression bigrams 
 
 \[ \IndexSet = \Set{(i,j) : 0 \leq i < j \leq n+1} \]
 
+\noindent The element $(i,j)$ is used to indicate that $p_k = i$ and $p_{k+1}
+=j$ for some index $0 \leq k \leq m$ where for boundary cases define terms $p_0$ and $p_{m+1}$ as the start/end symbols $\texttt{<s>}$ and $\texttt{</s>}$ respectively.
+
+The set of valid compression bigram sequences ${\cal Y}$ is defined as
+ 
 \begin{equation*}
-  {\cal Y} = \begin{cases}\displaystyle
-    \sum_{i=1}^{n+1} y(0, i) = 1, \sum_{i=0}^n y(i, n+1) = 1 \\\displaystyle
-    \sum_{i=0}^{j-1} y(i,j) = \sum_{k=j+1}^{n+1} y(j, k)\end{cases}
+  {\cal Y} = \begin{cases}\displaystyle y \in \Bin{\IndexSet} : 
+    \sum_{i=1}^{n+1} y_{0,i} = 1,\ \sum_{i=0}^n y_{i, n+1} = 1, \\\\
+    \displaystyle\ \ \ \ \ \ \
+    \sum_{i=0}^{j-1} y_{ij} = \sum_{k=j+1}^{n+1} y_{jk}\  \forall\ 1\leq j \leq n  \end{cases}
 \end{equation*}
 
-The score of a bigram sequence is $\theta \in \Reals^{\IndexSet}$  
+\noindent And the score of each bigram is given by the scoring vector $\theta \in \Reals^{\IndexSet}$.
 
 
 
@@ -170,44 +191,62 @@ The score of a bigram sequence is $\theta \in \Reals^{\IndexSet}$
 % an objective function $f$  
 
 
-
 % Our aim is to simultaneously maximize
 
-Define the set of dependency arcs as
-
+Next, to incorporate syntactic structure, define the index set of dependency arcs over the
+original sentence as
 \[ \IndexSetB = \Set{(i,j) : \forall \  i \in \EnumS{0}{n}, j \in \Enum{n} } \]
+\noindent where the arc $(i,j)$ will indicate the $s_i$ is the head word of $s_j$, and $i=0$ is a 
+special \textit{root} position $*$.    
 
-A projective dependency parse is a vector in $y$ in ${\cal Y}$ where ${\cal Y} \subset \Bin^{\IndexSet}$ where
+The set of \textit{compressed} dependency parses is ${\cal Z}'$ where
+\[{\cal Z }' = \{z \in \Bin{\IndexSetB}: z \hbox{ is a directed tree rooted at *} \}  \]
 
-\[{\cal Z } = \{z \in \Bin{\IndexSetB}: \hbox$z$ { forms\ a\ directed tree } \} \] \]
-
-Note that in standard dependency parsing, we require this to be a full directed \textem{spanning tree}. For this work we only require that it be a tree. For a parse in $y \in {Y}$ define the span of $y$ as $||y||_1 = \sum_{h, m} y(h,m)$. Standard dependency parsing requires the span of a parse to be $n$.
-
-
-The score of a dependency sequence is $\omega \in \Reals^{\IndexSetB}$  
+\noindent 
+The score of a dependency arc is given by a scoring vector $\omega \in
+\Reals^{\IndexSetB}$.
 
 
+Note that standard dependency parsing requires $z$ to be a directed
+\textit{spanning} tree, i.e. $||z||_1 = n$. For a general compressed
+parse we allow $0 \leq ||z||_1 \leq n$; compression rate is discussed in 
+Section~\ref{sec:comprate}.   
 
-Our aim to find the highest-scoring combination of dependency parse score and language model score.
 
+% . For a parse in $y \in {Y}$ define the span of $y$ as
+% $||z||_1 = \sum_{(i, j) \in \IndexSetB} z_{ij}$. Standard dependency
+% parsing requires the span of a parse to be $n$.
+
+In this work, the score of a sentence compression is the
+sum of the score of the compressed dependency parse and the
+corresponding language model score. The decoding problem is to find
 \begin{eqnarray*}
- \max_{y \in {\cal Y}, z\in {\cal Z}} &&\theta^\top y +  \omega^\top z \\
-\mathrm{s.t.} &&  \sum_{i = 0}^{j-1} y(i, j) =  \sum_{i=0}^n z(i, j) \ \ \forall 1 \leq j \leq n 
+ \argmax_{y \in {\cal Y}, z\in {\cal Z}'} &&\theta^\top y +  \omega^\top z \\
+\mathrm{s.t.} &&  \sum_{i = 0}^{j-1} y_{i j} =  \sum_{i=0}^n z_{i j} \ \ \forall\  1 \leq j \leq n 
 \end{eqnarray*}
+\noindent The compressed sub-sequence $p$ can be directly read from $y$. 
+
+Unfortunately, solving this maximization problem has been show to be NP-hard \cite{}. This is mainly because of the difficulty of constrained maximum directed spanning tree problems.  
+
+In this paper we focus on a variant form of dependency parsing known
+as \textit{projective} parsing. While less common in compression,
+projective dependency parsing is widely used in the parsing
+literature.  Informally, a projective parse is  on means that for any $z_{i,j}=1$ and
+$z_{i'j'}=1$ the arcs do not cross each other. Define the set ${\cal Z}$ as all compressive projective parses. 
+The projective assumption allows us to use dynamic programming for decoding and to vastly improve worst-case
+run-time.
+%  we can show that finding the highest-scoring compression can be found in much more efficiently.
+
+
+% The rest of the work will focus on 
 
 
 
-The  find the highest-scoring structure in this objective. However, past work has shown that this problem is NP-hard \cite{}. Some success has been shown for using ILP solvers \cite{} and dual decomposition \cite{}.
-
- 
-In this paper we focus on a variant of this problem where we further assume that ${\cal Z}$ is \textit{projective}. Projective dependency parsing is widely used in the parsing literature.  Informally, this means that for any $z(i,j)=1$ and $z(i',j')=1$ the arcs do not cross each other. 
-
-With this assumption we can show that finding the highest-scoring compression can be found in much more efficiently.
 
 
 % Define the score of a dependency arc as
 
-% \[\theta(\uparray, h,m) = w \cdot \phi(s, h, m)  \]
+% \[\theta(\uparray, h,m ) = w \cdot \phi(s, h, m)  \]
 
 % maybe the bigram scores come from a language model.
 
@@ -217,117 +256,326 @@ With this assumption we can show that finding the highest-scoring compression ca
 
 \section{Decoding}
 
-We now present the decoding algorithm for this problem. We begin by reviewing the standard decoding algorithm for projective dependency parsing, and then give the extension for this problem. 
 
-\subsection{Eisner's Algorithm}
+We now present the decoding algorithm for sentence compression. We begin by
+reviewing the standard dynamic programming algorithm for projective
+dependency parsing, and then give an extension for sentence 
+compression.
+
+\subsection{Projective Parsing}
+
+The standard decoding algorithm for projective dependency parsing is
+known as Eisner's algorithm \cite{eisner, mcdonald}.  The algorithm is
+specified through a set of deductive rules acting on items.  Each item
+in the table consists of a tuple $(t, i, j)$ where $i, j$ is a span
+$0\leq i \leq j \leq n$ and $t$ is symbol from the set
+$\{\ltri,\rtri, \ltrap, \rtrap\}$ (informally referred to as triangles
+and trapezoids). These items indicate partial structures that may be 
+combined with logical rules. For instance, the rules
+
+\begin{center}
+  \begin{tabular}{ll}
+    \infer[S_z(i,j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) }  & $\forall\   i\leq k < j$  \\\\
+  \end{tabular}
+\end{center}
+
+\noindent combine a right- and left-facing triangles covering $i,k$ and $k+1,j$ respectively to produce
+a right-facing trapezoids covering $i,j$. 
+The full set of $O(n^3)$ rules is given in Figure~\ref{fig:rules}.
+
+% The goal item is a right-facing triangle $\rtri$ spanning the entire sentence $0,n$. 
+
+A deductive rule may also have an associated \textit{consequence}
+notated on its right, for instance the consequence of the above rule
+is $S_z(i,j)$.  The consequence is a member of a semiring,
+specified by a tuple $({\mathbb S},\oplus, \otimes, 0, 1)$ where
+${\mathbb S}$ is a set of possible values, $\oplus$ and $\otimes$ are binary operators, and
+0 and 1 are the annihilator and identity respectively.
+Define $S_z: {\IndexSetB} \mapsto {\mathbb S}$ to map from dependency arcs to semiring values.
+
+To find the score of the highest-scoring parse, we can use the
+max-semiring $({\mathbb R},\max, +, -\infty, 0)$ and let $S_z(i,j) =
+\omega_{ij}$. This specification can be used to construct an $O(n^3)$
+CKY-style algorithm for dependency parsing. In general we can produce
+the final semiring value of the final item in $O((on)^3)$ time, where
+$o$ is the cost of the $\otimes$ operator.
+
+ 
+% The consequence of $$
+
+
 % The
 % main idea is quite simple. We extend the standard Eisner parsing
 % algorithm to allow each premises to ``skip'' words.
 
 
-\subsection{Skip-Word Dependency Parsing}
+\subsection{Compressive Parsing}
+
+Next we turn to projective parsing that allows non-spanning trees and
+incorporates a language model, we refer to this technique as
+compressive parsing.
+
+% From a high-level, the goal is to incorporate bigram-transitions into
+% the parsing algorithm. Naively, this could be done by adding a predictive to
+% each deductive rule.  An item $(t, i, j, j')$ would indicate 
+% that $j'$ 
+
+% However, this ignores the shared information
+% between the two structures and results in an inefficient $O(n^6)$
+% algorithm.
+
+First, define a new function $S_y: {\IndexSet} \mapsto {\mathbb S}$ to map word bigrams to semiring values. For the max-semiring we would define as  $ S_y(i,j) =   \theta_ij $. For standard dependency parsing, 
+we can incorporate this new value directly into the modification rules, e.g. 
+
+\begin{center}
+  \begin{tabular}{ll}
+    \infer[S_z(i,j) \otimes S_y(k, k+1)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } \\
+  \end{tabular}
+\end{center}
+
+\noindent For compressive parsing, however, we also want to merge items that may
+have gaps, i.e. in-between words that are not descendants of either
+item. We could introduce rules that skip these intermediate words,
+i.e. for all $ 0 \leq i\leq k < l < j \leq n$
 
 
-We extend the first order model to skip parsing to additionally score the bigrams chosen in the final parse. To do this we extend the item definition to include the anticipated next word $(t, i, j)$.
+\begin{center}
+  \begin{tabular}{ll}{}
+  \infer[S_z(i,j)\otimes S_y(k, l)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, l, j) } 
+\end{tabular}
+\end{center}
 
-The only new addition is that we use the ``hook trick'' to select the best next word for each premise item before using it. The other rules are all identical.
+% An alternative approach is to simple allow non-adjacent items to
+% combine in the dynamic program. For example, we can modify the
+% right-facing dependency rule to allow an additional free variable
+% $l$, 
 
-Note that for this to work, it is crucial that we only allow skipping words on the right and that the left side index $i$ is always the left-most word used in the item.
+\noindent These rules produce an $(i,j)$ arc, leave out words $j+1$
+through $l-1$, and produce a $(k,l)$ bigram.  Unfortunately this
+modification results in an addition free variable $l$ and gives an
+$O(n^4)$ parsing algorithm.
 
-This parsing algorithm has runtime $O(n^3)$.
+Observe though that it is not necessary to produce the arc and bigram
+with the same rule. In fact, we can force $k$ to predict if there will be
+gap from $k+1$ to $l-1$ before applying other rules, and then apply the standard Eisner's rules, as if $k+1$ through $l-1$ were descendants of 
+$k$ (and thus $i$ as well).  
+
+This optimization is known as the ``hook trick'' \cite{}. 
+We implement this trick by replacing initial items $(\rtri, i, i)$
+with new items $(\rtriskip, i, i)$. These special items are only allowed 
+to skip words to their right before becoming standard $\rtri$ items
+ % indicates a right-facing item at $i$ that has no children yet and has skipped words $i+1$ through $j$.
+
+  \begin{center}
+    \begin{tabular}{ll}
+      \infer{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  $\forall\  0 \leq i < j \leq n$\\\\
+      \infer[S_y(i,j+1)]{(\rtri, i,j)}{(\rtriskip, i, j)} & $ \forall\ 0 \leq i \leq j \leq  n$ \\\\
+    \end{tabular}
+  \end{center}
+
+\noindent After skipping words $i+1$ to $j$ we incorporate the bigram consequence $S_y(i, j+1)$.
+
+These hook rules allow us to avoid the extra free variable and maintain  $O(n^3)$ for CKY.
+A full parse derivation is show in Figure~\ref{fig:parse}.
+
+% Naively, this could be done by intersecting
+% the dynamic program with a bigram lattice.  This intersection would
+% yield items of the form $[t, i, j, i', j']$ where $i' < j'$ are the
+% entering and leaving states of the lattice at each item. However, this
+% yields a $O(n^6)$ algorithm for this task. 
+
+% 
+
+
+% \begin{center}
+%   \infer[y_{i,j+1}]{(\rtri, i,j)}{(\rtriskip, i, j)} & $ \forall\ 0
+%   \leq i \leq j \leq n$
+% \end{center}
 
 
 
-\section{Extensions}
+% Instead we make the observation that
 
-\subsection{Span Requirements}
+% Define a new right-facing symbol $\rtriskip$.  
 
-For compression problems we often have a target size of the compressed sentence. That is we are given a ratio $r$ such that our target sentence should have $\floor{n / r} = M$ words. We can incorporate this constraint directly into our combinatorial optimization problem
+% \begin{center}
+%   \infer[y_{i,j+1}]{(\rtri, i,j)}{(\rtriskip, i, j)} & $ \forall\ 0
+%   \leq i \leq j \leq n$
+% \end{center}
+
+% The idea is to 
+
+
+% % Instead we apply the ``hook trick'' to first.
+
+% % The main addition to the algorithm is an additional right-facing symbol $\rtriskip$.
+
+
+% Each item for standard dependency parsing consists of a tuple $[t, i, j]$ where $t$ is a symbol in $\{\ltri,\rtri, \ltrap, \rtrap, \rtriskip \}$  and $0\leq i \leq j \leq n$.
+
+% We extend the first order model to skip parsing to additionally score the bigrams chosen in the final parse. To do this we extend the item definition to include the anticipated next word $(t, i, j)$.
+
+% The only new addition is that we use the ``hook trick'' to select the best next word for each premise item before using it. The other rules are all identical.
+
+% Note that for this to work, it is crucial that we only allow skipping words on the right and that the left side index $i$ is always the left-most word used in the item.
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=\textwidth]{../../notebooks/diagrams}
+  \label{fig:parse}
+  \caption{Example of a compressive parse with derivation. The compressed sentence is ``Production closed for Christmas''. The output structure has arc and bigrams $y_{0,3}, y_{3,1},y_{3,7},y_{7,9},z_{0,1},z_{1,3},z_{3,7}, z_{7,9},$ and $z_{9,11}$ set to 1 and all others set to 0. The full first-order derivation tree is shown below. The final derivation has $m=4$. }
+\end{figure*}
+
+
+\subsection{Second-Order Compressive Parsing}
+
+A similar algorithm can be used for second-order dependency parsing \cite{}. For a second-order parser
+we replace the index set $\IndexSet$ with a new index set that also includes a \textit{sibling}
+index $j$ (the previous modifier on the same side as modifier $k$). 
+
+\[ \IndexSetB=  \begin{cases} (i,j,k) : 
+    i \in \EnumS{0}{n}, j \in \Enum{n}, \\
+    \ \ \ \ \  (i < k < j) \lor (i >k  > j) \lor k = \NULL
+  \end{cases} \ \]
+\noindent where $\NULL$ indicates that $k$ is the first modifier on its side. 
+
+The deductive rules for second-order parsing are shown in
+Figure~\ref{fig:rules}. They result in an $O(n^3)$ parsing algorithm.
+
+The main complication for second-order compressive parsing is the rule 
+
+\[  \infer[S_z(i,\epsilon,j)]{(\rtrap, i,j)}{(\rtri, i,i)  &  (\ltri, i+1, j) } \ \  \forall i < j\]
+
+\noindent which creates the initial right-modifier of $i$, $(i, \NULL, j)$. This rule
+implicitly assumes that all items $(\rtri, i, j)$ with $i\neq j$ have
+already taken at least one modifier. However, with the new rules, it is possible 
+that $(\rtri, i, j)$ may have skipped $i+1$ through $j$. Therefore it is necessary 
+to also allow these items to take a first right-modifier as well, i.e.
+
+% % which is broken by the hook trick. 
+% For compressive parsing, this rule also should accept items that 
+% have skipped words but have not yet taken a modifier
+
+\[  \infer[S_z(i,\NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } \ \  \forall i \leq k < j \]
+
+The remaining second-order rules are identical parsing, and
+second-order compressive CKY can be run in $O(n^3)$ time. The full set of rules is show in
+Figure~\ref{fig:rules}.
+
+
+\section{Compression Limits}
+\label{sec:comprate}
+Sentence compression problems often have a target range for the
+compressed sentence. That is we might have upper and lower bounds 
+for the size $m$ of the final sentence, i.e.
 
 \begin{eqnarray*}
-  q(M) = \max_{z\in {\cal Z}} \theta^\top y +  \omega^\top z \mathrm{s .t} \\
-  \sum_{h=0:h\neq m}^n y(h, m) = \sum_{j = m + 1}^{n+1} y(m, j) \\
-  \sum_{(h,m) \in \IndexSet} y(h, m) = M
+  q(m, \theta, \omega) = &&\max_{y \in {\cal Y}, z\in {\cal Z}}  \theta^\top y +  \omega^\top z  \\
+  \mathrm{s .t}&&  \sum_{i = 0}^{j-1} y_{i j} =  \sum_{i=0}^n z_{i j} \ \ \forall\  1 \leq j \leq n, \\
+  && ||z ||_1 = m
 \end{eqnarray*}
 
-This extra requirement can be represented by a single constraint. However in practice it is difficult to incorporate this into the dynamic programming algorithm. One idea is to intersect with a counting FSA. In general each item may span $d$ vertices with $0 \leq d \leq M$, and each sub-item may span $d'$ and $d - d'$ vertices respectively, i.e.
-\[
-\infer{(\rtri, i,j, d)}{(\rtrap, i,k, d')  &  (\rtri, k, j, d) }    &  \forall i< k \leq j, 0\leq d' < d \leq < M  \\\\
-\]
+In this section we discuss two methods for enforcing these limits, 
+first by dynamic programming and the second by bisection.
 
-This intersection adds a factor of $M^2$ to the running time, which makes the full algorithm $O(n^5)$ which is intractable in practice.
+\subsection{Resource-Constrained Parsing}
 
-An alternative approach is to relax the single span constraint.
+Resource-constrained problems require finding an optimal 
+solution under a resource limit or requirement. Without loss
+of generality we will assume that a resource begins at $0$ 
+and is upper-bounded by $d$. We can modify a dynamic program
+to keep track of the amount of resources consumed.
+
+To track resources, define the resource-constrained max-semiring as 
+
+\[(\Reals^{\{0\ldots d\}}, \max_{rc}, +_{rc}, -\mathbf{\infty}, \mathbf{1})\]
+
+\noindent where for an item with value $r \in \Reals^d$ , $r_i$ is the
+highest-score seen using $i$ resources, and we define
+\begin{eqnarray*}
+ \max_{rc} \{r, s\} &=& \sum_{i = 0}^d \delta_i \max \{r_i, s_i\}  \\
+ r +_{rc} s &=& \sum_{i = 0}^d \delta_i  \max_{j ,k: j+k =i}  r_j + s_k   
+\end{eqnarray*}
+
+
+For this semiring $\otimes$ has runtime $O(d^2)$. The runtime for CKY-style
+projective parsing is therefore $O(n^3d^2)$.
+
+
+For sentence compression, one resource of interest would be the number of 
+words kept. The upper bound for this resource is $d=m$, and the semirings 
+at each item would be
+
+\[ S_y(i,j) = \delta_0  \theta_{ij} , \ \  S_z(i,j) = \delta_1 \omega_{ij}  \]
+
+If the goal item has value is $r^*$ then $q(m) = r^*_m$.
+
+Alternatively when $n - m < m$ it makes sense to reverse the resource to 
+count words dropped. We can set $d = n - m$ and 
+
+\[S_y(i,j) = \delta_{j-i-1}  \theta_{ij} ,\ \   S_z(i,j) = \delta_0 \omega_{ij}    \]
+
+Picking the better of these resources gives a worst-case run-time of $O(n^3\min\{m,n-m\}^2)$. 
+
+% This extra requirement can be represented by a single constraint. However in practice it is difficult to incorporate this into the dynamic programming algorithm. One idea is to intersect with a counting FSA. In general each item may span $d$ vertices with $0 \leq d \leq m$, and each sub-item may span $d'$ and $d - d'$ vertices respectively, i.e.
+% \[
+% \infer{(\rtri, i,j, d)}{(\rtrap, i,k, d')  & (\rtri, k, j, d) }    \  \forall i< k \leq j, 0\leq d' < d \leq < m_2  \\\\
+% \]
+
+% This intersection adds a factor of $m^2$ to the running time, which makes the full algorithm $O(n^5)$.
+
+
+
+
+\subsection{Compression by Bisection}
+
+An alternative approach for single-resource constraints is to  
+relax the constraint and 
+
 
 \begin{eqnarray*}
-  L(\lambda, y, z) =  \theta^\top y +  \omega^\top z + \lambda (||y||_1 ) - M\lambda \mathrm{s .t} \\
-  \sum_{h=0:h\neq m}^n y(h, m) = \sum_{j = m + 1}^{n+1} y(m, j) \\
+  L(\lambda, y, z) = && \theta^\top y +  \omega^\top z + \lambda ||z||_1   \\
 \end{eqnarray*}
 
-For any fixed value of $\lambda$ we can calculate $y_\lambda, z_\lambda\argmax_{y, z} L(\lambda, y, z)$ using the dynamic programming algorithm shown. We simply replace $\theta$ with $\theta'$ where $\theta'(h,m) = \theta(h,m) + \lambda$ for all $(h,m) \in \IndexSet$.
+For any fixed value of $\lambda$ we can calculate $y_\lambda, z_\lambda = \argmax_{y, z} L(\lambda, y, z)$ using the dynamic programming algorithm shown. 
 
-By weak duality $\theta^\top y_\lambda + \omega^\top z_\lambda$ will always give an upper bound on the optimal constrained solution $y^*, z^*$. And if $||y_\lambda||_1 = M$ then this upper bound is provably tight.
+\[ S_y(i,j) =  \theta_ij  + \lambda \]
+
+%We simply replace $\theta$ with $\theta'$ where $\theta'(i,j) = \theta(i,j) + \lambda$ for all $(i,j) \in \IndexSet$.
+
+By weak duality $\theta^\top y_\lambda + \omega^\top z_\lambda$ will always give an upper bound on the optimal constrained solution $y^*, z^*$. And if $||z_\lambda||_1 = m$ then this upper bound is provably tight.
 Past work in NLP has looked at minimizing this dual upper bound with subgradient descent; however we can exploit the fact that there is only a single dual variable $\lambda$ and use a more efficient method.
 
 
 We will minimize $L(\lambda)$ using the bisection method. First note that
-with $M=n$ we can solve $q(m)$ by setting $\lambda$ to the max bigram score  , similarly
-with $M=0$ we can solve $q(0)$ by setting $\lambda$ to the inverse of the max bigram score.
+% with $m=n$ we can solve $q(m)$ by setting $\lambda$ to the max bigram score  , similarly
+% with $m=0$ we can solve $q(0)$ by setting $\lambda$ to the inverse of the max bigram score.
 
 
-The bisection method is guaranteed to find an optimal solution if one exists in $$ iterations
-\todo[inline]{Figure this result out.}
-
+The bisection method is guaranteed to find an optimal solution if one exists in  iterations
+% \todo[inline]{Figure this result out.}
 
 
 \begin{figure}
   \begin{algorithmic}
-    \Procedure{Bisection}{$M$}
-    \State{$\lambda^{(\uparrow)} \gets \max_{(i, j) \in \IndexSetB} \omega(i,j)$}
-    \State{$\lambda^{(\downarrow)} \gets -\max_{(i, j) \in \IndexSetB} \omega(i,j)$}
+    \Procedure{Bisection}{$m \lambda^{(\uparrow)}, \lambda^{(\downarrow)}$}
+    % \State{$\lambda^{(\uparrow)} \gets \max_{(i, j) \in \IndexSetB} \omega(i,j)$}
+    % \State{$\lambda^{(\downarrow)} \gets -\max_{(i, j) \in \IndexSetB} \omega(i,j)$}
     \State{$\lambda^{(0)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(\downarrow)}}{2}$}
     \For{$k = 1\hbox{ to }K$}
     \State{ $y^{(k)}, z^{(k)} = \argmax_{y, z} L(\lambda^{(k-1)}, y, z)$}
-    \If{$||y^{(k)}||_1 = M$}
+    \If{$  ||z^{(k)}||_1 = m$}
     \State{\Return{$y^{(k)}, z^{(k)}$}}
-    \ElseIf{$||y^{(k)}||_1 > M$}
-    \State{$\lambda^{(\uparrow)} \gets \lambda^{(k)}$}
-    \State{$\lambda^{(k+1)} \gets \frac{\lambda^{(k)} + \lambda^{(\downarrow)}}{2}$}
-    \ElseIf{$||y^{(k)}||_1 < M$}
-    \State{$\lambda^{(\downarrow)} \gets \lambda^{(k)}$}
-    \State{$\lambda^{(k+1)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(k)}}{2}$}
     \EndIf{}
+    \If{$||z^{(k)}||_1 < m$}$ \ \ \lambda^{(\uparrow)} \gets \lambda^{(k)}$
+    \Else$\ \ \lambda^{(\downarrow)} \gets \lambda^{(k)}$ 
+    \EndIf{}
+    \State{$\lambda^{(k+1)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(\downarrow)}}{2}$}
     \EndFor{}
     \EndProcedure{}
   \end{algorithmic}
 \end{figure}
 
-\subsection{Second-Order Parsing}
-
-The same method extends to second-order dependency parsing. For a second-order parser
-we replace the index set $\IndexSet$ with a new index set that also includes a \textit{sibling}
-index.
-
-\[ \IndexSet=  \begin{cases} (h,s,m) : &
-    h \in \EnumS{0}{n}, m \in \Enum{n}, h \neq m, \\
-    & h < s < m \hbox{ or } m < s < h \hbox{ or } s = \NULL
-  \end{cases} \ \]
-
-Second order parsing also require $O(n^3)$ time.
-
-The main complication is that standard second-order parsing includes a rule of the form
-
-\[  \infer{(\rtrap, i,j)}{(\rtri, i,i)  &  (\ltri, i+1, j) } &\ \  \forall i < j\]
-
-for constructing an arc $y(i, \NULL, j)$. This rule relies on an implicit property that $(\rtri, i,i)$ is the only right-facing item that has not yet taken a modifier.
-
-We replace these rules with
-
-\[  \infer{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &\ \  \forall i \leq k < j \]
-
-where the symbol $\rtriskip$ implies that the word $s_i$ has not yet taken a modifier and that the words $s_{i+1}$ through $s_{k}$ have been ``skipped''.
-
-Besides this change the rules are identical to standard second-order parsing.
 
 
 \begin{figure*}
@@ -343,20 +591,19 @@ Besides this change the rules are identical to standard second-order parsing.
   \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall\ 0 < i\leq k < j \leq n\\\\
 \end{eqnarray*}
 
-\begin{subfigure}{0.5\textwidth}
+\begin{multicols}{2}
 
 
 \noindent \textbf{First-Order Rules:}
+\air \air
 
-\begin{eqnarray*}
-  \infer[z(i, j) = 1]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) }  \\ \forall\  0 \leq i\leq k < j\leq n  \\\\
-  \infer[z(j, i) = 1]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } \\ \forall\ 0 < i\leq k < j \leq n\\\\
+\begin{tabular}{ll}
+  \infer[S_z(i,j)]{(\rtrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) }  & $\forall\   i\leq k < j$  \\\\
+  \infer[S_z(j, i)]{(\ltrap, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } & $\forall\ i\leq k < j $\\\\
   % \infer{(\rtrapskip, i,j, p)}{(\rtriskip, i,k-1, p)  &  (\ltri, k, k, k) } &  \forall i < p\\\\
   % \infer{(\rtriskip, i,k, p)}{(\rtrapskip, i,k, p)  &  (\rtri, k, k, k) } &  \forall i < k < p\\\\
-\end{eqnarray*}
+\end{tabular}
 
-\end{subfigure}%
-\begin{subfigure}{0.5\textwidth}
 
 % \begin{figure}
 
@@ -364,19 +611,20 @@ Besides this change the rules are identical to standard second-order parsing.
 %   \[(\ltri, i,i), (\rtriskip, i,i)\ \ \forall\ 0 \leq i \leq j \leq  n\]
 
 % \noindent \textbf{Goal:}\[ (\rtri, 0,n)\]
-
+\columnbreak
   \noindent \textbf{Second-Order Rules:}
+\air \air
 
-\begin{eqnarray*}
+\begin{tabular}{ll}
   % \infer[\mathrm{Bigram}(i,p)]{(\rtriskip, i,i, p)}{(\rtriskip, i, i,i)} &  \forall  0 \leq i < p \leq n + 1\\\\
-  \infer{(\abox, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  \forall\ 0 < i\leq k < j \leq n \\\\
-  \infer[z(i, \NULL, j)]{(\rtrap, i,j)}{(\rtri, i,i)  &  (\ltri, i+1, j) } &  \forall\ 0 \leq i < j \leq n\\\\
-  \infer[z(j, \NULL, i)]{(\ltrap, i,j)}{(\rtri, i,j-1)  &  (\ltri, j, j) } & \forall\ 0 <  i < j \leq n\\\\
-  \infer[z(i, k, j)]{(\rtrap, i,j)}{(\rtrap, i,k)  &  (\abox, k, j) } &  \forall\ i\leq k < j \\\\
-  \infer[z(j,  k, i)]{(\ltrap, i,j)}{(\abox, i,k)  &  (\ltrap, k, j) } &  \forall\ 0 \leq i\leq k < j \leq n\\\\
+  \infer{(\abox, i,j)}{(\rtri, i,k)  &  (\ltri, k+1, j) } &  $\forall\ i\leq k < j $ \\\\
+  \infer[S_z(i, \NULL, j)]{(\rtrap, i,j)}{(\rtri, i,i)  &  (\ltri, i+1, j) } &  $\forall\  i < j $\\\\
+  \infer[S_z(j, \NULL, i)]{(\ltrap, i,j)}{(\rtri, i,j-1)  &  (\ltri, j, j) } & $\forall\   i < j $\\\\
+  \infer[S_z(i, k, j)]{(\rtrap, i,j)}{(\rtrap, i,k)  &  (\abox, k, j) } &  $\forall\ i\leq k < j$ \\\\
+  \infer[S_z(j,  k, i)]{(\ltrap, i,j)}{(\abox, i,k)  &  (\ltrap, k, j) } &  $\forall\ i\leq k < j$\\\\
   % \infer{(\rtri, i,j)}{(\rtrap, i,k)  &  (\rtri, k, j) }    &  \forall\ 0 \leq i <  k \leq j \leq n \\\\
   % \infer{(\ltri, i,j)}{(\ltri, i,k)  &  (\ltrap, k, j) }  & \forall\ 0< i\leq k < j\leq n \\\\
-\end{eqnarray*}
+\end{tabular}
 % \textbf{Additional Rules:}
 
 % \begin{eqnarray*}
@@ -384,21 +632,28 @@ Besides this change the rules are identical to standard second-order parsing.
 %   % \infer{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall\ 0 \leq i < j \leq n\\\\
 %   \infer[y(i, \NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  \forall\ 0 \leq i < j \leq n\\\\
 % \end{eqnarray*}
-\end{subfigure}
+\end{multicols}
 
+\hline
+\air 
 
   \noindent \textbf{Revised Premises:}
   \[(\ltri, i,i), (\rtriskip, i,i)\ \ \forall\ 0 \leq i \leq j \leq  n\]
   
   \noindent \textbf{Additional Rules:}
+  \air \air 
 
-\begin{eqnarray*}
-  \infer[y(i,j+1)=1]{(\rtri, i,j)}{(\rtriskip, i, j)} &  \forall\ 0 \leq i \leq j \leq  n \\\\
-  \infer{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  \forall\  0 \leq i < j \leq n\\\\
-   \infer[y(i,k + 1), z(i, \NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  \forall\ 0 \leq i<  k <  j \leq n \hbox{\ \ [2nd-Order only]}
-\end{eqnarray*}
+  \begin{center}
+    \begin{tabular}{ll}
+      \infer{(\rtriskip, i,j)}{(\rtriskip, i, i)} &  $\forall\  0 \leq i < j \leq n$\\\\
+      \infer[S_y(i,j+1)]{(\rtri, i,j)}{(\rtriskip, i, j)} & $ \forall\ 0 \leq i \leq j \leq  n$ \\\\
+      \infer[S_y(i,k + 1)\otimes S_z(i, \NULL, j)]{(\rtrap, i,j)}{(\rtriskip, i,k)  &  (\ltri, k+1, j) } &  $\forall\ 0 \leq i<  k <  j \leq n $ \\
+      & [Second-Order only]$
+    \end{tabular}
+  \end{center}
 
-\caption{Deductive rules for skip-bigram parsing. }
+\caption{Deductive rules for standard dependency parsing and the extensions for compressive dependency parsing. First- and second-order parsing share the same premises, goal, and a set of completion rules. Compressive parsing has a revised set of premises and extends the standard rules with three additional types. $S_z$ and $S_y$ are functions mapping arcs and bigrams, respectively, to semiring values. }
+\label{fig:rules}
 \end{figure*}
 
 \section{Training}
