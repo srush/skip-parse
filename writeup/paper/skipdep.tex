@@ -183,7 +183,7 @@ The set of valid compression bigram sequences ${\cal Y}$ is defined as
     \sum_{i=0}^{j-1} y_{ij} = \sum_{k=j+1}^{n+1} y_{jk}\  \forall\ 1\leq j \leq n  \end{cases}
 \end{equation*}
 
-\noindent And the score of each bigram is given by the scoring vector $\theta \in \Reals^{\IndexSet}$.
+\noindent And the score of each bigram is given by a score vector $\theta \in \Reals^{\IndexSet}$.
 
 
 
@@ -196,7 +196,7 @@ The set of valid compression bigram sequences ${\cal Y}$ is defined as
 Next, to incorporate syntactic structure, define the index set of dependency arcs over the
 original sentence as
 \[ \IndexSetB = \Set{(i,j) : \forall \  i \in \EnumS{0}{n}, j \in \Enum{n} } \]
-\noindent where the arc $(i,j)$ will indicate the $s_i$ is the head word of $s_j$, and $i=0$ is a 
+\noindent where the arc $(i,j)$ will indicate that $s_i$ is the head word of $s_j$, and $i=0$ is a 
 special \textit{root} position $*$.    
 
 The set of \textit{compressed} dependency parses is ${\cal Z}'$ where
@@ -208,8 +208,8 @@ The score of a dependency arc is given by a scoring vector $\omega \in
 
 
 Note that standard dependency parsing requires $z$ to be a directed
-\textit{spanning} tree, i.e. $||z||_1 = n$. For a general compressed
-parse we allow $0 \leq ||z||_1 \leq n$; compression rate is discussed in 
+\textit{spanning} tree, i.e. $||z||_1 = n$. For compression
+we allow $0 \leq ||z||_1 \leq n$. Compression rate is discussed in 
 Section~\ref{sec:comprate}.   
 
 
@@ -217,7 +217,7 @@ Section~\ref{sec:comprate}.
 % $||z||_1 = \sum_{(i, j) \in \IndexSetB} z_{ij}$. Standard dependency
 % parsing requires the span of a parse to be $n$.
 
-In this work, the score of a sentence compression is the
+Finally define the score of a sentence compression is the
 sum of the score of the compressed dependency parse and the
 corresponding language model score. The decoding problem is to find
 \begin{eqnarray*}
@@ -226,12 +226,10 @@ corresponding language model score. The decoding problem is to find
 \end{eqnarray*}
 \noindent The compressed sub-sequence $p$ can be directly read from $y$. 
 
-Unfortunately, solving this maximization problem has been show to be NP-hard \cite{}. This is mainly because of the difficulty of constrained maximum directed spanning tree problems.  
+Unfortunately, solving this maximization problem has been shown to be NP-hard \cite{}. This is mainly because of the difficulty of constrained maximum directed spanning tree problems.  
 
 In this paper we focus on a variant form of dependency parsing known
-as \textit{projective} parsing. While less common in compression,
-projective dependency parsing is widely used in the parsing
-literature.  Informally, a projective parse is  on means that for any $z_{i,j}=1$ and
+as \textit{projective} parsing. Informally, a projective parse requires that for any $z_{i,j}=1$ and
 $z_{i'j'}=1$ the arcs do not cross each other. Define the set ${\cal Z}$ as all compressive projective parses. 
 The projective assumption allows us to use dynamic programming for decoding and to vastly improve worst-case
 run-time.
@@ -527,54 +525,54 @@ Picking the better of these resources gives a worst-case run-time of $O(n^3\min\
 
 
 
-\subsection{Compression by Bisection}
+% \subsection{Compression by Bisection}
 
-An alternative approach for single-resource constraints is to  
-relax the constraint and 
-
-
-\begin{eqnarray*}
-  L(\lambda, y, z) = && \theta^\top y +  \omega^\top z + \lambda ||z||_1   \\
-\end{eqnarray*}
-
-For any fixed value of $\lambda$ we can calculate $y_\lambda, z_\lambda = \argmax_{y, z} L(\lambda, y, z)$ using the dynamic programming algorithm shown. 
-
-\[ S_y(i,j) =  \theta_ij  + \lambda \]
-
-%We simply replace $\theta$ with $\theta'$ where $\theta'(i,j) = \theta(i,j) + \lambda$ for all $(i,j) \in \IndexSet$.
-
-By weak duality $\theta^\top y_\lambda + \omega^\top z_\lambda$ will always give an upper bound on the optimal constrained solution $y^*, z^*$. And if $||z_\lambda||_1 = m$ then this upper bound is provably tight.
-Past work in NLP has looked at minimizing this dual upper bound with subgradient descent; however we can exploit the fact that there is only a single dual variable $\lambda$ and use a more efficient method.
+% An alternative approach for single-resource constraints is to  
+% relax the constraint and 
 
 
-We will minimize $L(\lambda)$ using the bisection method. First note that
-% with $m=n$ we can solve $q(m)$ by setting $\lambda$ to the max bigram score  , similarly
-% with $m=0$ we can solve $q(0)$ by setting $\lambda$ to the inverse of the max bigram score.
+% \begin{eqnarray*}
+%   L(\lambda, y, z) = && \theta^\top y +  \omega^\top z + \lambda ||z||_1   \\
+% \end{eqnarray*}
+
+% For any fixed value of $\lambda$ we can calculate $y_\lambda, z_\lambda = \argmax_{y, z} L(\lambda, y, z)$ using the dynamic programming algorithm shown. 
+
+% \[ S_y(i,j) =  \theta_ij  + \lambda \]
+
+% %We simply replace $\theta$ with $\theta'$ where $\theta'(i,j) = \theta(i,j) + \lambda$ for all $(i,j) \in \IndexSet$.
+
+% By weak duality $\theta^\top y_\lambda + \omega^\top z_\lambda$ will always give an upper bound on the optimal constrained solution $y^*, z^*$. And if $||z_\lambda||_1 = m$ then this upper bound is provably tight.
+% Past work in NLP has looked at minimizing this dual upper bound with subgradient descent; however we can exploit the fact that there is only a single dual variable $\lambda$ and use a more efficient method.
 
 
-The bisection method is guaranteed to find an optimal solution if one exists in  iterations
-% \todo[inline]{Figure this result out.}
+% We will minimize $L(\lambda)$ using the bisection method. First note that
+% % with $m=n$ we can solve $q(m)$ by setting $\lambda$ to the max bigram score  , similarly
+% % with $m=0$ we can solve $q(0)$ by setting $\lambda$ to the inverse of the max bigram score.
 
 
-\begin{figure}
-  \begin{algorithmic}
-    \Procedure{Bisection}{$m \lambda^{(\uparrow)}, \lambda^{(\downarrow)}$}
-    % \State{$\lambda^{(\uparrow)} \gets \max_{(i, j) \in \IndexSetB} \omega(i,j)$}
-    % \State{$\lambda^{(\downarrow)} \gets -\max_{(i, j) \in \IndexSetB} \omega(i,j)$}
-    \State{$\lambda^{(0)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(\downarrow)}}{2}$}
-    \For{$k = 1\hbox{ to }K$}
-    \State{ $y^{(k)}, z^{(k)} = \argmax_{y, z} L(\lambda^{(k-1)}, y, z)$}
-    \If{$  ||z^{(k)}||_1 = m$}
-    \State{\Return{$y^{(k)}, z^{(k)}$}}
-    \EndIf{}
-    \If{$||z^{(k)}||_1 < m$}$ \ \ \lambda^{(\uparrow)} \gets \lambda^{(k)}$
-    \Else$\ \ \lambda^{(\downarrow)} \gets \lambda^{(k)}$ 
-    \EndIf{}
-    \State{$\lambda^{(k+1)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(\downarrow)}}{2}$}
-    \EndFor{}
-    \EndProcedure{}
-  \end{algorithmic}
-\end{figure}
+% The bisection method is guaranteed to find an optimal solution if one exists in  iterations
+% % \todo[inline]{Figure this result out.}
+
+
+% \begin{figure}
+%   \begin{algorithmic}
+%     \Procedure{Bisection}{$m \lambda^{(\uparrow)}, \lambda^{(\downarrow)}$}
+%     % \State{$\lambda^{(\uparrow)} \gets \max_{(i, j) \in \IndexSetB} \omega(i,j)$}
+%     % \State{$\lambda^{(\downarrow)} \gets -\max_{(i, j) \in \IndexSetB} \omega(i,j)$}
+%     \State{$\lambda^{(0)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(\downarrow)}}{2}$}
+%     \For{$k = 1\hbox{ to }K$}
+%     \State{ $y^{(k)}, z^{(k)} = \argmax_{y, z} L(\lambda^{(k-1)}, y, z)$}
+%     \If{$  ||z^{(k)}||_1 = m$}
+%     \State{\Return{$y^{(k)}, z^{(k)}$}}
+%     \EndIf{}
+%     \If{$||z^{(k)}||_1 < m$}$ \ \ \lambda^{(\uparrow)} \gets \lambda^{(k)}$
+%     \Else$\ \ \lambda^{(\downarrow)} \gets \lambda^{(k)}$ 
+%     \EndIf{}
+%     \State{$\lambda^{(k+1)} \gets \frac{\lambda^{(\uparrow)} + \lambda^{(\downarrow)}}{2}$}
+%     \EndFor{}
+%     \EndProcedure{}
+%   \end{algorithmic}
+% \end{figure}
 
 
 
