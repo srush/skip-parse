@@ -1,0 +1,608 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{acl2014}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage[mathscr]{euscript}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{multirow}
+\usepackage{tikz}
+
+% Actually apply letter size for PDFs; letterpaper just scales text -K
+\setlength{\pdfpagewidth}{8.268in}
+\setlength{\pdfpageheight}{11.693in}
+
+% argmax and argmin - K
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newenvironment{packed_enumerate}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+\newenvironment{packed_itemize}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{itemize}}
+
+\setlength\titlebox{6.5cm}    % Expanding the titlebox
+
+\title{Efficient Multi-Structure Sentence Compression}
+\title{Parsing with Skips for Sentence Compression}
+\title{Optimal and Efficient Multi-Structure Compression}
+\title{Compressive Parsing}
+\title{First and Second-Order Compressive Parsing}
+\title{Efficient Compressive Parsing for Sentence Compression}
+
+%\author{Kapil Thadani \\
+%        Department of Computer Science\\
+%	     Columbia University\\
+%	     New York, NY 10025, USA\\
+%        {\tt kapil@cs.columbia.edu} \And
+%        Alexander M.~Rush \\
+%        MIT CSAIL \\
+%        Cambridge, MA 02139, USA \\
+%        {\tt srush@csail.mit.edu } \\}
+\author{}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+    Supervised approaches to sentence compression have previously been shown
+    to benefit when the dependency structure of the output sentence is
+    included in the inference objective, but prior formulations of this
+    inference task do not admit efficient algorithms.
+%    and require integer programming or approximate solutions.
+    We present a polynomial-time approach to recover dependency trees
+    for compressed sentences in which dynamic programming is used to
+    produce a valid parse tree over a subset of the tokens in the input
+    in order to satisfy a compression rate. In addition to first-order
+    dependency structure, this approach also recovers
+    second-order dependencies as well as a bigram factorization of the
+    output sentence with no asymptotic overhead.
+    Experiments on two standard corpora for sentence compression show
+    improved performance against previous work
+
+%    Sentence compression has been shown to benefit from
+%    joint inference involving both n-gram and dependency-factored objectives
+%    but this typically requires expensive integer programming.
+%    We explore instead the use of Lagrangian relaxation
+%    to decouple the two subproblems and solve them separately.
+%    While dynamic programming is viable for bigram-based sentence compression,
+%    finding optimal compressed trees within graphs is NP-hard.
+%    We recover approximate solutions to this problem using
+%    LP relaxation and maximum spanning tree algorithms, yielding
+%    techniques that can be combined with the efficient
+%    bigram-based inference approach using Lagrange multipliers.
+%    Experiments show that these approximation strategies produce results
+%    comparable to a state-of-the-art integer linear programming formulation
+%    for the same joint inference task along with a significant improvement
+%    in runtime.
+\end{abstract}
+
+\section{Introduction}
+\label{intro}
+
+Text-to-text generation problems such as paraphrase generation,
+sentence fusion and text simplification involve
+monolingual transformations of text for specific goals
+such as reducing verbosity or assisting comprehension.
+The most popular of these problems is the task of
+sentence \emph{compression} which involves
+the production of well-formed output sentences that are shorter than
+their corresponding input sentences while nevertheless preserving their
+meaning.
+Compression problems have received significant attention in
+recent years due to their usefulness in document summarization~\cite{zajic07}
+as well as the increasing number of sources of compression
+data~\cite{knight00,clarke06a,galanis11,filippova13} for training
+and evaluation.
+
+%While sentence compression is often
+%incorporated into systems for document
+%summarization~\cite{daume02,zajic07,clarke07,martins09a,bergkirkpatrick11,woodsend12,almeida13,molina13,li13,qian13}, the standalone compression task
+%has also received significant attention,
+%in part due to the availability of parallel sentence corpora such as
+%the Ziff-Davis corpus~\cite{knight00} and the Edinburgh compression
+%corpora~\cite{clarke06a}.
+
+Sentence compression is usually formulated as a \textit{token deletion}
+problem\footnote{Following the terminology used for text
+    summarization, this setting is also referred to as \emph{extractive}
+    compression by \newcite{cohn08a} and \newcite{galanis10}.}
+in which the compressed output is synthesized using only the
+tokens in the input sentence without any reordering or paraphrasing,
+as seen in the following example from the corpus of
+\newcite{clarke06a}.
+
+\begin{tabular}{p{190pt}}
+    \small\vspace{0pt}
+\textbf{Original:} In 1967 Chapman, who had cultivated a
+    conventional image with his ubiquitous tweed jacket and pipe, by his own
+    later admission stunned a party attended by his friends and future Python
+    colleagues by coming out as a homosexual.\\[4pt]
+        \small
+\textbf{Compressed:} In 1967 Chapman, who had cultivated a
+conventional image, stunned a party by coming out as a homosexual.\\[4pt]
+\end{tabular}
+%Compressed sentences are typically generated by inference algorithms
+%that target some structured representation of output sentences.
+While a wide variety of structured inference techniques have been
+proposed to
+assemble compressed sentences in this setting, the production of
+compressed dependency trees is prevalent in most recent work for
+standalone sentence
+compression~\cite{filippova08a,nomoto09,galanis10,thadani13a,filippova13,thadani14}
+as well as joint compression and
+summarization~\cite{martins09a,almeida13,qian13}. However, each of these
+approaches is limited by one or more of the following: (i) a restriction
+that the output tree can only use edges from the input parse,
+resulting in unreachable gold compressions and increased sensitivity to
+parser errors,
+(ii) an intractable formulation which necessitates the use of expensive
+integer linear programs (ILPs) or algorithms for approximate solutions,
+and (iii) a reliance on hand-crafted rules or constraints which can be
+brittle and domain-dependent.
+
+In this work, we present polynomial-time algorithms for
+\emph{compressive parsing} which generate optimal dependency trees
+from all possible parse trees over output compressions without any need for
+heuristics or hand-crafted rules.
+These dynamic programming strategies extend the well-known Eisner
+algorithm for projective parsing~\cite{eisner96}
+in order to drop a fixed or variable number of tokens
+in the output parse tree.
+Our formulation also scores a bigram
+factorization of the compressed sentence with no asymptotic overhead,
+thereby offering an efficient alternative to the ILP for joint n-gram and
+dependency structured inference proposed by \newcite{thadani13a}.
+%\footnote{
+%    \newcite{thadani13a} produce \emph{non-projective} trees which cannot
+%    be recovered efficiently~\cite{lau06} and must
+%    consequently rely on ILPs or LP relaxations~\cite{thadani14}.}
+Finally, this dynamic program can easily be extended to richer
+second-order compressive parsing \cite{eisner96,mcdonald06b} in
+which scores can be defined over consecutive parsing decisions without
+any increase in runtime.
+
+The contributions of this paper include:
+\begin{packed_itemize}
+\item An $O(n^3)$ time dynamic programming algorithm to jointly recover the
+    optimal compressed dependency tree and bigram factorization over an
+    input sentence of length $n$ when no compression rate is specified.
+\item An $O(n^3m^2)$ time algorithm to recover the optimal compressed
+    tree and bigram sequence covering exactly $m < n$ tokens.
+\item A bisection-based first-pass strategy to decrease runtime
+    by recovering a fraction of compressions with $m$ tokens in
+    $O(n^3k)$ where $k << m^2$.
+\end{packed_itemize}
+
+\section{Parsing for Compression Inference}
+\label{parsing}
+
+A diverse array of inference strategies have been employed in recent
+years towards standalone sentence compression and compression within
+extractive summarization. In particular, the production of
+arc-factored dependency trees to represent compressed sentences
+has gained appeal by balancing the straightforwardness
+of inference approaches for n-gram subsequences~\cite{mcdonald06a,clarke08}
+and the syntactic perspective of tree substitution
+grammars~\cite{cohn09,woodsend12} while performing competitively in
+experimental evaluations~\cite{galanis10,qian13,thadani14}.
+
+Many recent techniques produce compressed dependency trees by
+pruning edges from a dependency parse of the input
+sentence or transformations thereof. However, this problem is NP-hard
+in the general
+case\footnote{A polynomial-time algorithm is viable when the edge weights
+    are integers~\cite{lau06}.}
+and has consequently been addressed with expensive integer linear
+programs~\cite{filippova08a,filippova13} or approximations based on
+reranking~\cite{nomoto09,galanis10}. Furthermore, a strong reliance
+on the input parse makes these techniques sensitive to parse errors
+as well as prone to unreachable reference compressions.
+
+Further constraining the head of the output tree to match that of the
+input permits only subtrees to be dropped from the input parse; in this case,
+the best compressed tree can be found in linear time using the Viterbi
+algorithm for trees. This approach is favored by joint compression
+and summarization
+systems~\cite{martins09a,gillick09,bergkirkpatrick11,almeida13,qian13}
+but the head restriction further exacerbates the fraction of unreachable
+reference sentences in a standalone sentence compression setting.
+Many of these approaches also define hand-crafted rules
+to ensure that important subtrees like the subject of the head aren't
+removed.
+
+The joint n-gram and dependency compression approach of
+\newcite{thadani13a} does not restrict output parse trees to lie
+within input parses but inference remains NP-hard~\cite{thadani14}
+because the objective is defined over non-projective trees.
+However, since tokens cannot be reordered in extractive sentence
+compression, the recovery of linguistically-motivated\footnote{English
+    is mostly projective and even
+    canonical non-projective languages such
+    as Czech, Danish and Turkish have a low rate (1-2\%) of
+    non-projective arcs in their respective treebanks~\cite{nivre05}.}
+\emph{projective} trees becomes tractable. With the exception of
+non-projectivity, the dynamic programming approach described in
+the following section fully generalizes over these joint models.
+
+The rest of this section is organized as follows:
+
+
+\subsection{Features and Learning}
+\label{features}
+
+We based the features for our discriminative model on the features
+described by \newcite{mcdonald06a} and \newcite{thadani13a}.
+
+Dependency features $\Omega$ included the probability of an arc under
+a smoothed dependency grammar derived from the Penn Treebank, the
+\emph{fidelity} of the output arc---an indicator of whether it is present in
+the input parse---conjoined with its dependency labels, and conjunctions
+of the following features: arc fidelity, fidelity of ancestral relations
+binned by the distance of the ancestor, direction of attachment,
+part-of-speech (POS) tags of the tokens incident to the edge, labels of
+constituent chunks containing these tokens and an indicator of whether
+they lie in the same chunk.
+
+We also added token-specific features over the dependents of each
+arc. These included POS tag sequences of length at most 3 around the token,
+the label of the dependency arc to the token in the
+input parse conjoined with its POS tag, indicators for
+capitalized words and words in parentheses as well as lexical features
+covering verb stems, symbols and negations.
+
+Second-order features were comprised of the fidelity of the
+second-order dependency conjoined with its label in the input parse.
+Although we experimented with a wide range of second-order features on
+a development dataset, we found that they were prone to overfitting,
+likely due to the small size of the \newcite{clarke08}
+datasets used in our evaluation.\footnote{We
+    expect these features to be valuable when training on larger
+    compression datasets such as the one proposed by
+    \newcite{filippova13}.}
+
+Finally, bigram features $\theta$ include the likelihood under a
+language model (LM) contructed from the Gigaword corpus, the coarse and
+fine POS tags of its tokens and the labels of dependency arcs incident to
+these words in the input sentence.
+
+For the experiments in the following section, we trained models using
+a variant of the structured perceptron \cite{collins02}
+which incorporates minibatches~\cite{zhao13} for easy parallelization and
+faster convergence.\footnote{
+    We used a minibatch size of 4 in all experiments.}
+Overfitting was avoided by averaging parameters and monitoring performance
+against a held-out development set during training.
+%We followed \newcite{martins09c} in using LP-relaxations
+%when training models with ILP inference,
+%assuming algorithmic separability~\cite{kulesza07}
+%for these compression problems.
+
+\section{Experiments}
+\label{experiments}
+
+This section describes the experimental setup used to evaluate the
+utility and performance of our proposed inference approach.
+
+\subsection{Datasets}
+\label{data}
+Compression experiments were conducted over the standard newswire (NW) and
+broadcast news transcription (BN) corpora compiled by \newcite{clarke08}.
+These datasets include gold compressions which were produced by human
+annotators
+%---3 in the case of the BN corpus---
+who were restricted to only
+delete tokens.
+We filtered the instances as per \newcite{thadani13a} and used the
+same training/dev/test splits as \newcite{clarke08},
+resulting in 953/63/603 instances
+for the NW corpus and 880/78/404 for the BN corpus.
+Reference dependency parses were approximated by parsing reference
+compressions with the Stanford dependency
+parser.\footnote{\texttt{http://nlp.stanford.edu/software/}}
+Following \newcite{napoles11a}, which revealed a strong correlation between
+system compression rate and human judgments of compression quality,
+all systems were constrained to produce compressed output at a fixed
+compression rate determined by the the median reference compressions
+for each instance.
+
+\subsection{Evaluation measures}
+\label{measures}
+We evaluated system performance using F$_1$ metrics over n-grams and
+dependencies---produced by parsing
+system output with
+RASP~\cite{briscoe06} and the Stanford parser---following previous
+work~\cite{unno06,clarke08,martins09a,napoles11a,thadani13a,thadani14}.
+In the case of the BN corpus which has 3 reference compressions per instance,
+F$_1$ scores were averaged over all references.
+%, which is frequently used in compression evaluations.
+%All ILPs were solved using
+%Gurobi,\footnote{\texttt{http://www.gurobi.com}} a high-performance
+%commercial-grade solver.
+%---to ensure that the
+%reported differences between the systems under study are meaningful.
+
+\begin{table*}[t]
+    \setlength{\tabcolsep}{4pt}
+    \setlength{\belowcaptionskip}{-3pt}
+\centering
+\begin{tabular}{|p{40pt}l|cccc|ccc|c|}
+        \hline
+        \multicolumn{2}{|c|}{Inference}  & \multicolumn{4}{c|}{n-grams\ \ F$_1\%$} & \multicolumn{3}{c|}{Syntactic relations F$_1$\%} & Inference \\
+        objective & \quad technique & $n=1$ & $2$ & $3$ & $4$ & $\mathbf{z}$ & Stanford & RASP & time (s) \\
+        \hline
+        \hline
+        \multirow{2}{*}{n-grams} & 3-LM (CL08) & 74.96 & 60.60 & 46.83 & 38.71 & - & 60.52 & 57.49 & 0.72 \\
+        & DP (McD06) & 78.80 & 66.04 & 52.67 & 42.39 & - & 63.28 & 57.89 & 0.01  \\
+        \hline
+        \multirow{2}{*}{deps} & LP$\rightarrow$MST   & {\bf 79.61} & 64.32 & 50.36 & 40.97 & 66.57 & 66.82 & 59.70 & 0.07 \\
+        & ILP-Dep   & {\bf 80.02} & 65.99 & 52.42 & 43.07 & {\bf 72.43} & 67.63 & 60.78 & 0.16  \\
+        \hline
+        & DP + LP$\rightarrow$MST   & 79.50 & 66.75 & 53.48 & 44.33 & 64.63 & 67.69 & 60.94 & 0.24 \\
+        joint & DP + LP & 79.10 & {\bf 68.22} & {\bf 55.05} & {\bf 45.81} & 65.74 & {\bf 68.24} & {\bf 62.04} & 0.12 \\
+        & ILP-Joint (TM13)  & {\bf 80.13} & {\bf 68.34} & {\bf 55.56} & {\bf 46.60} & {\bf 72.57} & {\bf 68.89} & {\bf 62.61} & 0.31  \\
+        \hline
+\end{tabular}
+\caption{Experimental results for the BN corpus, averaged over 3
+    gold compressions per instance.
+    All systems were restricted to compress to the size of the
+    median gold compression yielding an average compression rate of $77.26\%$.}
+%    Boldfaced entries indicate significant differences
+%    ($p < 0.0005$) under the paired t-test and Wilcoxon's signed rank test.}
+\label{tab:bn}
+\end{table*}
+
+
+\begin{table*}[t]
+    \setlength{\tabcolsep}{4pt}
+    \setlength{\belowcaptionskip}{-5pt}
+\centering
+\begin{tabular}{|p{40pt}l|cccc|ccc|c|}
+        \hline
+        \multicolumn{2}{|c|}{Inference}  & \multicolumn{4}{c|}{n-grams\ \ F$_1\%$} & \multicolumn{3}{c|}{Syntactic relations F$_1$\%} & Inference \\
+        objective & \quad technique & $n=1$ & $2$ & $3$ & $4$ & $\mathbf{z}$ & Stanford & RASP & time (s) \\
+        \hline
+        \hline
+        \multirow{2}{*}{n-grams} & 3-LM (CL08) & 66.66 & 51.59 & 39.33 & 30.55 & - & 50.76 & 49.57 & 1.22 \\
+        & DP (McD06) & 73.18 & 58.31 & 45.07 & 34.77 & - & 56.23 & 51.14 & 0.01  \\
+        \hline
+        \multirow{2}{*}{deps} & LP$\rightarrow$MST   & 73.32 & 55.12 & 41.18 & 31.44 & 61.01 & 58.37 & 52.57 & 0.12 \\
+        & ILP-Dep   & {\bf 73.76} & 57.09 & 43.47 & 33.44 & {\bf 65.45} & 60.06 & 54.31 & 0.28  \\
+        \hline
+        & DP + LP$\rightarrow$MST   & 73.13 & 57.03 & 43.79 & 34.01 & 57.91 & 58.46 & 53.20 & 0.33 \\
+        joint & DP + LP & 72.06 & {\bf 59.83} & {\bf 47.39} & {\bf 37.72} & 58.13 & 58.97 & 53.78 & 0.21 \\
+        & ILP-Joint (TM13)  & {\bf 74.00} & {\bf 59.90} & {\bf 47.22} & {\bf 37.01} & {\bf 65.65} & {\bf 61.29} & {\bf 56.24} & 0.60  \\
+        \hline
+\end{tabular}
+\caption{Experimental results for the NW corpus with
+    all systems compressing to the size of the
+    gold compression, yielding an average compression rate of $70.24\%$.
+    In both tables, bold entries show significant gains within a column
+    under the paired t-test ($p < 0.05$) and Wilcoxon's signed rank test ($p < 0.01$).}
+\label{tab:nw}
+\end{table*}
+
+\subsection{Systems}
+\label{systems}
+We report results over the following systems grouped into three
+categories of models:
+tokens + n-grams, tokens + dependencies, and joint models.
+\begin{packed_itemize}
+\item \textbf{3-LM:} A reimplementation of the unsupervised ILP
+    of \newcite{clarke08} which infers order-preserving trigram variables
+    parameterized with log-likelihood under an LM and
+    a significance score for token variables inspired by
+    \newcite{hori04}, as well as various linguistically-motivated
+    constraints to encourage fluency in output compressions.
+\item \textbf{DP:} The bigram-based dynamic program of
+    \newcite{mcdonald06a} described in \S\ref{bigram}.\footnote{For
+        consistent comparisons with the
+        other systems, our reimplementation does not include the
+        $k$-best inference strategy presented in \newcite{mcdonald06a}
+        %for large margin learning via MIRA.}
+        for learning with MIRA.}
+\item \textbf{LP$\rightarrow$MST:} An approximate inference approach
+    based on an LP relaxation of \textbf{ILP-Dep}. As discussed
+    in \S\ref{dep}, a maximum spanning tree is recovered
+    from the output of the LP and greedily pruned in order to generate a
+    valid integral solution while observing the imposed compression rate.
+\item \textbf{ILP-Dep:} A version of the joint ILP of \newcite{thadani13a}
+    without n-gram variables and corresponding features.
+\item \textbf{DP+LP$\rightarrow$MST:} An approximate joint inference approach
+    based on Lagrangian relaxation that uses \textbf{DP} for the maximum
+    weight subsequence problem and \textbf{LP$\rightarrow$MST} for the
+    maximum weight subtree problem.
+%    A variation on the above approach
+%    that attempts to approximate an integral solution to the
+%    maximum-weight subtree subproblem in each dual iteration
+%    by finding a maximum spanning tree in the subgraph of the
+%    LP solution (cf.~\S\ref{dep}).
+\item \textbf{DP+LP:} Another Lagrangian relaxation approach that pairs
+    \textbf{DP}
+    with the non-integral solutions from an LP relaxation of the
+    maximum weight subtree problem (cf.~\S\ref{dep}).
+%    Lagrangian relaxation that uses
+%    dynamic programming for the maximum weight
+%    subsequence subproblem (cf.~\S\ref{bigram}) and an LP relaxation to
+%    recover fractional solutions to the
+%    maximum weight subtree subproblem (cf.~\S\ref{dep}).
+\item \textbf{ILP-Joint:} The full ILP from \newcite{thadani13a},
+    which provides an upper bound on the performance of the proposed
+    approximation strategies.
+\end{packed_itemize}
+The learning rate schedule for the Lagrangian relaxation approaches
+was set as $\eta_i \triangleq \tau/(\tau + i)$,\footnote{
+    $\tau$ was set to $100$ for aggressive subgradient updates.}
+while the hyperparameter $\psi$ was tuned using the development
+split of each corpus.\footnote{We were surprised to observe that
+    performance improved significantly when $\psi$ was set
+    closer to 1, thereby emphasizing token features in the
+    dependency subproblem. The final values chosen were
+    $\psi_\text{BN} = 0.9$ and $\psi_\text{NW}=0.8$.
+}
+
+\subsection{Results}
+\label{fixed}
+Tables~\ref{tab:bn} and \ref{tab:nw} summarize
+the results from our compression experiments on the BN and NW corpora
+respectively.
+Starting with the n-gram approaches, the performance of \textbf{3-LM}
+leads us to observe that the gains of supervised learning far outweigh
+the utility of higher-order
+n-gram factorization, which is also responsible for a significant
+increase in wall-clock time.
+In contrast, \textbf{DP}
+is an order of magnitude faster than all other approaches
+studied here %and performs nearly on par with the best joint inference
+%approaches under n-gram evaluation metrics,
+although it is not
+competitive under parse-based measures such as RASP F$_1\%$ which is known
+to correlate with human judgments of grammaticality~\cite{clarke06a}.
+
+We were surprised by the strong performance of the dependency-based
+inference techniques, which yielded results that approached the
+joint model in both n-gram and parse-based measures. The exact
+\textbf{ILP-Dep} approach halves the runtime of \textbf{ILP-Joint}
+to produce compressions that have similar (although statistically
+distinguishable) scores.
+%are significant under Wilcoxon's signed rank test ($p < 0.05$).
+Approximating dependency-based inference with \textbf{LP$\rightarrow$MST}
+yields similar performance for a further halving of runtime;
+however, the performance of this approach is notably worse.
+%from that of
+%the approximate joint inference techniques.
+
+Turning to the joint approaches, the strong performance of \textbf{ILP-Joint}
+is expected; less so is the
+relatively high but yet practically reasonable runtime that it requires.
+We note, however, that these ILPs are solved using a highly-optimized
+commercial-grade solver that can utilize all CPU cores\footnote{16 cores in our experimental
+    environment.} while our approximation approaches are implemented as
+single-processed Python code without significant effort toward optimization.
+Comparing the two approximation strategies shows a clear performance
+advantage for \textbf{DP+LP} over \textbf{DP+LP$\rightarrow$MST}: the
+latter approach entails slower inference due to the overhead of running
+the Chu-Liu Edmonds algorithm at every dual update, and furthermore, the
+error introduced by approximating an integral solution results in
+a significant decrease in dependency recall.
+In contrast, \textbf{DP+LP} directly optimizes the dual problem
+by using the relaxed dependency solution to update Lagrange multipliers
+and achieves the best performance on parse-based F$_1$
+outside of the slower ILP approaches.
+Convergence rates
+also vary for these two techniques: \textbf{DP+LP} has a lower rate
+of empirical convergence (15\% on BN and 4\% on NW) when compared to
+\textbf{DP+LP$\rightarrow$MST} (19\% on BN and 6\% on NW).
+
+Figure~\ref{fig:timing} shows the effect of input sentence length on inference
+time and performance for \textbf{ILP-Joint} and \textbf{DP+LP} over the
+NW test corpus.\footnote{Similar results were observed for the BN test corpus.}
+The timing results reveal that the approximation strategy is consistently
+faster than the ILP solver.
+The variation in RASP F$_1$\% with input size
+indicates the viability of a hybrid approach which could balance accuracy
+and speed by using
+\textbf{ILP-Joint} for smaller problems and \textbf{DP+LP} for larger ones.
+%and that runtime
+%gains tend to increase as the input size increases.
+%Finally, although
+%absolute F$_1$ for all measures tends to decline with larger inputs,
+%there is no consistent trend in the relative performance of these approaches.
+
+%the relative quality of system
+%%output---indicated here by the difference in RASP
+%%F$_1$\%---between
+%output does not demonstrate
+%an observable trend.
+
+
+\section{Related Work}
+\label{related}
+
+Sentence compression is one of the better-studied text-to-text generation
+problems % initially proposed by \newcite{dras97}
+and has been observed to play a significant role in
+human summarization~\cite{jing00a,jing00b}.
+Most approaches to sentence compression are supervised
+\cite{knight02,riezler03,turner05,mcdonald06a,unno06,galley07,nomoto07,cohn09,galanis10,ganitkevitch11,napoles11b,filippova13} following the release of
+datasets such as the Ziff-Davis corpus~\cite{knight00} and the
+Edinburgh compression corpora~\cite{clarke06a,clarke08}, although
+unsupervised approaches---largely based on ILPs---have
+also received consideration~\cite{clarke07,clarke08,filippova08a}.
+Compression has also been used as a tool for document
+summarization~\cite{daume02,zajic07,clarke07,martins09a,bergkirkpatrick11,woodsend12,almeida13,molina13,li13,qian13}, with recent work
+formulating the summarization task as joint sentence extraction and
+compression and often employing %inference approaches based on
+ILP or Lagrangian relaxation.
+Monolingual compression also faces many obstacles
+common to decoding in machine translation, and
+a number of approaches which have been proposed to combine
+phrasal and syntactic models~\cite{huang07,rush11} \emph{inter alia}
+offer directions for future research into
+compression problems.
+
+%\begin{figure}[t]%[htbp]
+%\setlength{\abovecaptionskip}{-2pt}
+%\setlength{\belowcaptionskip}{-4pt}
+%\hspace{-6pt}
+%\includegraphics[width=0.48\textwidth]{rasptime2.png}
+%\caption{Effect of input size on
+%    (a) inference time, and (b) the corresponding difference
+%    in RASP F$_1$\% (\textbf{ILP-Joint} -- \textbf{DP+LP}) on the NW corpus.}
+%\label{fig:timing}
+%\end{figure}
+
+\section{Conclusion}
+\label{conclusion}
+\vspace{-2pt}
+We have presented approximate inference strategies to jointly compress
+    sentences under bigram and dependency-factored objectives
+    by exploiting the modularity of the task and considering the
+    two subproblems in isolation.
+%    While efficient dynamic programming
+%    algorithms exist for bigram-based sentence compression,
+%    generating dependency parses from general graphs is NP-hard.
+%    We study approximate approaches to this problem using
+%    LP relaxation and maximum spanning tree algorithms, yielding
+%    approaches that can be combined with the efficient bigram-based
+%    inference approach using Lagrange multipliers.
+    Experiments show that one of these
+    approximation strategies produces results comparable to
+    a state-of-the-art integer linear program for the same
+    joint inference task with a 60\% reduction
+    in average inference time. %when compared to highly-optimized solvers.
+
+%%Do not number the acknowledgment section.
+%\section*{Acknowledgments}
+%\vspace{-2pt}
+%The authors are grateful to Ryan McDonald for helpful discussions
+%and to the anonymous reviewers for their comments.
+%This work was supported by the Intelligence Advanced
+%Research Projects Activity (IARPA) via Department of Interior National
+%Business Center (DoI/NBC) contract number D11PC20153.
+%The U.S. Government is authorized to
+%reproduce and distribute reprints for Governmental purposes
+%notwithstanding any copyright annotation thereon.\footnote{
+%%\textbf{Disclaimer:}
+%The views and conclusions contained
+%herein are those of the authors and should not be interpreted as necessarily
+%representing the official policies or endorsements, either expressed or
+%implied, of IARPA, DoI/NBC, or the U.S. Government.
+%}
+
+\bibliographystyle{acl.bst}
+\bibliography{papers}
+
+\end{document}

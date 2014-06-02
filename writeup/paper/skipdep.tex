@@ -265,10 +265,9 @@ compression.
 The standard decoding algorithm for projective dependency parsing is
 known as Eisner's algorithm \cite{eisner, mcdonald}.  The algorithm is
 specified through a set of deductive rules acting on items.  Each item
-in the table consists of a tuple $(t, i, j)$ where $i, j$ is a span
+consists of a tuple $(t, i, j)$ where $i, j$ is a span
 $0\leq i \leq j \leq n$ and $t$ is symbol from the set
-$\{\ltri,\rtri, \ltrap, \rtrap\}$ (informally referred to as triangles
-and trapezoids). These items indicate partial structures that may be 
+$\{\ltri,\rtri, \ltrap, \rtrap, \abox\}$ (informally referred to as triangles, trapezoids, and boxes). These items indicate partial structures that may be 
 combined with logical rules. For instance, the rules
 
 \begin{center}
@@ -277,7 +276,7 @@ combined with logical rules. For instance, the rules
   \end{tabular}
 \end{center}
 
-\noindent combine a right- and left-facing triangles covering $i,k$ and $k+1,j$ respectively to produce
+\noindent combine right- and left-facing triangles covering $i,k$ and $k+1,j$ respectively to produce
 a right-facing trapezoids covering $i,j$. 
 The full set of $O(n^3)$ rules is given in Figure~\ref{fig:rules}.
 
@@ -288,15 +287,18 @@ notated on its right, for instance the consequence of the above rule
 is $S_z(i,j)$.  The consequence is a member of a semiring,
 specified by a tuple $({\mathbb S},\oplus, \otimes, 0, 1)$ where
 ${\mathbb S}$ is a set of possible values, $\oplus$ and $\otimes$ are binary operators, and
-0 and 1 are the annihilator and identity respectively.
-Define $S_z: {\IndexSetB} \mapsto {\mathbb S}$ to map from dependency arcs to semiring values.
+0 and 1 are the annihilator and identity respectively. 
+Define $S_z: {\IndexSetB} \mapsto {\mathbb S}$
+ to map from dependency arcs to semiring values.
 
-To find the score of the highest-scoring parse, we can use the
-max-semiring $({\mathbb R},\max, +, -\infty, 0)$ and let $S_z(i,j) =
-\omega_{ij}$. This specification can be used to construct an $O(n^3)$
-CKY-style algorithm for dependency parsing. In general we can produce
-the final semiring value of the final item in $O((on)^3)$ time, where
-$o$ is the cost of the $\otimes$ operator.
+ We can combine items and semiring values using dynamic programming.
+ To find the score of the highest-scoring parse, we can use the
+ max-semiring $({\mathbb R},\max, +, -\infty, 0)$ and let $S_z(i,j) =
+ \omega_{ij}$. This specification can be used to construct an $O(n^3)$
+ CKY-style dynamic programming algorithm for dependency parsing. For other
+ semirings, we can use this algorithm to find the semiring value of the goal
+ item in $O((on)^3)$ time, where $o$ is the max cost of the $\otimes$ and
+ $\oplus$ operator.
 
  
 % The consequence of $$
@@ -322,8 +324,11 @@ compressive parsing.
 % between the two structures and results in an inefficient $O(n^6)$
 % algorithm.
 
-First, define a new function $S_y: {\IndexSet} \mapsto {\mathbb S}$ to map word bigrams to semiring values. For the max-semiring we would define as  $ S_y(i,j) =   \theta_ij $. For standard dependency parsing, 
-we can incorporate this new value directly into the modification rules, e.g. 
+First, define a new function $S_y: {\IndexSet} \mapsto {\mathbb S}$ to
+map word bigrams to semiring values. For the max-semiring this
+function is $ S_y(i,j) = \theta_{ij} $. For no-deletion 
+parsing, we can incorporate this new value directly into the
+modification rules, e.g.
 
 \begin{center}
   \begin{tabular}{ll}
@@ -333,8 +338,9 @@ we can incorporate this new value directly into the modification rules, e.g.
 
 \noindent For compressive parsing, however, we also want to merge items that may
 have gaps, i.e. in-between words that are not descendants of either
-item. We could introduce rules that skip these intermediate words,
-i.e. for all $ 0 \leq i\leq k < l < j \leq n$
+item. This requires introducing rules that skip intermediate words. These 
+rules can simply ignore the intermediate words i.e. for
+all $ 0 \leq i\leq k < l < j \leq n$
 
 
 \begin{center}
@@ -349,11 +355,11 @@ i.e. for all $ 0 \leq i\leq k < l < j \leq n$
 % $l$, 
 
 \noindent These rules produce an $(i,j)$ arc, leave out words $j+1$
-through $l-1$, and produce a $(k,l)$ bigram.  Unfortunately this
-modification results in an addition free variable $l$ and gives an
-$O(n^4)$ parsing algorithm.
+through $l-1$, and produce a $(k,l)$ bigram.  
 
-Observe though that it is not necessary to produce the arc and bigram
+Unfortunately this
+modification results in an additional free variable $l$ and gives an
+$O(n^4)$ parsing algorithm. Observe though that it is not necessary to produce the arc and bigram
 with the same rule. In fact, we can force $k$ to predict if there will be
 gap from $k+1$ to $l-1$ before applying other rules, and then apply the standard Eisner's rules, as if $k+1$ through $l-1$ were descendants of 
 $k$ (and thus $i$ as well).  
@@ -373,7 +379,7 @@ to skip words to their right before becoming standard $\rtri$ items
 
 \noindent After skipping words $i+1$ to $j$ we incorporate the bigram consequence $S_y(i, j+1)$.
 
-These hook rules allow us to avoid the extra free variable and maintain  $O(n^3)$ for CKY.
+These hook rules allow us to avoid the extra free variable and maintain the same efficiency as Eisner's algorithm.
 A full parse derivation is show in Figure~\ref{fig:parse}.
 
 % Naively, this could be done by intersecting
@@ -421,7 +427,7 @@ A full parse derivation is show in Figure~\ref{fig:parse}.
   \centering
   \includegraphics[width=\textwidth]{../../notebooks/diagrams}
   \label{fig:parse}
-  \caption{Example of a compressive parse with derivation. The compressed sentence is ``Production closed for Christmas''. The output structure has arc and bigrams $y_{0,3}, y_{3,1},y_{3,7},y_{7,9},z_{0,1},z_{1,3},z_{3,7}, z_{7,9},$ and $z_{9,11}$ set to 1 and all others set to 0. The full first-order derivation tree is shown below. The final derivation has $m=4$. }
+  \caption{Example of a compressive parse with derivation. The compressed sentence is ``Production closed for Christmas''. The output structure has arc and bigrams $y_{0,3}, y_{3,1},y_{3,7},y_{7,9},z_{0,1},z_{1,3},z_{3,7}, z_{7,9},$ and $z_{9,11}$ set to 1 and all others set to 0. The full first-order derivation tree is shown below. The final derivation has $||z||_1=4$. }
 \end{figure*}
 
 
